@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 public class Sprite {
-    private final Bitmap imageResource;
+    public final Bitmap imageResource;
     private int x;
     private int y;
 
