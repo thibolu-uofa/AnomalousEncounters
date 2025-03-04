@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -17,12 +18,12 @@ public class GameView  extends SurfaceView implements Runnable{
     private GamePresenter presenter;
     private Thread gameThread;
     volatile boolean isPlaying; //check if the game is running
-    private SurfaceHolder surfaceHolder;
+    private final SurfaceHolder surfaceHolder;
     private Canvas canvas;
-    private Paint paint;
+    private final Paint paint;
     private HealthBar healthBar;
     private Sprite inventory;
-    private Sprite settingsIcon;
+    private final Sprite settingsIcon;
     private PlayerSprite playerSprite;
     private BackgroundImage backgroundImage;
     private boolean isOnOverworld;
@@ -61,9 +62,18 @@ public class GameView  extends SurfaceView implements Runnable{
     public void draw(){
         // make sure our drawing surface is valid or we crash
         if (surfaceHolder.getSurface().isValid()) {
+            canvas = surfaceHolder.lockCanvas(); // Lock the canvas ready to draw and make the drawing surface our canvas object
+
+            int backgroundColor = Color.argb(255, 255, 255, 255);
+            canvas.drawColor(backgroundColor); // draw the background color
+            paint.setColor(Color.argb(255,  255, 255, 255)); // choose the brush color for drawing
+
             if(isOnOverworld){
                 settingsIcon.draw(canvas, paint);
             }
+
+            // Draw everything to the screen and unlock the drawing surface
+            surfaceHolder.unlockCanvasAndPost(canvas);
         }
     }
 

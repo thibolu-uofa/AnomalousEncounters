@@ -3,6 +3,7 @@ package view;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 
 public class Sprite {
     public final Bitmap imageResource;
@@ -16,7 +17,6 @@ public class Sprite {
     }
     public void draw(Canvas canvas, Paint paint){
         canvas.drawBitmap(imageResource, x, y, paint);
-
     } // end draw
     public int getX() {
         return x;
