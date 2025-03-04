@@ -17,5 +17,9 @@ public class GameView {
     private PlayerSprite playerSprite;
     private BackgroundImage backgroundImage;
 
+    public GameView(){
+
+    }
+
 
 }
