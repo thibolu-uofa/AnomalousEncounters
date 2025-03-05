@@ -50,7 +50,8 @@ public class GameView  extends SurfaceView implements Runnable{
 
         Bitmap skyBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.game_sky);
         Bitmap groundBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.game_map);
-        backgroundImage = new BackgroundImage(backgroundBitmap, 0, -224);
+        backgroundImage = new BackgroundImage(skyBitmap, groundBitmap, 0, -224);
+        backgroundImage.setDirection(1);
 
         Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.player_sprite_sheet_v2);
         playerSprite = new PlayerSprite(playerBitmap, 1100, 448);
@@ -85,7 +86,9 @@ public class GameView  extends SurfaceView implements Runnable{
             paint.setColor(Color.argb(255,  255, 255, 255)); // choose the brush color for drawing
 
             if(isOnOverworld){
+                backgroundImage.update(System.currentTimeMillis(), fps);
                 backgroundImage.draw(canvas, paint);
+
                 settingsIcon.draw(canvas, paint);
                 inventory.draw(canvas, paint);
                 healthBar.draw(canvas, paint, presenter.getPlayerHealthPercentage());

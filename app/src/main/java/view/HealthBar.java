@@ -21,7 +21,6 @@ public class HealthBar {
     public void draw(Canvas canvas, Paint paint, float health){
         canvas.drawBitmap(baseBitmap, x, y, paint);
         int dynamicWidth = (int) (healthBitmap.getWidth() * health);
-        Log.d("Dynamic Health", String.valueOf(dynamicWidth));
 
         Rect clipRect = new Rect(0, 0, dynamicWidth, healthBitmap.getHeight());
         Rect destinationRect = new Rect(x, y, x + dynamicWidth, y + healthBitmap.getHeight());
