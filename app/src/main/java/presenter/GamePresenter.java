@@ -20,6 +20,12 @@ public class GamePresenter extends AppCompatActivity {
         setContentView(view);
     }
 
+    public float getPlayerHealthPercentage() {
+        int max_health = 25;
+        int health = 20;
+        return (float) health /max_health;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
