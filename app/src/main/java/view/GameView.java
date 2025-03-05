@@ -31,8 +31,9 @@ public class GameView  extends SurfaceView implements Runnable{
 
     private boolean isInBattle;
 
-    public GameView(Context context){
+    public GameView(Context context, GamePresenter presenter){
         super(context);
+        this.presenter = presenter;
         surfaceHolder = getHolder();
         paint = new Paint();
 
@@ -80,7 +81,7 @@ public class GameView  extends SurfaceView implements Runnable{
             if(isOnOverworld){
                 settingsIcon.draw(canvas, paint);
                 inventory.draw(canvas, paint);
-                healthBar.draw(canvas, paint);
+                healthBar.draw(canvas, paint, presenter.getPlayerHealthPercentage());
             }
 
             // Draw everything to the screen and unlock the drawing surface

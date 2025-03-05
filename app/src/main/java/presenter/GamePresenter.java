@@ -16,7 +16,7 @@ public class GamePresenter extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Initialize gameView and set it as the view
-        view = new GameView(this);
+        view = new GameView(this, this);
         setContentView(view);
     }
 
