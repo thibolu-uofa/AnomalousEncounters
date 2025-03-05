@@ -15,17 +15,17 @@ import com.example.anomalousencounters.R;
 import presenter.GamePresenter;
 
 public class GameView  extends SurfaceView implements Runnable{
-    private GamePresenter presenter;
+    private final GamePresenter presenter;
     private Thread gameThread;
     volatile boolean isPlaying; //check if the game is running
     private final SurfaceHolder surfaceHolder;
     private Canvas canvas;
     private final Paint paint;
-    private HealthBar healthBar;
-    private Sprite inventory;
+    private final HealthBar healthBar;
+    private final Sprite inventory;
     private final Sprite settingsIcon;
-    private PlayerSprite playerSprite;
-    private BackgroundImage backgroundImage;
+    private final PlayerSprite playerSprite;
+    private final BackgroundImage backgroundImage;
     private boolean isOnOverworld;
     long fps; //keeps track of frame rate
 
@@ -46,9 +46,15 @@ public class GameView  extends SurfaceView implements Runnable{
 
         Bitmap healthBarBaseBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.healthbar_base);
         Bitmap healthBarHealthBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.healthbar_health);
-
         healthBar = new HealthBar(healthBarBaseBitmap, healthBarHealthBitmap, 790, 50);
 
+        Bitmap skyBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.game_sky);
+        Bitmap groundBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.game_map);
+        backgroundImage = new BackgroundImage(backgroundBitmap, 0, -224);
+
+        Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.player_sprite_sheet_v2);
+        playerSprite = new PlayerSprite(playerBitmap, 1100, 448);
+        playerSprite.setAnimation("idle");
 
         isOnOverworld = true;
     }
@@ -79,9 +85,13 @@ public class GameView  extends SurfaceView implements Runnable{
             paint.setColor(Color.argb(255,  255, 255, 255)); // choose the brush color for drawing
 
             if(isOnOverworld){
+                backgroundImage.draw(canvas, paint);
                 settingsIcon.draw(canvas, paint);
                 inventory.draw(canvas, paint);
                 healthBar.draw(canvas, paint, presenter.getPlayerHealthPercentage());
+
+                playerSprite.update(System.currentTimeMillis());
+                playerSprite.draw(canvas);
             }
 
             // Draw everything to the screen and unlock the drawing surface

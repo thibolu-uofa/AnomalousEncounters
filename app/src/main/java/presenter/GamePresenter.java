@@ -1,12 +1,7 @@
 package presenter;
 
 import android.os.Bundle;
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import com.example.anomalousencounters.R;
 import view.GameView;
 
 public class GamePresenter extends AppCompatActivity {
@@ -15,6 +10,7 @@ public class GamePresenter extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // Initialize gameView and set it as the view
         view = new GameView(this, this);
         setContentView(view);

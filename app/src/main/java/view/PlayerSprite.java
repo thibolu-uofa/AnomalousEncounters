@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -34,11 +35,8 @@ public class PlayerSprite extends Sprite {
 
     private String lastDirection = "walk_right";
 
-    public PlayerSprite(Bitmap imageResource, int x, int y, Context context, int resourceId) {
+    public PlayerSprite(Bitmap imageResource, int x, int y) {
         super(imageResource, x, y);
-
-        //passing in resourceId so that more than one player char image can be loaded in
-        imageResource = BitmapFactory.decodeResource(context.getResources(), resourceId);
         setupFrameRectangles();
     }
 
