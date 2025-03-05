@@ -38,9 +38,15 @@ public class GameView  extends SurfaceView implements Runnable{
 
         //settingsIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.)
         Bitmap settingsIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.settings_gear);
-        Bitmap inventoryBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.quick_inventory);
         settingsIcon = new Sprite(settingsIconBitmap, 2235, 50);
+
+        Bitmap inventoryBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.quick_inventory);
         inventory = new Sprite(inventoryBitmap, 950, 840);
+
+        Bitmap healthBarBaseBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.healthbar_base);
+        Bitmap healthBarHealthBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.healthbar_health);
+
+        healthBar = new HealthBar(healthBarBaseBitmap, healthBarHealthBitmap, 790, 50);
 
 
         isOnOverworld = true;
@@ -74,6 +80,7 @@ public class GameView  extends SurfaceView implements Runnable{
             if(isOnOverworld){
                 settingsIcon.draw(canvas, paint);
                 inventory.draw(canvas, paint);
+                healthBar.draw(canvas, paint);
             }
 
             // Draw everything to the screen and unlock the drawing surface
