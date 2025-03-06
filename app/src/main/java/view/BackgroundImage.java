@@ -29,7 +29,7 @@ public class BackgroundImage {
         canvas.drawBitmap(groundBitmap, groundX, y, paint);
     }
 
-    public void update(long currentTime, long fps) {
+    public void update(long fps) {
         if (direction != 0) {
             skyX1 += (speed * direction / (int) fps);
             skyX2 += (speed * direction / (int) fps);
