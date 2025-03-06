@@ -1,11 +1,13 @@
 package view;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
 public class MenuItem {
+    private Context context;
     private int borderWeight = 10;
     private int x;
     private int y;
@@ -15,12 +17,13 @@ public class MenuItem {
     private String text;
 
 
-    public MenuItem(int x, int y, int height, int width, String text){
+    public MenuItem(int x, int y, int height, int width, String text, Context context){
         this.x = x;
         this.y = y;
         this.height = height;
         this.width = width;
         this.text = text;
+        this.context = context;
     }
     public void draw(Canvas canvas, Paint paint){
         paint.setColor(Color.WHITE);
@@ -31,6 +34,7 @@ public class MenuItem {
         canvas.drawRect(rectangle, paint);
 
         MenuText menuText = new MenuText(text, 16, Color.WHITE, width);
+        menuText.draw(canvas, x, y, context);
     }
 }
 

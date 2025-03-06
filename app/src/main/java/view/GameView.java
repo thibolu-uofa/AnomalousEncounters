@@ -66,14 +66,14 @@ public class GameView  extends SurfaceView implements Runnable{
         while (isPlaying) {
             long startFrameTime = System.currentTimeMillis();
 
-            draw(); //draw frame
-
             // calculate the fps for this frame
             //used to help calculate the frame rate
             long timeThisFrame = System.currentTimeMillis() - startFrameTime;
             if (timeThisFrame > 0) {
                 fps = 1000 / timeThisFrame;
             }
+
+            draw(); //draw frame
         }
     }
     public void draw(){
@@ -96,10 +96,8 @@ public class GameView  extends SurfaceView implements Runnable{
                 playerSprite.update(System.currentTimeMillis());
                 playerSprite.draw(canvas);
 
-                MenuItem menuItem = new MenuItem(200, 200, 200, 200, "fart");
+                MenuItem menuItem = new MenuItem(200, 200, 200, 200, "fart", getContext());
                 menuItem.draw(canvas, paint);
-
-
             }
 
             // Draw everything to the screen and unlock the drawing surface
