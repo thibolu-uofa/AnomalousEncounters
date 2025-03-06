@@ -96,7 +96,7 @@ public class GameView  extends SurfaceView implements Runnable{
                 playerSprite.update(System.currentTimeMillis());
                 playerSprite.draw(canvas);
 
-                MenuItem menuItem = new MenuItem(200, 200, 200, 200, "fart", getContext());
+                MenuItem menuItem = new MenuItem(200, 200, 200, 500, "SKILLS\nCosmic Gas", getContext());
                 menuItem.draw(canvas, paint);
             }
 
