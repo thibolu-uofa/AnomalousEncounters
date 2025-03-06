@@ -10,6 +10,14 @@ public class PlayerState {
     public int getHealth() {
         return playerCurrentHealth;
     }
+
+
+    // Constructor
+    public PlayerState(String name, int maxHealth) {
+        this.name = name;
+        this.playerMaxHealth = maxHealth;
+        this.playerCurrentHealth = maxHealth; // Start with full health
+    }
     public void updateHealth(int delta) {
         playerCurrentHealth += delta;
         if (playerCurrentHealth > playerMaxHealth) {
