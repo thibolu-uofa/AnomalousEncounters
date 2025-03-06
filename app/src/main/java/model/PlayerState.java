@@ -17,5 +17,5 @@ public class PlayerState {
         } else if (playerCurrentHealth < 0) {
             playerCurrentHealth = 0;
         }
-    }
+    }//
 }
