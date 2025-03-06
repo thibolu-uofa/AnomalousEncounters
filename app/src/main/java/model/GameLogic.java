@@ -11,6 +11,14 @@ public class GameLogic {
         }
             return false;
     }
+    public String getPlayerMovementState (int eventX, int playerX1, int playerX2){
+        if (eventX >= playerX2 ){
+            return "Right";
+        } else if (eventX<= playerX1) {
+            return "Left";
+        }
+        return "Idle";
+    }
 }
 
 
