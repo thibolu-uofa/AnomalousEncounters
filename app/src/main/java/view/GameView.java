@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -86,7 +87,7 @@ public class GameView  extends SurfaceView implements Runnable{
             paint.setColor(Color.argb(255,  255, 255, 255)); // choose the brush color for drawing
 
             if(isOnOverworld){
-                backgroundImage.update(System.currentTimeMillis(), fps);
+                backgroundImage.update(fps);
                 backgroundImage.draw(canvas, paint);
 
                 settingsIcon.draw(canvas, paint);
@@ -104,6 +105,29 @@ public class GameView  extends SurfaceView implements Runnable{
             surfaceHolder.unlockCanvasAndPost(canvas);
         }
     }
+
+    // The SurfaceView class implements onTouchListener
+    // So we can override this method and detect screen touches.
+    @Override
+    public boolean onTouchEvent(MotionEvent motionEvent) {
+
+        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
+            // User has touched the screen
+            case MotionEvent.ACTION_DOWN:
+                float eventX = motionEvent.getX();
+                float eventY = motionEvent.getY();
+                playerSprite.setAnimation(presenter.getPlayerMovementState((int) eventX, playerSprite.getX(), playerSprite.getX() + playerSprite.getSpriteWidth()));
+                break;
+
+            // User has removed finger from screen, so character should stop moving
+            case MotionEvent.ACTION_UP:
+                Log.d("Action up debg", "");
+                playerSprite.setAnimation("idle");
+                break;
+        }
+        return true;
+    }
+
 
     // If the Activity is paused/stopped the shutdown our thread.
     public void pause() {
