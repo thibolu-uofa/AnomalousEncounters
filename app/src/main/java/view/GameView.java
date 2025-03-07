@@ -27,6 +27,7 @@ public class GameView  extends SurfaceView implements Runnable{
     private final Sprite settingsIcon;
     private final PlayerSprite playerSprite;
     private final BackgroundImage backgroundImage;
+    int backgroundDirection;
     private boolean isOnOverworld;
     long fps; //keeps track of frame rate
 
@@ -52,7 +53,7 @@ public class GameView  extends SurfaceView implements Runnable{
         Bitmap skyBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.game_sky);
         Bitmap groundBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.game_map);
         backgroundImage = new BackgroundImage(skyBitmap, groundBitmap, 0, -224);
-        backgroundImage.setDirection(1);
+        backgroundImage.setDirection(0);
 
         Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.player_sprite_sheet_v2);
         playerSprite = new PlayerSprite(playerBitmap, 1100, 448);
@@ -67,14 +68,15 @@ public class GameView  extends SurfaceView implements Runnable{
         while (isPlaying) {
             long startFrameTime = System.currentTimeMillis();
 
+            draw(); //draw frame
+
             // calculate the fps for this frame
             //used to help calculate the frame rate
             long timeThisFrame = System.currentTimeMillis() - startFrameTime;
             if (timeThisFrame > 0) {
                 fps = 1000 / timeThisFrame;
+                Log.d("FPS", String.valueOf(fps));
             }
-
-            draw(); //draw frame
         }
     }
     public void draw(){
@@ -116,13 +118,26 @@ public class GameView  extends SurfaceView implements Runnable{
             case MotionEvent.ACTION_DOWN:
                 float eventX = motionEvent.getX();
                 float eventY = motionEvent.getY();
-                playerSprite.setAnimation(presenter.getPlayerMovementState((int) eventX, playerSprite.getX(), playerSprite.getX() + playerSprite.getSpriteWidth()));
+                String playerMovementState = presenter.getPlayerMovementState((int) eventX, playerSprite.getX(), playerSprite.getX() + playerSprite.getSpriteWidth());
+                playerSprite.setAnimation(playerMovementState);
+                switch (playerMovementState){
+                    case "walk_right":
+                        backgroundDirection = -1;
+                        break;
+                    case "walk_left":
+                        backgroundDirection = 1;
+                        break;
+                    default:
+                        backgroundDirection = 0;
+                }
+                backgroundImage.setDirection(backgroundDirection);
                 break;
 
             // User has removed finger from screen, so character should stop moving
             case MotionEvent.ACTION_UP:
                 Log.d("Action up debg", "");
                 playerSprite.setAnimation("idle");
+                backgroundImage.setDirection(0);
                 break;
         }
         return true;
