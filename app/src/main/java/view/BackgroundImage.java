@@ -19,6 +19,8 @@ public class BackgroundImage {
         this.skyBitmap = skyBitmap;
         this.groundBitmap = groundBitmap;
         this.skyX = x;
+        this.groundX1 = 0;
+        this.groundX2 = groundBitmap.getWidth();
         this.y = y;
     }
 
@@ -63,15 +65,7 @@ public class BackgroundImage {
     }
 
     public void setDirection(int direction) {
-        this.groundX1 = 0;
-        switch (direction) {
-            case -1:
-                this.groundX2 = groundX1 + groundBitmap.getWidth();
-                break;
-            case 1:
-                this.groundX2 = groundX1 - groundBitmap.getWidth();
-                break;
-        }
         this.direction = direction;
     }
+
 }
