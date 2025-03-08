@@ -1,7 +1,7 @@
 package model;
 
 public class AttackPattern {
-    private enum AttackType {
+    public enum AttackType {
         DIAGONAL,
         STAIGHT,
         STAR
