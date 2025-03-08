@@ -1,2 +1,2 @@
 # Group 7 - Anomalous Encounters 
-Group members: Zara, Abhita
+Group members: Zara, Abhita, Onyia
