@@ -41,7 +41,7 @@ public class GamePresenter extends AppCompatActivity {
                playerAnimation = "walk_left";
                break;
            default:
-               playerAnimation = "idle";
+              playerAnimation = "idle";
        }
        return playerAnimation;
     }
