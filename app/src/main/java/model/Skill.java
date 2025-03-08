@@ -19,5 +19,11 @@ public class Skill {
         this.baseDamage = 10;
         this.atkType = AttackPattern.AttackType.DIAGONAL;
 
+
+
+    }
+    //getAffectedTiles(){}
+    public int getDamage(){
+        return baseDamage;
     }
 }
