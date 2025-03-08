@@ -126,6 +126,7 @@ public class PlayerState {
      * @return The player's current health.
      */
     public int getHealth() {
+
         return playerCurrentHealth;
     }
 
