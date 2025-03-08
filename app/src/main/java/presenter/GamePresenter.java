@@ -6,11 +6,13 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 
 import model.GameLogic;
+import model.PlayerState;
 import view.GameView;
 
 public class GamePresenter extends AppCompatActivity {
     private GameView view;
     private GameLogic gameLogic;
+    private PlayerState playerState;
 
 
     @Override
@@ -22,11 +24,13 @@ public class GamePresenter extends AppCompatActivity {
         setContentView(view);
 
         gameLogic = new GameLogic();
+
+        playerState = new PlayerState("Nxy", 25);
     }
 
     public float getPlayerHealthPercentage() {
-        int max_health = 25;
-        int health = 20;
+        int max_health = playerState.getPlayerMaxHealth();
+        int health = playerState.getHealth();
         return (float) health /max_health;
     }
 

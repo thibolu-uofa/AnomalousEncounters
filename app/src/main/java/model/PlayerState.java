@@ -129,6 +129,10 @@ public class PlayerState {
         return playerCurrentHealth;
     }
 
+    public int getPlayerMaxHealth() {
+        return playerMaxHealth;
+    }
+
     /**
      * Retrieves the player's current list of skill IDs.
      *
