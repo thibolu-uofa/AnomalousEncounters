@@ -8,7 +8,7 @@ public class AttackPattern {
         STAR
     }
 
-    private AttackType attackType;
+    private final AttackType attackType;
     private final int maxRows = 5;
     private final int maxCols = 5;
 
@@ -24,58 +24,44 @@ public class AttackPattern {
             case STAIGHT:
                 return getStraightPattern(origin_pos, distance);
             case STAR:
-                return getStarPattern(origin_pos);
+                return getStarPattern(origin_pos, distance);
             default:
                 return new ArrayList<int[]>();
         }
     }
 
-    //TODO: Prevent tiles from going out of bounds.
     private ArrayList<int[]> getDiagonalPattern(int[] origin_pos, int distance) {
-        ArrayList<int[]> attackPattern = new ArrayList<int[]>();
-
-        int[] currentTile = origin_pos;
         int[][] positionVectors = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
-
-        for (int[] vector: positionVectors) {
-            currentTile = origin_pos;
-
-            for (int i = 0; i < distance; i++) {
-                int[] newTile = new int[2];
-                newTile[0] = currentTile[0] + vector[0];
-                newTile[1] = currentTile[1] + vector[1];
-                attackPattern.add(newTile);
-
-                currentTile = newTile;
-            }
-        }
-        return attackPattern;
+        return getRepeatingPattern(origin_pos, distance, positionVectors);
     }
-
-    //TODO: Abstract to reduce repeated code.
+    
     private ArrayList<int[]> getStraightPattern(int[] origin_pos, int distance) {
-        ArrayList<int[]> attackPattern = new ArrayList<int[]>();
-
-        int[] currentTile = origin_pos;
         int[][] positionVectors = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
+        return getRepeatingPattern(origin_pos, distance, positionVectors);
+    }
 
+    private ArrayList<int[]> getStarPattern(int[] origin_pos, int distance) {
+        int[][] positionVectors = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}, {-1, 0}, {1, 0}, {0, 1}, {0, -1}};
+        return getRepeatingPattern(origin_pos, distance, positionVectors);
+    }
+
+    private ArrayList<int[]> getRepeatingPattern(int[] origin_pos, int distance, int[][] positionVectors) {
+        ArrayList<int[]> attackPattern = new ArrayList<int[]>();
+        
         for (int[] vector: positionVectors) {
-            currentTile = origin_pos;
+            int[] currentTile = origin_pos;
 
             for (int i = 0; i < distance; i++) {
                 int[] newTile = new int[2];
                 newTile[0] = currentTile[0] + vector[0];
                 newTile[1] = currentTile[1] + vector[1];
-                attackPattern.add(newTile);
-
+                if (!(newTile[0] < 0 || newTile[0] >= maxRows || newTile[1] < 0 || newTile[1] >= maxCols)) {
+                    attackPattern.add(newTile);
+                }
                 currentTile = newTile;
             }
         }
         return attackPattern;
-    }
-
-    private ArrayList<int[]> getStarPattern(int[] origin_pos) {
-        return new ArrayList<int[]>();
     }
 
 }
