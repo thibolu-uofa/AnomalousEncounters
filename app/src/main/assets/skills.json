@@ -1,0 +1,86 @@
+[
+    {
+      "name": "Life Drain",
+      "id": 0,
+      "type": "Life",
+      "atkPattern": "Straight",
+      "description": "N/A"
+    },
+    {
+      "name": "Blood Bending",
+      "id": 1,
+      "type": "Life",
+      "atkPattern": "Diagonal",
+      "description": "N/A"
+    },
+    {
+      "name": "Nature's Madness",
+      "id": 2,
+      "type": "Life",
+      "atkPattern": "Star",
+      "description": "N/A"
+    },
+    {
+      "name": "Roar of Gaia",
+      "id": 3,
+      "type": "Life",
+      "atkPattern": "Cone",
+      "description": "N/A"
+    },
+    {
+      "name": "Dying Light",
+      "id": 4,
+      "type": "Death",
+      "atkPattern": "Straight",
+      "description": "N/A"
+    },
+    {
+      "name": "Reaper's Scythe",
+      "id": 5,
+      "type": "Death",
+      "atkPattern": "Diagonal",
+      "description": "N/A"
+    },
+    {
+      "name": "Death Personified",
+      "id": 6,
+      "type": "Death",
+      "atkPattern": "Star",
+      "description": "N/A"
+    },
+    {
+      "name": "Cerberus' Bite",
+      "id": 7,
+      "type": "Death",
+      "atkPattern": "Cone",
+      "description": "N/A"
+    },
+    {
+      "name": "Erasure",
+      "id": 8,
+      "type": "Nothingness",
+      "atkPattern": "Straight",
+      "description": "N/A"
+    },
+    {
+      "name": "Segmented Void",
+      "id": 9,
+      "type": "Nothingness",
+      "atkPattern": "Diagonal",
+      "description": "N/A"
+    },
+    {
+      "name": "The Singularity",
+      "id": 10,
+      "type": "Nothingness",
+      "atkPattern": "Star",
+      "description": "N/A"
+    },
+    {
+      "name": "Nihil River",
+      "id": 11,
+      "type": "Nothingness",
+      "atkPattern": "Cone",
+      "description": "N/A"
+    }
+]

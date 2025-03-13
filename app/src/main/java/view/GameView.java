@@ -75,7 +75,7 @@ public class GameView  extends SurfaceView implements Runnable{
             long timeThisFrame = System.currentTimeMillis() - startFrameTime;
             if (timeThisFrame > 0) {
                 fps = 1000 / timeThisFrame;
-                Log.d("FPS", String.valueOf(fps));
+//                Log.d("FPS", String.valueOf(fps));
             }
         }
     }
@@ -135,7 +135,7 @@ public class GameView  extends SurfaceView implements Runnable{
 
             // User has removed finger from screen, so character should stop moving
             case MotionEvent.ACTION_UP:
-                Log.d("Action up debg", "");
+//                Log.d("Action up debg", "");
                 playerSprite.setAnimation("idle");
                 backgroundImage.setDirection(0);
                 break;

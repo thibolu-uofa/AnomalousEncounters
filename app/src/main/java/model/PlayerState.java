@@ -2,6 +2,7 @@ package model;
 public class PlayerState {
     private int playerMaxHealth, playerCurrentHealth, currentPotionId, currentWeapon;
     private String name;
+    private int tokens;
     private int[] items = new int[0]; // Empty integer array
     private int[] skills = new int[0]; // Empty integer array
     private int[] currentWeaponList = new int[0]; // Empty integer array
@@ -52,7 +53,7 @@ public class PlayerState {
      *
      * @param id The skill ID to be added.
      */
-    private void addSkill(int id) {
+    public void addSkill(int id) {
         skills = expandArray(skills, id);
     }
 
@@ -62,7 +63,7 @@ public class PlayerState {
      *
      * @param id The item ID to be added.
      */
-    private void addItem(int id) {
+    public void addItem(int id) {
         items = expandArray(items, id);
     }
 
@@ -73,7 +74,7 @@ public class PlayerState {
      *
      * @param id The item ID to be removed.
      */
-    private void removeItem(int id) {
+    public void removeItem(int id) {
         items = removeFromArray(items, id);
     }
 
@@ -151,4 +152,12 @@ public class PlayerState {
     public int[] getItemList() {
         return items;
     }//
+
+    public int getTokens() {
+        return tokens;
+    }
+
+    public String getName() {
+        return name;
+    }
 }
