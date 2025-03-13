@@ -25,6 +25,10 @@ public class MenuItem {
         this.text = text;
         this.context = context;
     }
+
+    public void updateText(String text){
+        this.text = text;
+    }
     public void draw(Canvas canvas, Paint paint){
         paint.setColor(Color.WHITE);
         Rect borderRect = new Rect(x - borderWeight, y - borderWeight, (x + width) + borderWeight, (y + height) + borderWeight );
