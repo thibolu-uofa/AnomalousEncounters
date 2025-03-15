@@ -46,7 +46,7 @@ public class Skill {
     }
     public ArrayList<int[]> getAffectedTiles(int[] origin_pos){
         return atkPattern.getAttackPattern(origin_pos, length);
-    }
+    }//
     public int getDamage(){
         return baseDamage;
     }
