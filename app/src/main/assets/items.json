@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Book of Skills: Volume I",
+    "id": 0,
+    "price": 10,
+    "description": "A book that can be used to slightly increase the experience of any skill."
+  },
+  {
+    "name": "Book of Skills: Volume II",
+    "id": 1,
+    "price": 10,
+    "description": "N/A"
+  },
+  {
+    "name": "Book of Skills: Volume III",
+    "id": 2,
+    "price": 10,
+    "description": "N/A"
+  },
+  {
+    "name": "Life Skill Stone",
+    "id": 3,
+    "price": 10,
+    "description": "N/A"
+  },
+  {
+    "name": "Death Skill Stone",
+    "id": 4,
+    "price": 10,
+    "description": "N/A"
+  },
+  {
+    "name": "Null Skill Stone",
+    "id": 5,
+    "price": 10,
+    "description": "N/A"
+  },
+  {
+    "name": "Health Potion",
+    "id": 6,
+    "price": 10,
+    "description": "N/A"
+  },
+  {
+    "name": "Anomalous Essence",
+    "id": 7,
+    "price": 10,
+    "description": "N/A"
+  },
+  {
+    "name": "Anomalous Shard",
+    "id": 8,
+    "price": 10,
+    "description": "N/A"
+  },
+  {
+    "name": "Anomalous Crystal",
+    "id": 9,
+    "price": 10,
+    "description": "N/A"
+  }
+]

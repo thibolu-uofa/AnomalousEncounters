@@ -1,18 +1,10 @@
 package presenter;
 
+import static model.Utils.getDataProperty;
+import java.util.Random;
 import android.os.Bundle;
 import android.util.Log;
-
 import androidx.appcompat.app.AppCompatActivity;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import model.GameLogic;
 import model.PlayerState;
 import view.GameView;
@@ -33,13 +25,20 @@ public class GamePresenter extends AppCompatActivity {
 
         gameLogic = new GameLogic();
 
-        playerState = new PlayerState("Nxy", 25);
+        playerState = new PlayerState("Nxy", 25); //make player name a string resource
+
         //TESTING PURPOSES
         playerState.addSkill(0);
         playerState.addSkill(1);
         playerState.addSkill(2);
 
-        getSkillNames();
+        playerState.addItem(0);
+        playerState.addItem(1);
+
+        Log.d("Skill Names", getSkillNames());
+        Log.d("Skill Description", getSkillDescription(0));
+        Log.d("Item Names", getItemNames());
+        Log.d("Item Description", getItemDescription(0));
     }
 
     public float getPlayerHealthPercentage() {
@@ -72,35 +71,45 @@ public class GamePresenter extends AppCompatActivity {
         return name + "\nHP: " + maxHealth + "/" + currentHealth + "\nTokens: " + tokens;
     }
 
-    public String getSkillNames() throws JSONException {
-        int[] skills = playerState.getSkillList();
-        StringBuilder skillNames = new StringBuilder();
-        JSONArray skillJsonArray = loadJsonArrayFromFile("skills.json");
-        for (int skillId: skills) {
-            skillNames.append(skillJsonArray.getJSONObject(skillId).getString("name")).append("\n");
-        }
-        return String.valueOf(skillNames);
+
+    public String getSkillNames() {
+        int[] skillIds = playerState.getSkillList();
+        return getDataProperty("skills.json", "name", skillIds, this);
     }
 
-    private JSONArray loadJsonArrayFromFile(String filename) {
-        try (InputStream inputStream = this.getAssets().open(filename);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-
-            StringBuilder skillString = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                skillString.append(line);
-            }
-
-            reader.close();
-            inputStream.close();
-            return new JSONArray(skillString.toString());
-        } catch (JSONException | IOException e) {
-            throw new RuntimeException(e);
-        }
+    public String getSkillDescription(int skillId) {
+        int[] skillIds = {skillId};
+        return getDataProperty("skills.json", "description", skillIds, this);
     }
 
+    public String getSkillLevel() {
+        int[] skillIds = playerState.getSkillList();
+        StringBuilder skillLevels = new StringBuilder();
+        for (int id: skillIds) {
+            skillLevels.append(1).append('\n');
+        }
+        return String.valueOf(skillLevels);
+    }
 
+    public String getItemNames() {
+        int[] itemIds = playerState.getItemList();
+        return getDataProperty("items.json", "name", itemIds, this);
+    }
+
+    public String getItemDescription(int itemId) {
+        int[] itemIds = {itemId};
+        return getDataProperty("items.json", "description", itemIds, this);
+    }
+
+    public String getItemAmounts() {
+        int[] itemIds = playerState.getItemList();
+        StringBuilder itemAmounts = new StringBuilder();
+        Random rand = new Random(); // use randomly generated number for testing purposes
+        for (int id: itemIds) {
+            itemAmounts.append(rand.nextInt(12)).append('\n');
+        }
+        return String.valueOf(itemAmounts);
+    }
 
     @Override
     protected void onResume() {
