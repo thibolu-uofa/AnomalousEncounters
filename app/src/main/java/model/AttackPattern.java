@@ -5,7 +5,8 @@ public class AttackPattern {
     public enum AttackType {
         DIAGONAL,
         STAIGHT,
-        STAR
+        STAR,
+        CONE
     }
 
     private final AttackType attackType;
@@ -25,6 +26,8 @@ public class AttackPattern {
                 return getStraightPattern(origin_pos, distance);
             case STAR:
                 return getStarPattern(origin_pos, distance);
+           // case CONE:
+              //  return getConePattern(origin_pos, distance);
             default:
                 return new ArrayList<int[]>();
         }

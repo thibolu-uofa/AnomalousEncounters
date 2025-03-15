@@ -19,6 +19,7 @@ public class BattleSystem {
     private PlayerState playerState;
     private List<Skill> playerSkill;
     private List<Skill> enemySkills;
+    private CurrentAction currentAction;
     private enum CurrentAction{
         MOVE,
         ATTACK,
@@ -48,14 +49,38 @@ public class BattleSystem {
      * + updateCurrentBattleAction(action: String)
      * + selectPlayerSkill(skillName: String)
      * + usePlayerSkill(skillname: String)
-     * + getAffecetdTiles(skillName: String)
+
      * - didAtkHit(coords: int[][])
-     * + getAvailableMoveTiles()
+
      * + updatePlayerPos(coords: int[][])
      * + usePotion()
      * + changeTurn()
-     * + isWinner(), DONE
+     *
      */
+    /**
+     * + getAvailableMoveTiles()
+     * + getAffecetdTiles(skillName: String)
+     * updateCurrentBattleAction(action: String)
+     */
+    public void updateCurrentBattleAction(String action) {
+        switch (action.toUpperCase()) {
+            case "MOVE":
+                this.currentAction = CurrentAction.MOVE;
+                break;
+            case "ATTACK":
+                this.currentAction = CurrentAction.ATTACK;
+                break;
+            case "USE":
+                this.currentAction = CurrentAction.USE;
+                break;
+            default:
+                System.out.println("Invalid action");
+        }
+    }
+   /* public boolean didAtkHit(int[][] coords) {
+        return enemyState.isInPosition(coords);
+    }
+*/
 public boolean isPlayerWinner(){
     if (enemyState.getHealth() == 0) {
         return true;
