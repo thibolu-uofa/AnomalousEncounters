@@ -1,0 +1,26 @@
+[
+  {
+    "id": 0,
+    "name": "The Strange Triangle",
+    "maxhealth": 15,
+    "type": "Life",
+    "skills": [0, 1],
+    "item_drops": [7]
+  },
+  {
+    "id": 1,
+    "name": "The Shapeless",
+    "maxhealth": 15,
+    "type": "Nothingness",
+    "skills": [8, 11],
+    "item_drops": [7]
+  },
+  {
+    "id": 2,
+    "name": "The Cursed Banana",
+    "maxhealth": 15,
+    "type": "Death",
+    "skills": [4, 6],
+    "item_drops": [7]
+  }
+]
