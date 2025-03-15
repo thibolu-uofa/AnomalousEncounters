@@ -117,7 +117,7 @@ public boolean isPlayerLoser(){
         for(int i = 0; i <= ids.length; i++) {
             Skill skill = new Skill(skillNames.get(i), skillAtkTypes.get(i));
             skillList.add(skill);
-            System.out.println(skill);
+
         }
     }
 }
