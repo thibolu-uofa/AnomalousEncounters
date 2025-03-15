@@ -66,6 +66,17 @@ public class GamePresenter extends AppCompatActivity {
        return playerAnimation;
     }
 
+    public int getBackgroundDirection(String playerMovementState) {
+        switch (playerMovementState){
+            case "walk_right":
+                return -1;
+            case "walk_left":
+                return  1;
+            default:
+                return 0;
+        }
+    }
+
     public String getPlayerNameHealthAndTokens() {
         String name = playerState.getName();
         String maxHealth = String.valueOf(playerState.getPlayerMaxHealth());

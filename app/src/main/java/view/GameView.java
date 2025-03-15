@@ -101,68 +101,57 @@ public class GameView  extends SurfaceView implements Runnable{
         if (surfaceHolder.getSurface().isValid()) {
             canvas = surfaceHolder.lockCanvas(); // Lock the canvas ready to draw and make the drawing surface our canvas object
 
-            int backgroundColor = Color.argb(255, 255, 255, 255);
-            canvas.drawColor(backgroundColor); // draw the background color
-            paint.setColor(Color.argb(255,  255, 255, 255)); // choose the brush color for drawing
+            drawBackground();
 
             if(isOnOverworld){
-                backgroundImage.update(fps, canPlayerMove);
-                backgroundImage.draw(canvas, paint);
-
-                settingsIcon.draw(canvas, paint);
-                inventory.draw(canvas, paint);
-                healthBar.draw(canvas, paint, presenter.getPlayerHealthPercentage());
-
-                playerSprite.update(System.currentTimeMillis(), canPlayerMove);
-                playerSprite.draw(canvas);
-
-                playerMenu.updateMenuTexts(presenter);
-                playerMenu.draw(canvas, paint);
-
+                drawOverworldElements();
             }
 
-            // Draw everything to the screen and unlock the drawing surface
+            // draw everything to the screen and unlock the drawing surface
             surfaceHolder.unlockCanvasAndPost(canvas);
         }
     }
+
+    private void drawBackground() {
+        int backgroundColor = Color.argb(255, 255, 255, 255);
+        canvas.drawColor(backgroundColor); // draw the background color
+        paint.setColor(Color.argb(255,  255, 255, 255)); // choose the brush color for drawing
+    }
+
+    private void drawOverworldElements() {
+        backgroundImage.update(fps, canPlayerMove);
+        backgroundImage.draw(canvas, paint);
+
+        settingsIcon.draw(canvas, paint);
+        inventory.draw(canvas, paint);
+        healthBar.draw(canvas, paint, presenter.getPlayerHealthPercentage());
+
+        playerSprite.update(System.currentTimeMillis(), canPlayerMove);
+        playerSprite.draw(canvas);
+
+        playerMenu.updateMenuTexts(presenter);
+        playerMenu.draw(canvas, paint);
+    }
+
 
     // The SurfaceView class implements onTouchListener
     // So we can override this method and detect screen touches.
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
-
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
             // User has touched the screen
             case MotionEvent.ACTION_DOWN:
                 float eventX = motionEvent.getX();
                 float eventY = motionEvent.getY();
-                if (inventory.hasBeenTouched(eventX, eventY, presenter, 3)) {
-                    playerMenu.openMenu();
-                    canPlayerMove = false;
-                }
-                if (playerMenu.isOpen() && playerMenu.hasClosedMenu(eventX, eventY, presenter)) {
-                    playerMenu.closeMenu();
-                    canPlayerMove = true;
-                }
 
-                String playerMovementState = presenter.getPlayerMovementState((int) eventX, playerSprite.getX(), playerSprite.getX() + playerSprite.getSpriteWidth());
-                playerSprite.setAnimation(playerMovementState);
-                switch (playerMovementState){
-                    case "walk_right":
-                        backgroundDirection = -1;
-                        break;
-                    case "walk_left":
-                        backgroundDirection = 1;
-                        break;
-                    default:
-                        backgroundDirection = 0;
-                }
-                backgroundImage.setDirection(backgroundDirection);
+                checkIfInventoryOpened(eventX, eventY);
+                checkIfInventoryClosed(eventX, eventY);
+
+                updatePlayerAnimation((int) eventX);
                 break;
 
-            // User has removed finger from screen, so character should stop moving
+            // user has removed finger from screen, so character should stop moving
             case MotionEvent.ACTION_UP:
-//                Log.d("Action up debg", "");
                 playerSprite.setAnimation("idle");
                 backgroundImage.setDirection(0);
                 break;
@@ -170,6 +159,33 @@ public class GameView  extends SurfaceView implements Runnable{
         return true;
     }
 
+    private void checkIfInventoryOpened(float eventX, float eventY) {
+        if (inventory.hasBeenTouched(eventX, eventY, presenter, 3)) {
+            playerMenu.openMenu();
+            canPlayerMove = false;
+        }
+    }
+
+    private void checkIfInventoryClosed(float eventX, float eventY) {
+        if (playerMenu.isOpen() && playerMenu.hasClosedMenu(eventX, eventY, presenter)) {
+            playerMenu.closeMenu();
+            canPlayerMove = true;
+        }
+    }
+
+    private void updatePlayerAnimation(int eventX) {
+        int playerX = playerSprite.getX();
+        int playerX2 = playerX + playerSprite.getSpriteWidth();
+        String playerMovementState = presenter.getPlayerMovementState(eventX, playerX, playerX2);
+        playerSprite.setAnimation(playerMovementState);
+
+        updateBackgroundDirection(playerMovementState);
+    }
+
+    private void updateBackgroundDirection(String playerMovementState) {
+        backgroundDirection = presenter.getBackgroundDirection(playerMovementState);
+        backgroundImage.setDirection(backgroundDirection);
+    }
 
     /**
      * Function to shutdown our thread when the activity if paused or stopped
