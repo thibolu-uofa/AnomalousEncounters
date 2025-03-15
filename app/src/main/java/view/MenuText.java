@@ -16,14 +16,17 @@ public class MenuText {
     private int fontSize;
     private int color;
     private int width;
-    private int textPadding = 15;
+    private int xTextPadding = 15;
+    private int yTextPadding = 15;
     private final int HEADING_DIMENSION = 3;
+    private final boolean isCentre;
 
-    public MenuText(String text, int fontSize, int color, int width){
+    public MenuText(String text, int fontSize, int color, int width, boolean isCentre){
         this.text = text;
         this.fontSize = fontSize;
         this.color = color;
         this.width= width;
+        this.isCentre = isCentre;
     }
 
     /**
@@ -42,10 +45,16 @@ public class MenuText {
         }
         textPaint.setTypeface(typeface);
 
-        StaticLayout staticLayout = new StaticLayout(text, textPaint, width, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0, false);
+        Layout.Alignment textLayout = Layout.Alignment.ALIGN_NORMAL;
+        if (isCentre) {
+            textLayout = Layout.Alignment.ALIGN_CENTER;
+            xTextPadding = 0;
+        }
+
+        StaticLayout staticLayout = new StaticLayout(text, textPaint, width, textLayout, 1.0f, 0, false);
 
         canvas.save();
-        canvas.translate(x + textPadding, y + textPadding);
+        canvas.translate(x + xTextPadding, y + yTextPadding);
         staticLayout.draw(canvas);
         canvas.restore();
     }
