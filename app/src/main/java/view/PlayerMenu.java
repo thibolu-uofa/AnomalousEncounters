@@ -8,11 +8,13 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import presenter.GamePresenter;
 
 public class PlayerMenu {
     private Map<String, MenuItem> menuItemsList = new LinkedHashMap<>();
+    private boolean isOpen = false;
 
     public PlayerMenu(Context context){
         int x = 100;
@@ -36,9 +38,13 @@ public class PlayerMenu {
 
         MenuItem amountOfItems = new MenuItem(x, y, 500, 150, "#", context);
         menuItemsList.put("item_amounts", amountOfItems);
+        x += amountOfItems.getWidth() + margin;
 
         MenuItem infoButton = new MenuItem(400, y, 500, 400, "INFO", context);
         //menuItemsList.add(infoButton);
+
+        MenuItem closeButton = new MenuItem(x, y, 80, 80, "X", context);
+        menuItemsList.put("close_button", closeButton);
     }
 
     public void updateMenuTexts(GamePresenter presenter) {
@@ -50,8 +56,27 @@ public class PlayerMenu {
     }
 
     public void draw(Canvas canvas, Paint paint){
-        for (MenuItem menuitem: menuItemsList.values()){
-            menuitem.draw(canvas, paint);
+        if (isOpen) {
+            for (MenuItem menuitem : menuItemsList.values()) {
+                menuitem.draw(canvas, paint);
+            }
         }
+    }
+
+    public void openMenu() {
+        isOpen = true;
+    }
+    public void hasClosedMenu(float eventX, float eventY, GamePresenter presenter){
+        int x = Objects.requireNonNull(menuItemsList.get("close_button")).getX();
+        int y = Objects.requireNonNull(menuItemsList.get("close_button")).getY();
+        int width = Objects.requireNonNull(menuItemsList.get("close_button")).getWidth();
+        int height = Objects.requireNonNull(menuItemsList.get("close_button")).getHeight();
+        if (presenter.isInHitbox((int) eventX, (int) eventY, x, x + width, y + height, y)) {
+            isOpen = false;
+        }
+    }
+
+    public boolean isOpen() {
+        return isOpen;
     }
 }
