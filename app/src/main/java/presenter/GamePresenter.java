@@ -1,7 +1,6 @@
 package presenter;
 
 import static model.Utils.getDataProperty;
-import java.util.Random;
 import android.os.Bundle;
 import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,6 +38,10 @@ public class GamePresenter extends AppCompatActivity {
         Log.d("Skill Description", getSkillDescription(0));
         Log.d("Item Names", getItemNames());
         Log.d("Item Description", getItemDescription(0));
+    }
+
+    public boolean isInHitbox(int eventX, int eventY, int leftX, int rightX, int topY, int bottomY) {
+        return gameLogic.isInHitbox(eventX, eventY, leftX, rightX, topY, bottomY);
     }
 
     public float getPlayerHealthPercentage() {
