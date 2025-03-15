@@ -4,19 +4,21 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
 import presenter.GamePresenter;
 
 public class PlayerMenu {
     private Map<String, MenuItem> menuItemsList = new LinkedHashMap<>();
     private boolean isOpen = false;
 
+    /**
+     * Creates a player menu interface with various menu items.
+     * Initializes and positions each component with appropriate dimensions and spacing
+     * using relative positioning.
+     * @param context The application context required for menu item creation
+     */
     public PlayerMenu(Context context){
         int x = 100;
         int y = 200;
@@ -49,11 +51,11 @@ public class PlayerMenu {
     }
 
     public void updateMenuTexts(GamePresenter presenter) {
-        menuItemsList.get("playerCard").updateText(presenter.getPlayerNameHealthAndTokens());
-        menuItemsList.get("skills").updateText("Skills\n<hr>" + presenter.getSkillNames());
-        menuItemsList.get("skill_levels").updateText("LV\n" + presenter.getSkillLevel());
-        menuItemsList.get("items").updateText("Items\n" + presenter.getItemNames());
-        menuItemsList.get("item_amounts").updateText("#\n" + presenter.getItemAmounts());
+        Objects.requireNonNull(menuItemsList.get("playerCard")).updateText(presenter.getPlayerNameHealthAndTokens());
+        Objects.requireNonNull(menuItemsList.get("skills")).updateText("Skills\n<hr>" + presenter.getSkillNames());
+        Objects.requireNonNull(menuItemsList.get("skill_levels")).updateText("LV\n" + presenter.getSkillLevel());
+        Objects.requireNonNull(menuItemsList.get("items")).updateText("Items\n" + presenter.getItemNames());
+        Objects.requireNonNull(menuItemsList.get("item_amounts")).updateText("#\n" + presenter.getItemAmounts());
     }
 
     public void draw(Canvas canvas, Paint paint){
@@ -62,6 +64,7 @@ public class PlayerMenu {
             int backgroundColor = Color.argb(119, 9, 10, 20);
             canvas.drawColor(backgroundColor);
 
+            // draws each menu element
             for (MenuItem menuitem : menuItemsList.values()) {
                 menuitem.draw(canvas, paint);
             }
@@ -75,6 +78,14 @@ public class PlayerMenu {
     public void closeMenu() {
         isOpen = false;
     }
+
+    /**
+     * Checks if the user has tapped the close button of the menu.
+     * @param eventX The x-coordinate of the touch event
+     * @param eventY The y-coordinate of the touch event
+     * @param presenter The GamePresenter instance used to check hitbox collision
+     * @return true if the touch event is within the close button's hitbox, false otherwise
+     */
     public boolean hasClosedMenu(float eventX, float eventY, GamePresenter presenter){
         int x = Objects.requireNonNull(menuItemsList.get("close_button")).getX();
         int y = Objects.requireNonNull(menuItemsList.get("close_button")).getY();

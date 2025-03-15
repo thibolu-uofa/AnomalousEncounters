@@ -32,9 +32,12 @@ public class MenuItem {
         this.text = text;
     }
     public void draw(Canvas canvas, Paint paint){
+        // draws a background rectangle that acts as a border
         paint.setColor(Color.WHITE);
         Rect borderRect = new Rect(x - borderWeight, y - borderWeight, (x + width) + borderWeight, (y + height) + borderWeight );
         canvas.drawRect(borderRect, paint);
+
+        //draws the top rectangle where the menu text will be contained
         paint.setColor(Color.BLACK);
         Rect rectangle = new Rect(x, y, x + width, y + height);
         canvas.drawRect(rectangle, paint);

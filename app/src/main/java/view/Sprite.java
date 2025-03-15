@@ -3,8 +3,6 @@ package view;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
-
 import presenter.GamePresenter;
 
 public class Sprite {

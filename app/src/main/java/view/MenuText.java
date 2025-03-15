@@ -20,6 +20,7 @@ public class MenuText {
     private int yTextPadding = 15;
     private final int HEADING_DIMENSION = 3;
     private final boolean isCentre;
+    private final int BASE_FONT_SIZE = 32;
 
     public MenuText(String text, int fontSize, int color, int width, boolean isCentre){
         this.text = text;
@@ -34,10 +35,10 @@ public class MenuText {
      * Source: <a href="https://stackoverflow.com/questions/2655402/android-canvas-drawtext">...</a>
      */
     public void draw(Canvas canvas, int x, int y, Context context){
+        // sets the attributes of the text to draw
         TextPaint textPaint = new TextPaint();
         textPaint.setAntiAlias(true);
-        textPaint.setTextSize(32 * HEADING_DIMENSION);
-//        Log.d("Distort by", String.valueOf(context.getResources().getDisplayMetrics().density));
+        textPaint.setTextSize(BASE_FONT_SIZE * HEADING_DIMENSION);
         textPaint.setColor(color);
         Typeface typeface = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
