@@ -1,3 +1,12 @@
+/**
+ * This class includes code adapted from:
+ * Source: https://gamecodeschool.com/android/building-a-simple-game-engine/
+ * Accessed: March 2nd, 2025
+ * Borrowed elements: documentation for setting up the Canvas, Paint, Thread and Surface Holder,
+ * creating a Bitmap, drawing to the canvas, and implementation of the run, pause, and resume
+ * functions
+ */
+
 package view;
 
 import android.content.Context;
@@ -65,7 +74,10 @@ public class GameView  extends SurfaceView implements Runnable{
         isOnOverworld = true;
     }
 
-
+    /**
+     * The implementation of this function has code adapted from:
+     * Source: <a href="https://gamecodeschool.com/android/building-a-simple-game-engine/">...</a>
+     */
     @Override
     public void run() {
         while (isPlaying) {
@@ -149,7 +161,11 @@ public class GameView  extends SurfaceView implements Runnable{
     }
 
 
-    // If the Activity is paused/stopped the shutdown our thread.
+    /**
+     * Function to shutdown our thread when the activity if paused or stopped
+     * The implementation of this function comes from:
+     * Source: <a href="https://gamecodeschool.com/android/building-a-simple-game-engine/">...</a>
+     */
     public void pause() {
         isPlaying = false;
         try {
@@ -161,7 +177,11 @@ public class GameView  extends SurfaceView implements Runnable{
 
     }
 
-    // If  Activity is started then start our thread.
+    /**
+     * Function to start our thread when the Activity is started
+     * The implementation of this function comes from:
+     * Source: <a href="https://gamecodeschool.com/android/building-a-simple-game-engine/">...</a>
+     */
     public void resume() {
         isPlaying = true;
         gameThread = new Thread(this);

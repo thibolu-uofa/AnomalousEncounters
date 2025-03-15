@@ -25,6 +25,11 @@ public class MenuText {
         this.color = color;
         this.width= width;
     }
+
+    /**
+     * The implementation of this function has code adapted from:
+     * Source: <a href="https://stackoverflow.com/questions/2655402/android-canvas-drawtext">...</a>
+     */
     public void draw(Canvas canvas, int x, int y, Context context){
         TextPaint textPaint = new TextPaint();
         textPaint.setAntiAlias(true);
