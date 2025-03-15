@@ -116,6 +116,7 @@ public class GameView  extends SurfaceView implements Runnable{
 
 //                MenuItem menuItem = new MenuItem(200, 200, 200, 500, "SKILLS\nCosmic Gas", getContext());
 //                menuItem.draw(canvas, paint);
+
                 playerMenu.updateMenuTexts(presenter);
                 playerMenu.draw(canvas, paint);
 
@@ -136,6 +137,9 @@ public class GameView  extends SurfaceView implements Runnable{
             case MotionEvent.ACTION_DOWN:
                 float eventX = motionEvent.getX();
                 float eventY = motionEvent.getY();
+                if (inventory.hasBeenTouched(eventX, eventY, presenter, 3)) {
+                    Log.d("Inventory", "TOUCHED!");
+                }
                 String playerMovementState = presenter.getPlayerMovementState((int) eventX, playerSprite.getX(), playerSprite.getX() + playerSprite.getSpriteWidth());
                 playerSprite.setAnimation(playerMovementState);
                 switch (playerMovementState){
