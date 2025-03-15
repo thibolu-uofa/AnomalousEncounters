@@ -20,12 +20,14 @@ public class Skill {
         this.name = "Entity";
         this.baseDamage = 10;
         this.atkType = AttackPattern.AttackType.DIAGONAL;
+        this.length = 2;
     }
 
-    public Skill(String name, String atkPatter) {
+    public Skill(String name, String atkPattern) {
         this.name = name;
         this.baseDamage = 10;
-        switch (atkPatter.toUpperCase()) {
+        this.length = 2;
+        switch (atkPattern.toUpperCase()) {
             case "DIAGONAL":
                 this.atkType = AttackPattern.AttackType.DIAGONAL;
                 break;
@@ -42,7 +44,9 @@ public class Skill {
                 this.atkType = AttackPattern.AttackType.STAIGHT;
         }
     }
-    //getAffectedTiles(){}
+    public ArrayList<int[]> getAffectedTiles(int[] origin_pos){
+        return atkPattern.getAttackPattern(origin_pos, length);
+    }//
     public int getDamage(){
         return baseDamage;
     }
