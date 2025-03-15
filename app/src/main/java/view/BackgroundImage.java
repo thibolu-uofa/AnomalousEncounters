@@ -31,23 +31,30 @@ public class BackgroundImage {
         canvas.drawBitmap(groundBitmap, groundX2, y, paint);
     }
 
+    /**
+     * Updates the ground position for an endless scroll effect.
+     *
+     * @param fps Current frames per second for speed calculation
+     * @param canMove Boolean flag determining if the background is allowed to move
+     */
     public void update(long fps, boolean canMove) {
         if (!canMove) {
             return;
         }
 
-        if (fps == 0) { //default case
-            fps = 18;
-        }
+        // default to 18fps if fps value is not set properly
+        if (fps == 0) {fps = 18;}
 
+        // when direction is zero, that means the background is not moving, so exit
         if (direction == 0) {
             return;
         }
 
+        // update x-pos of both ground images
         groundX1 += (speed * direction / (int) fps);
         groundX2 += (speed * direction / (int) fps);
 
-        // check if the sky has scrolled off the canvas, if so reset the x coordinate
+        // check if the sky has scrolled off left of the canvas, if so reset the x coordinate
         if (direction == -1) {
             if (groundX1 <= -groundBitmap.getWidth()) {
                 groundX1 = groundX2 + groundBitmap.getWidth();
@@ -57,6 +64,7 @@ public class BackgroundImage {
             }
         }
 
+        // check if the sky has scrolled off right of the canvas, if so reset the x coordinate
         if (direction == 1) {
             if (groundX1 >= groundBitmap.getWidth()) {
                 groundX1 = groundX2 - groundBitmap.getWidth();
@@ -65,7 +73,6 @@ public class BackgroundImage {
                 groundX2 =  groundX1 - groundBitmap.getWidth();
             }
         }
-
     }
 
     public void setDirection(int direction) {

@@ -124,6 +124,7 @@ public class GamePresenter extends AppCompatActivity {
         return String.valueOf(itemAmounts);
     }
 
+    // This method executes when the user continues the game
     @Override
     protected void onResume() {
         super.onResume();
