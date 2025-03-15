@@ -61,7 +61,7 @@ public class BattleSystem {
      * + getAvailableMoveTiles()
      * + getAffecetdTiles(skillName: String)
      * updateCurrentBattleAction(action: String)
-     */
+     *///
     public void updateCurrentBattleAction(String action) {
         switch (action.toUpperCase()) {
             case "MOVE":
