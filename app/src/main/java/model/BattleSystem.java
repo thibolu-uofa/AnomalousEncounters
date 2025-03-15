@@ -1,5 +1,8 @@
 package model;
 
+import static model.Utils.getListOfDataProperty;
+import static model.Utils.loadJsonArrayFromFile;
+
 import java.util.List;
 
 import presenter.GamePresenter;
@@ -45,7 +48,7 @@ public class BattleSystem {
      * + BattleSystem(playerState: PlayerState)
      * - createEnemyFromId()
      * - populateSkills()
-     * + getPlayerSkills()
+     * +
      * + updateCurrentBattleAction(action: String)
      * + selectPlayerSkill(skillName: String)
      * + usePlayerSkill(skillname: String)
@@ -91,8 +94,30 @@ public boolean isPlayerLoser(){
     if (playerState.getHealth() == 0){
         return true;
     }
-    return false;//
+    return false;
 }
 
+    public List<Skill> getEnemySkills() {
+        return enemySkills;
+    }
 
+    private void populatePlayerSkills() {
+        int[] skillIds = playerState.getSkillList();
+        populateSkills(skillIds, playerSkill);
+    }
+
+    private void populateEnemySkills() {
+        int[] skillIds = enemyState.getSkillList();
+        populateSkills(skillIds, enemySkills);
+    }
+
+    private void populateSkills(int[] ids, List<Skill> skillList) {
+        List<String> skillNames = getListOfDataProperty("skills.json", "name", ids, presenter.getBaseContext());
+        List<String> skillAtkTypes = getListOfDataProperty("skills.json", "atkPattern", ids, presenter.getBaseContext());
+        for(int i = 0; i <= ids.length; i++) {
+            Skill skill = new Skill(skillNames.get(i), skillAtkTypes.get(i));
+            skillList.add(skill);
+            System.out.println(skill);
+        }
+    }
 }

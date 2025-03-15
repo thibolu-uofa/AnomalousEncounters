@@ -93,6 +93,16 @@ public class PlayerState {
         return newArray;
     }
 
+
+   /*
+   public void move(int[][] newPosition) {
+        this.position = newPosition;
+        System.out.println("Player moved to new position.");
+    }
+
+    */
+
+
     // Utility method to remove an element from an array
     /**
      * Removes an element from an integer array.

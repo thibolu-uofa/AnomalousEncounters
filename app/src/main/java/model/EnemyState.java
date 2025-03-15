@@ -97,4 +97,8 @@ public class EnemyState {
 
         return itemDrops;
     }
+
+    public int[] getSkillList() {
+        return skills;
+    }
 }//
