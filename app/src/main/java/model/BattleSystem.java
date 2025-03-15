@@ -66,7 +66,7 @@ public boolean isPlayerLoser(){
     if (playerState.getHealth() == 0){
         return true;
     }
-    return false;
+    return false;//
 }
 
 
