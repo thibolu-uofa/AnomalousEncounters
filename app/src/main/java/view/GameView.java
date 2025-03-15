@@ -37,7 +37,6 @@ public class GameView  extends SurfaceView implements Runnable{
     private final PlayerSprite playerSprite;
     private final BackgroundImage backgroundImage;
     private final PlayerMenu playerMenu;
-    private final PlayerMenu skills;
     int backgroundDirection;
     private boolean isOnOverworld;
     long fps; //keeps track of frame rate
@@ -71,7 +70,6 @@ public class GameView  extends SurfaceView implements Runnable{
         playerSprite.setAnimation("idle");
 
         playerMenu = new PlayerMenu(getContext());
-        skills = new PlayerMenu(getContext());
 
         isOnOverworld = true;
     }
@@ -118,10 +116,9 @@ public class GameView  extends SurfaceView implements Runnable{
 
 //                MenuItem menuItem = new MenuItem(200, 200, 200, 500, "SKILLS\nCosmic Gas", getContext());
 //                menuItem.draw(canvas, paint);
-                playerMenu.update("Nxy\nHP 22/24\nTokens 23");
+                playerMenu.updateMenuTexts(presenter);
                 playerMenu.draw(canvas, paint);
 
-                skills.draw(canvas, paint);
             }
 
             // Draw everything to the screen and unlock the drawing surface

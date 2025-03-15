@@ -40,6 +40,10 @@ public class MenuItem {
         MenuText menuText = new MenuText(text, 16, Color.WHITE, width);
         menuText.draw(canvas, x, y, context);
     }
+
+    public int getWidth() {
+        return width;
+    }
 }
 
 

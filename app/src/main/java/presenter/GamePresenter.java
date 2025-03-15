@@ -104,9 +104,8 @@ public class GamePresenter extends AppCompatActivity {
     public String getItemAmounts() {
         int[] itemIds = playerState.getItemList();
         StringBuilder itemAmounts = new StringBuilder();
-        Random rand = new Random(); // use randomly generated number for testing purposes
         for (int id: itemIds) {
-            itemAmounts.append(rand.nextInt(12)).append('\n');
+            itemAmounts.append(12).append('\n');
         }
         return String.valueOf(itemAmounts);
     }
