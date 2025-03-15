@@ -39,6 +39,7 @@ public class GameView  extends SurfaceView implements Runnable{
     private final PlayerMenu playerMenu;
     int backgroundDirection;
     private boolean isOnOverworld;
+    private boolean canPlayerMove;
     long fps; //keeps track of frame rate
 
     private boolean isInBattle;
@@ -72,6 +73,7 @@ public class GameView  extends SurfaceView implements Runnable{
         playerMenu = new PlayerMenu(getContext());
 
         isOnOverworld = true;
+        canPlayerMove = true;
     }
 
     /**
@@ -104,14 +106,14 @@ public class GameView  extends SurfaceView implements Runnable{
             paint.setColor(Color.argb(255,  255, 255, 255)); // choose the brush color for drawing
 
             if(isOnOverworld){
-                backgroundImage.update(fps);
+                backgroundImage.update(fps, canPlayerMove);
                 backgroundImage.draw(canvas, paint);
 
                 settingsIcon.draw(canvas, paint);
                 inventory.draw(canvas, paint);
                 healthBar.draw(canvas, paint, presenter.getPlayerHealthPercentage());
 
-                playerSprite.update(System.currentTimeMillis());
+                playerSprite.update(System.currentTimeMillis(), canPlayerMove);
                 playerSprite.draw(canvas);
 
                 playerMenu.updateMenuTexts(presenter);
@@ -136,8 +138,12 @@ public class GameView  extends SurfaceView implements Runnable{
                 float eventY = motionEvent.getY();
                 if (inventory.hasBeenTouched(eventX, eventY, presenter, 3)) {
                     playerMenu.openMenu();
+                    canPlayerMove = false;
                 }
-                if (playerMenu.isOpen()) {playerMenu.hasClosedMenu(eventX, eventY, presenter);}
+                if (playerMenu.isOpen() && playerMenu.hasClosedMenu(eventX, eventY, presenter)) {
+                    playerMenu.closeMenu();
+                    canPlayerMove = true;
+                }
 
                 String playerMovementState = presenter.getPlayerMovementState((int) eventX, playerSprite.getX(), playerSprite.getX() + playerSprite.getSpriteWidth());
                 playerSprite.setAnimation(playerMovementState);

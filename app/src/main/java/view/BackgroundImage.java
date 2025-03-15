@@ -31,7 +31,11 @@ public class BackgroundImage {
         canvas.drawBitmap(groundBitmap, groundX2, y, paint);
     }
 
-    public void update(long fps) {
+    public void update(long fps, boolean canMove) {
+        if (!canMove) {
+            return;
+        }
+
         if (fps == 0) { //default case
             fps = 18;
         }

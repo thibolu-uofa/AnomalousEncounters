@@ -66,7 +66,11 @@ public class PlayerSprite extends Sprite {
     }
 
 
-    public void update(long currentTime) {
+    public void update(long currentTime, boolean canMove) {
+        if (!canMove) {
+            return;
+        }
+
         if (lastFrameTime == 0) {
             lastFrameTime = currentTime;
             return;
