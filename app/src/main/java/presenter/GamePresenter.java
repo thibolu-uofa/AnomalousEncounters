@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 
+import model.BattleSystem;
 import model.EncounterSystem;
 import model.GameLogic;
 import model.PlayerState;
@@ -42,6 +43,8 @@ public class GamePresenter extends AppCompatActivity {
         Log.d("Skill Description", getSkillDescription(0));
         Log.d("Item Names", getItemNames());
         Log.d("Item Description", getItemDescription(0));
+
+        setUpBattle(0);
     }
 
     public boolean isInHitbox(int eventX, int eventY, int leftX, int rightX, int topY, int bottomY) {
@@ -83,6 +86,10 @@ public class GamePresenter extends AppCompatActivity {
 
     public boolean hasPlayerEncounteredEnemy(int playerX) {
         return encounterSystem.hasEncounteredEnemy(playerX);
+    }
+
+    public void setUpBattle(int enemyId) {
+        BattleSystem battleSystem = new BattleSystem(playerState, enemyId, this);
     }
 
     public String getPlayerNameHealthAndTokens() {

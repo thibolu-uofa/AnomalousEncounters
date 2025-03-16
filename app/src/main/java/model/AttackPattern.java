@@ -1,4 +1,6 @@
 package model;
+import static model.Utils.getRepeatingPattern;
+
 import java.util.ArrayList;
 
 public class AttackPattern {
@@ -34,49 +36,22 @@ public class AttackPattern {
 
     private ArrayList<int[]> getDiagonalPattern(int[] origin_pos, int distance) {
         int[][] positionVectors = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
-        return getRepeatingPattern(origin_pos, distance, positionVectors);
+        return getRepeatingPattern(origin_pos, distance, positionVectors, maxRows, maxCols);
     }
     
     private ArrayList<int[]> getStraightPattern(int[] origin_pos, int distance) {
         int[][] positionVectors = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
-        return getRepeatingPattern(origin_pos, distance, positionVectors);
+        return getRepeatingPattern(origin_pos, distance, positionVectors, maxRows, maxCols);
     }
 
     private ArrayList<int[]> getStarPattern(int[] origin_pos, int distance) {
         int[][] positionVectors = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}, {-1, 0}, {1, 0}, {0, 1}, {0, -1}};
-        return getRepeatingPattern(origin_pos, distance, positionVectors);
+        return getRepeatingPattern(origin_pos, distance, positionVectors, maxRows, maxCols);
     }
 
     private ArrayList<int[]> getConePattern(int[] origin_pos, int distance) {
         int[][] positionVectors = {{-1, 1}, {0, 1}, {1, 1}};
-        return getRepeatingPattern(origin_pos, distance, positionVectors);
-    }
-
-    /**
-     * Gets the tiles of an attack type, in relation to an origin position.
-     *
-     * @param origin_pos The starting position [row, col] for the pattern
-     * @param distance The number of steps to take in each direction
-     * @param positionVectors Array of direction vectors to extend from origin
-     * @return ArrayList of valid board positions [row, col] that form the pattern
-     */
-    private ArrayList<int[]> getRepeatingPattern(int[] origin_pos, int distance, int[][] positionVectors) {
-        ArrayList<int[]> attackPattern = new ArrayList<int[]>();
-        
-        for (int[] vector: positionVectors) {
-            int[] currentTile = origin_pos;
-
-            for (int i = 0; i < distance; i++) {
-                int[] newTile = new int[2];
-                newTile[0] = currentTile[0] + vector[0];
-                newTile[1] = currentTile[1] + vector[1];
-                if (!(newTile[0] < 0 || newTile[0] >= maxRows || newTile[1] < 0 || newTile[1] >= maxCols)) {
-                    attackPattern.add(newTile);
-                }
-                currentTile = newTile;
-            }
-        }
-        return attackPattern;
+        return getRepeatingPattern(origin_pos, distance, positionVectors, maxRows, maxCols);
     }
 
 }

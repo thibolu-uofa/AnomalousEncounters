@@ -83,4 +83,43 @@ public final class Utils {
         }
         return dataProperties;
     }
+
+
+    public static Object getSingleDataProperty(String filename, String property, int id, Context context) {
+        Object dataProperty;
+        JSONArray jsonArray = loadJsonArrayFromFile(filename, context);
+        try {
+             dataProperty = jsonArray.getJSONObject(id).get(property);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return dataProperty;
+    }
+
+    /**
+     * Gets the tiles of an attack type, in relation to an origin position.
+     *
+     * @param origin_pos The starting position [row, col] for the pattern
+     * @param distance The number of steps to take in each direction
+     * @param positionVectors Array of direction vectors to extend from origin
+     * @return ArrayList of valid board positions [row, col] that form the pattern
+     */
+    public static ArrayList<int[]> getRepeatingPattern(int[] origin_pos, int distance, int[][] positionVectors, int maxRows, int maxCols) {
+        ArrayList<int[]> attackPattern = new ArrayList<int[]>();
+
+        for (int[] vector: positionVectors) {
+            int[] currentTile = origin_pos;
+
+            for (int i = 0; i < distance; i++) {
+                int[] newTile = new int[2];
+                newTile[0] = currentTile[0] + vector[0];
+                newTile[1] = currentTile[1] + vector[1];
+                if (!(newTile[0] < 0 || newTile[0] >= maxRows || newTile[1] < 0 || newTile[1] >= maxCols)) {
+                    attackPattern.add(newTile);
+                }
+                currentTile = newTile;
+            }
+        }
+        return attackPattern;
+    }
 }
