@@ -1,5 +1,8 @@
 package view;
 
+import static view.ColorConstants.DEFAULT_MENU_BACKGROUND_COLOR;
+import static view.ColorConstants.DEFAULT_TEXT_COLOR;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -38,11 +41,11 @@ public class MenuItem {
         canvas.drawRect(borderRect, paint);
 
         //draws the top rectangle where the menu text will be contained
-        paint.setColor(Color.BLACK);
+        paint.setColor(DEFAULT_MENU_BACKGROUND_COLOR);
         Rect rectangle = new Rect(x, y, x + width, y + height);
         canvas.drawRect(rectangle, paint);
 
-        MenuText menuText = new MenuText(text, 16, Color.WHITE, width, isTextCentred);
+        MenuText menuText = new MenuText(text, 16, DEFAULT_TEXT_COLOR, width, isTextCentred);
         menuText.draw(canvas, x, y, context);
     }
 

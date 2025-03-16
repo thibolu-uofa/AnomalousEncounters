@@ -32,8 +32,7 @@ public class GameView  extends SurfaceView implements Runnable{
     private Canvas canvas;
     private final Paint paint;
     private final HealthBar healthBar;
-    private final Sprite inventory;
-    private final Sprite settingsIcon;
+    private final Sprite inventory, settingsIcon, shopIcon;
     private final PlayerSprite playerSprite;
     private final BackgroundImage backgroundImage;
     private final PlayerMenu playerMenu;
@@ -50,8 +49,11 @@ public class GameView  extends SurfaceView implements Runnable{
         surfaceHolder = getHolder();
         paint = new Paint();
 
-        Bitmap settingsIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.settings_gear);
+        Bitmap settingsIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.settings_icon);
         settingsIcon = new Sprite(settingsIconBitmap, 2235, 50);
+
+        Bitmap shopIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.shop_icon);
+        shopIcon = new Sprite(shopIconBitmap, 2235, settingsIcon.getY() + settingsIconBitmap.getHeight() + 20);
 
         Bitmap inventoryBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.quick_inventory);
         inventory = new Sprite(inventoryBitmap, 950, 840);
@@ -134,7 +136,9 @@ public class GameView  extends SurfaceView implements Runnable{
         }
 
         settingsIcon.draw(canvas, paint);
+        shopIcon.draw(canvas, paint);
         inventory.draw(canvas, paint);
+
         healthBar.draw(canvas, paint, presenter.getPlayerHealthPercentage());
 
         playerSprite.update(currentTime, canPlayerMove);

@@ -1,5 +1,7 @@
 package view;
 
+import static view.ColorConstants.OVERLAY_DARK_COLOR;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -23,7 +25,7 @@ public class PlayerMenu {
         int x = 100;
         int y = 200;
         int margin = 50;
-        MenuItem playerCard = new MenuItem(x, y, 300, 350, "Bobette", false, context);
+        MenuItem playerCard = new MenuItem(x, y, 200, 350, "Bobette", false, context);
         menuItemsList.put("playerCard", playerCard);
         x += playerCard.getWidth() + margin;
 
@@ -31,7 +33,7 @@ public class PlayerMenu {
         menuItemsList.put("skills", skills);
         x += skills.getWidth();
 
-        MenuItem level = new MenuItem(x, y, 500, 150, "LV", true, context);
+        MenuItem level = new MenuItem(x, y, 500, 130, "LV", true, context);
         menuItemsList.put("skill_levels", level);
         x += level.getWidth() + margin;
 
@@ -39,20 +41,20 @@ public class PlayerMenu {
         menuItemsList.put("items", items);
         x += items.getWidth();
 
-        MenuItem amountOfItems = new MenuItem(x, y, 500, 150, "#", true, context);
+        MenuItem amountOfItems = new MenuItem(x, y, 500, 130, "#", true, context);
         menuItemsList.put("item_amounts", amountOfItems);
         x += amountOfItems.getWidth() + margin;
 
-        MenuItem infoButton = new MenuItem(400, y, 500, 400, "INFO", true, context);
-        //menuItemsList.add(infoButton);
-
         MenuItem closeButton = new MenuItem(x, y, 80, 80, "X", true, context);
         menuItemsList.put("close_button", closeButton);
+
+        MenuItem infoButton = new MenuItem(400, y, 500, 400, "INFO", true, context);
+        //menuItemsList.add(infoButton);
     }
 
     public void updateMenuTexts(GamePresenter presenter) {
         Objects.requireNonNull(menuItemsList.get("playerCard")).updateText(presenter.getPlayerNameHealthAndTokens());
-        Objects.requireNonNull(menuItemsList.get("skills")).updateText("Skills\n<hr>" + presenter.getSkillNames());
+        Objects.requireNonNull(menuItemsList.get("skills")).updateText("Skills\n" + presenter.getSkillNames());
         Objects.requireNonNull(menuItemsList.get("skill_levels")).updateText("LV\n" + presenter.getSkillLevel());
         Objects.requireNonNull(menuItemsList.get("items")).updateText("Items\n" + presenter.getItemNames());
         Objects.requireNonNull(menuItemsList.get("item_amounts")).updateText("#\n" + presenter.getItemAmounts());
@@ -60,9 +62,7 @@ public class PlayerMenu {
 
     public void draw(Canvas canvas, Paint paint){
         if (isOpen) {
-            // add a blackish overlay
-            int backgroundColor = Color.argb(119, 9, 10, 20);
-            canvas.drawColor(backgroundColor);
+            canvas.drawColor(OVERLAY_DARK_COLOR);
 
             // draws each menu element
             for (MenuItem menuitem : menuItemsList.values()) {
