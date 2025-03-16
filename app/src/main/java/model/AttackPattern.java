@@ -10,15 +10,14 @@ public class AttackPattern {
     }
 
     private final AttackType attackType;
-    private final int maxRows = 5;
-    private final int maxCols = 5;
+    private final int maxRows = 6;
+    private final int maxCols = 8;
 
     AttackPattern(AttackType attackType) {
         this.attackType = attackType;
     }
     
     public ArrayList<int[]> getAttackPattern(int[] origin_pos, int distance) {
-        int[][] attackPattern;
         switch (attackType) {
             case DIAGONAL:
                 return getDiagonalPattern(origin_pos, distance);
@@ -53,6 +52,14 @@ public class AttackPattern {
         return getRepeatingPattern(origin_pos, distance, positionVectors);
     }
 
+    /**
+     * Gets the tiles of an attack type, in relation to an origin position.
+     *
+     * @param origin_pos The starting position [row, col] for the pattern
+     * @param distance The number of steps to take in each direction
+     * @param positionVectors Array of direction vectors to extend from origin
+     * @return ArrayList of valid board positions [row, col] that form the pattern
+     */
     private ArrayList<int[]> getRepeatingPattern(int[] origin_pos, int distance, int[][] positionVectors) {
         ArrayList<int[]> attackPattern = new ArrayList<int[]>();
         

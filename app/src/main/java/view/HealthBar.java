@@ -30,7 +30,7 @@ public class HealthBar {
         canvas.drawBitmap(baseBitmap, x, y, paint);
         int dynamicWidth = (int) (healthBitmap.getWidth() * health);
 
-        // the clipRect is a rectangle that covers which part os the health bar to draw
+        // the clipRect is a rectangle that covers which part of the health bar to draw
         Rect clipRect = new Rect(0, 0, dynamicWidth, healthBitmap.getHeight());
 
         // the destinationRect is a rectangle that covers where to draw the health bar

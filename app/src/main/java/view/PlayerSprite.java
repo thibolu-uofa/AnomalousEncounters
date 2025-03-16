@@ -1,14 +1,10 @@
 package view;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -52,6 +48,7 @@ public class PlayerSprite extends Sprite {
         frameRectangles = new List[ANIMATIONS.size()];
         int animationIndex = 0;
 
+        // make a rectangle for each frame for each animation in the animations sprite sheet
         for (String animationName : ANIMATIONS.keySet()) {
             List<Rect> rects = new ArrayList<>(Objects.requireNonNull(ANIMATIONS.get(animationName)).size());
             for (int[] coord : Objects.requireNonNull(ANIMATIONS.get(animationName))) {
@@ -66,16 +63,24 @@ public class PlayerSprite extends Sprite {
     }
 
 
+    /**
+     * Updates the current frame of animation based on elapsed time.
+     *
+     * @param currentTime System time in milliseconds for frame timing
+     * @param canMove Flag determining if the player should be animated
+     */
     public void update(long currentTime, boolean canMove) {
         if (!canMove) {
             return;
         }
 
+        // initialize frame timing on first update
         if (lastFrameTime == 0) {
             lastFrameTime = currentTime;
             return;
         }
 
+        // go to next frame if enough time has passed (based on fps)
         long deltaTime = currentTime - lastFrameTime;
         if (deltaTime >= (1000 / fps)) {
             currentAnimationFrame = (currentAnimationFrame + 1) % frameRectangles[currentAnimation].size();
@@ -84,14 +89,20 @@ public class PlayerSprite extends Sprite {
     }
 
     public void draw(Canvas canvas) {
+        // the srcRect is a rectangle that covers which part of the sprite sheet to draw
         Rect srcRect = (Rect) frameRectangles[currentAnimation].get(currentAnimationFrame);
+
+        // the destRect is a rectangle that covers where to draw the player sprite
         RectF destRect = new RectF(getX(), getY(), getX() + spriteWidth, getY() + spriteHeight);
+
         canvas.drawBitmap(imageResource, srcRect, destRect, null);
     }
 
     public void setAnimation(String animationName) {
         int newAnimationIndex = -1; // -1 means no animation is set
         int animationIndex = 0;
+
+        //sets idle appropriately based on last direction
         if (Objects.equals(animationName, "idle")) {
             if (Objects.equals(lastDirection, "walk_left")){
                 animationName = "idle_left";
@@ -102,6 +113,7 @@ public class PlayerSprite extends Sprite {
             lastDirection = animationName;
         }
 
+        //find the index of requested animation
         for (String animation : ANIMATIONS.keySet()) {
             if (animation.equals(animationName)) {
                 newAnimationIndex = animationIndex;
@@ -110,6 +122,7 @@ public class PlayerSprite extends Sprite {
             animationIndex++;
         }
 
+        //if animation exists and is different from current one, update animation state
         if (newAnimationIndex != -1 && newAnimationIndex != currentAnimation) {
             currentAnimation = newAnimationIndex;
             currentAnimationFrame = 0;
