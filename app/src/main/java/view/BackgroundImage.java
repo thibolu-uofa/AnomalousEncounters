@@ -3,6 +3,7 @@ package view;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 
 public class BackgroundImage {
     Bitmap skyBitmap;
@@ -79,4 +80,7 @@ public class BackgroundImage {
         this.direction = direction;
     }
 
+    public int getX() {
+        return groundX1;
+    }
 }

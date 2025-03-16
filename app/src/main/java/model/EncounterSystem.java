@@ -1,5 +1,8 @@
 package model;
 import static model.Utils.getListOfDataProperty;
+
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -20,6 +23,7 @@ public class EncounterSystem {
         if (canEncounterEnemy(x)) {
             Random rand = new Random();
             int diceThrow = rand.nextInt(6) + 1;
+            Log.d("Dice Throw", String.valueOf(diceThrow));
             return ENCOUNTER_PROBABILITY >= diceThrow;
         }
         return false;

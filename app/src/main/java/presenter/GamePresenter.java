@@ -4,6 +4,8 @@ import static model.Utils.getDataProperty;
 import android.os.Bundle;
 import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
+
+import model.EncounterSystem;
 import model.GameLogic;
 import model.PlayerState;
 import view.GameView;
@@ -12,6 +14,7 @@ public class GamePresenter extends AppCompatActivity {
     private GameView view;
     private GameLogic gameLogic;
     private PlayerState playerState;
+    private EncounterSystem encounterSystem;
 
 
     @Override
@@ -23,6 +26,7 @@ public class GamePresenter extends AppCompatActivity {
         setContentView(view);
 
         gameLogic = new GameLogic();
+        encounterSystem = new EncounterSystem();
 
         playerState = new PlayerState("Nxy", 25); //make player name a string resource
 
@@ -75,6 +79,10 @@ public class GamePresenter extends AppCompatActivity {
             default:
                 return 0;
         }
+    }
+
+    public boolean hasPlayerEncounteredEnemy(int playerX) {
+        return encounterSystem.hasEncounteredEnemy(playerX);
     }
 
     public String getPlayerNameHealthAndTokens() {

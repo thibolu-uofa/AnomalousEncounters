@@ -41,7 +41,7 @@ public class GameView  extends SurfaceView implements Runnable{
     private boolean isOnOverworld;
     private boolean canPlayerMove;
     long fps; //keeps track of frame rate
-
+    private long lastEnemyEncounterCheck = 0;
     private boolean isInBattle;
 
     public GameView(Context context, GamePresenter presenter){
@@ -104,7 +104,7 @@ public class GameView  extends SurfaceView implements Runnable{
 
             drawBackground();
 
-            if(isOnOverworld){
+            if (isOnOverworld){
                 drawOverworldElements();
             }
 
@@ -120,14 +120,26 @@ public class GameView  extends SurfaceView implements Runnable{
     }
 
     private void drawOverworldElements() {
+        long currentTime = System.currentTimeMillis();
+
         backgroundImage.update(fps, canPlayerMove);
         backgroundImage.draw(canvas, paint);
+
+        // only check enemies every 500 millisecond
+        if (currentTime - lastEnemyEncounterCheck >= 500) {
+            Log.d("Check", "Check for Enemy");
+            if (presenter.hasPlayerEncounteredEnemy(backgroundImage.getX())) {
+                lastEnemyEncounterCheck = currentTime;
+                Log.d("You Encountered an Enemy", "Enemy Enemy Enemy");
+            }
+
+        }
 
         settingsIcon.draw(canvas, paint);
         inventory.draw(canvas, paint);
         healthBar.draw(canvas, paint, presenter.getPlayerHealthPercentage());
 
-        playerSprite.update(System.currentTimeMillis(), canPlayerMove);
+        playerSprite.update(currentTime, canPlayerMove);
         playerSprite.draw(canvas);
 
         playerMenu.updateMenuTexts(presenter);
