@@ -1,4 +1,5 @@
 package model;
+import static java.lang.Math.abs;
 import static model.Utils.getListOfDataProperty;
 
 import android.util.Log;
@@ -23,7 +24,7 @@ public class EncounterSystem {
         if (canEncounterEnemy(x)) {
             Random rand = new Random();
             int diceThrow = rand.nextInt(6) + 1;
-            Log.d("Dice Throw", String.valueOf(diceThrow));
+//            Log.d("Dice Throw", String.valueOf(diceThrow));
             return ENCOUNTER_PROBABILITY >= diceThrow;
         }
         return false;
@@ -31,9 +32,11 @@ public class EncounterSystem {
 
     private boolean canEncounterEnemy(int x) {
         for (int[] startAndEndPoint: startAndEndPoints){
-            if (x >= startAndEndPoint[0] && x <= startAndEndPoint[1]){
+            if (abs(x) >= abs(startAndEndPoint[0]) && abs(x) <= abs(startAndEndPoint[1])){
+
                return true;
             }
+//            Log.d("X Positions", startAndEndPoint[0] + " "  + x);
         }
         return false;
     }

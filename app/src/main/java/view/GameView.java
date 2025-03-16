@@ -127,12 +127,10 @@ public class GameView  extends SurfaceView implements Runnable{
 
         // only check enemies every 500 millisecond
         if (currentTime - lastEnemyEncounterCheck >= 500) {
-            Log.d("Check", "Check for Enemy");
             if (presenter.hasPlayerEncounteredEnemy(backgroundImage.getX())) {
-                lastEnemyEncounterCheck = currentTime;
-                Log.d("You Encountered an Enemy", "Enemy Enemy Enemy");
+//                Log.d("You Encountered an Enemy", "Enemy Enemy Enemy");
             }
-
+            lastEnemyEncounterCheck = currentTime;
         }
 
         settingsIcon.draw(canvas, paint);
