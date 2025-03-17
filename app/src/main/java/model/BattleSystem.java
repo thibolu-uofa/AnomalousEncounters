@@ -147,7 +147,12 @@ public class BattleSystem {
     public Skill getSkillByName(String name, ArrayList<Skill> skillList) {
         // this function goes and finds the correct skill by matching the name to the name on
         //each Skill in the the skill list
-        return new Skill();
+        for (Skill skill : skillList) {
+            if (skill.getName().equals(name)) {
+                return skill; // Found the matching skill, return it
+            }
+        }
+        return null; // Skill not found, return null
     }
 
     public void updatePlayerPos(int[] position) {
