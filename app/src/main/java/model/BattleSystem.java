@@ -10,6 +10,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import presenter.GamePresenter;
 
 public class BattleSystem {
@@ -27,12 +28,14 @@ public class BattleSystem {
         ATTACK,
         USE
     }
-    private CurrentAction currentAction;
     private boolean isPlayerTurn = true;
 
     private GridModel gridModel;
     private int maxRows;
     private int maxCols;
+
+    private boolean hasPlayerAttacked;
+    private boolean hasPlayerMoved;
 
 
     private static final Map<CurrentAction, Boolean> actionsPerformed = new HashMap<>() {{
@@ -57,26 +60,35 @@ public class BattleSystem {
         playerPosition = new int[]{3, 2};
         enemyPosition = new int[]{5, 4};
 
+        hasPlayerAttacked = false;
+        hasPlayerMoved = false;
+
     }
 
-    public void updateCurrentBattleAction(String action) {
-        switch (action.toUpperCase()) {
-            case "MOVE":
-                this.currentAction = CurrentAction.MOVE;
-                break;
-            case "ATTACK":
-                this.currentAction = CurrentAction.ATTACK;
-                break;
-            case "USE":
-                this.currentAction = CurrentAction.USE;
-                break;
-            default:
-                System.out.println("Invalid action");
-        }
+//    public void updateCurrentBattleAction(String action) {
+//        switch (action.toUpperCase()) {
+//            case "MOVE":
+//                this.currentAction = CurrentAction.MOVE;
+//                break;
+//            case "ATTACK":
+//                this.currentAction = CurrentAction.ATTACK;
+//                break;
+//            case "USE":
+//                this.currentAction = CurrentAction.USE;
+//                break;
+//            default:
+//                System.out.println("Invalid action");
+//        }
+//    }
+
+    public boolean canEndTurn() {
+        return hasPlayerMoved || hasPlayerAttacked;
     }
 
     public void changeTurn() {
         isPlayerTurn = !isPlayerTurn;
+        hasPlayerMoved = false;
+        hasPlayerAttacked = false;
     }
 
     public boolean didAtkHit(ArrayList<int[]> coords) {
@@ -142,16 +154,40 @@ public class BattleSystem {
 
             // Apply damage to enemyState using modifyHealth() (negative delta for damage)
             enemyState.modifyHealth(-damage);
+            hasPlayerAttacked = true;
         }
     }
+
+    private void useEnemeySkill() {
+        //get skill using getRandomEnemySkill
+        //then use skill (similar logic to player using skill)
+    }
+
+    private Skill getRandomEnemySkill() {
+        // get skill ids from enemy, then choose a random id
+        // then get skill by id and return the selected skill
+        return new Skill();
+    }
+
     public Skill getSkillByName(String name, ArrayList<Skill> skillList) {
         // this function goes and finds the correct skill by matching the name to the name on
         //each Skill in the the skill list
-        return new Skill();
+        for (Skill skill : skillList) {
+            if (skill.getName().equals(name)) {
+                return skill; // Found the matching skill, return it
+            }
+        }
+        return null; // Skill not found, return null
     }
 
     public void updatePlayerPos(int[] position) {
         // this function just makes playerPosition equal to the position passed in
+        playerPosition = position;
+        hasPlayerMoved = true;
+    }
+
+    public void updateEnemyPos(int[] position) {
+        enemyPosition = position;
     }
 
     public ArrayList<int[]> getAvailableMoveTilesForPlayer() {

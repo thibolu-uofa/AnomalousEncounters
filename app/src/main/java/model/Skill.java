@@ -50,5 +50,8 @@ public class Skill {
     public int getDamage(){
         return baseDamage;
     }
+    public String getName() {
+        return name;
+    }
 
 }
