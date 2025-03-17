@@ -28,7 +28,7 @@ public class BattleSystem {
         USE
     }
     private CurrentAction currentAction;
-    private boolean isPlayerTurn;
+    private boolean isPlayerTurn = true;
 
     private GridModel gridModel;
     private int maxRows;
@@ -45,7 +45,7 @@ public class BattleSystem {
         this.playerState = playerState;
         this.context = context;
         populatePlayerSkills();
-        populateEnemySkills(enemyId);
+        populateEnemySkills(enemyId);//
 
         createEnemy(enemyId);
 
@@ -57,7 +57,6 @@ public class BattleSystem {
         playerPosition = new int[]{3, 2};
         enemyPosition = new int[]{5, 4};
 
-        isPlayerTurn = true;
     }
 
     public void updateCurrentBattleAction(String action) {
@@ -77,13 +76,20 @@ public class BattleSystem {
     }
 
     public void changeTurn() {
-        //if isPlayerTurn is true, then set isPlayerTurn to false
-        //if isPlayerTurn is false, then set isPlayerTurn to true
+        isPlayerTurn = !isPlayerTurn;
     }
 
     public boolean didAtkHit(ArrayList<int[]> coords) {
         //if isPlayerTurn is true then, this function returns true if enemyPosition is equal to any coord in coords, false otherwise
         //if isPlayerTurn is false then, this function returns true if playerPosition is equal to coord in coords, false otherwise
+        int[] targetPosition = isPlayerTurn ? enemyPosition : playerPosition;
+
+        // Check if targetPosition is in the list of affected coordinates
+        for (int[] coord : coords) {
+            if (coord[0] == targetPosition[0] && coord[1] == targetPosition[1]) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -102,15 +108,17 @@ public class BattleSystem {
     }
 
     public ArrayList<int[]> getAffectedTilesForPlayer(String skillName) {
-        // this function gets the Skill using getSkillByName, passing in skillName and playerSkills
-        // then returns that skill.getAffectedTiles, passing in the enemyPosition as the origin_pos
-        return new ArrayList<>();
+        // Get the skill from playerSkills
+        Skill skill = getSkillByName(skillName, playerSkills);
+        // Return the affected tiles using player position as the origin
+        return skill.getAffectedTiles(playerPosition);
     }
 
     public ArrayList<int[]> getAffectedTilesForEnemy(String skillName) {
-        // this function gets the Skill using getSkillByName, passing in skillName and enemySkills
-        // then returns that skill.getAffectedTiles, passing in the enemyPosition as the origin_pos
-        return new ArrayList<>();
+        // Get the skill from enemySkills
+        Skill skill = getSkillByName(skillName, enemySkills);
+        // Return the affected tiles using enemy position as the origin
+        return skill.getAffectedTiles(enemyPosition);
     }
 
     public void usePlayerSkill(String skillName) {
@@ -119,8 +127,23 @@ public class BattleSystem {
         // then this functions calls didAtkHit, passing in affectedTiles
         // if didAtkHit is true then this function gets the damage from the Skill using skill.getDamage and
         // calls updateHealth on enemyState with -damage as delta
-    }
+        // Get the skill by name from playerSkills
 
+        Skill skill = getSkillByName(skillName, playerSkills);
+        if (skill == null) return; // Exit if skill not found
+
+        // Get affected tiles using player's position
+        ArrayList<int[]> affectedTiles = skill.getAffectedTiles(playerPosition);
+
+        // Check if the attack hits
+        if (didAtkHit(affectedTiles)) {
+            // Get skill damage
+            int damage = skill.getDamage();
+
+            // Apply damage to enemyState using modifyHealth() (negative delta for damage)
+            enemyState.modifyHealth(-damage);
+        }
+    }
     public Skill getSkillByName(String name, ArrayList<Skill> skillList) {
         // this function goes and finds the correct skill by matching the name to the name on
         //each Skill in the the skill list

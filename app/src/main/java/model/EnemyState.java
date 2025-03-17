@@ -6,7 +6,7 @@ public class EnemyState {
     private int[] skills = new int[0]; // Empty integer array
     private int[] items = new int[0]; // Empty integer array
     private int[] itemDrops = new int[0]; // Items dropped upon defeat
-
+//
     // Default Constructor
     public EnemyState() {
         this.name = "Unknown";
@@ -29,6 +29,9 @@ public class EnemyState {
         } else if (enemyCurrentHealth < 0) {
             enemyCurrentHealth = 0;
         }
+    }
+    public void modifyHealth(int delta) {
+        updateHealth(delta); // Calls the private method internally
     }
 
     // Add an ability to the ability list
