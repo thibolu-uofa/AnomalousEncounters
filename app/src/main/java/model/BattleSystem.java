@@ -157,6 +157,7 @@ public class BattleSystem {
 
     public void updatePlayerPos(int[] position) {
         // this function just makes playerPosition equal to the position passed in
+        playerPosition = position;
     }
 
     public ArrayList<int[]> getAvailableMoveTilesForPlayer() {
