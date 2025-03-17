@@ -1,10 +1,9 @@
 package view;
 
-import static view.ColorConstants.OVERLAY_DARK_COLOR;
+import static view.ViewConstants.OVERLAY_DARK_COLOR;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import java.util.LinkedHashMap;
 import java.util.Map;

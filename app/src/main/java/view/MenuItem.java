@@ -1,7 +1,8 @@
 package view;
 
-import static view.ColorConstants.DEFAULT_MENU_BACKGROUND_COLOR;
-import static view.ColorConstants.DEFAULT_TEXT_COLOR;
+import static view.ViewConstants.DEFAULT_FONT_SIZE;
+import static view.ViewConstants.DEFAULT_MENU_BACKGROUND_COLOR;
+import static view.ViewConstants.DEFAULT_TEXT_COLOR;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -11,7 +12,7 @@ import android.graphics.Rect;
 
 public class MenuItem {
     private Context context;
-    private int borderWeight = 10;
+    private int BORDER_WEIGHT = 10;
     private int x;
     private int y;
     private int height;
@@ -37,7 +38,7 @@ public class MenuItem {
     public void draw(Canvas canvas, Paint paint){
         // draws a background rectangle that acts as a border
         paint.setColor(Color.WHITE);
-        Rect borderRect = new Rect(x - borderWeight, y - borderWeight, (x + width) + borderWeight, (y + height) + borderWeight );
+        Rect borderRect = new Rect(x - BORDER_WEIGHT, y - BORDER_WEIGHT, (x + width) + BORDER_WEIGHT, (y + height) + BORDER_WEIGHT);
         canvas.drawRect(borderRect, paint);
 
         //draws the top rectangle where the menu text will be contained
@@ -45,8 +46,8 @@ public class MenuItem {
         Rect rectangle = new Rect(x, y, x + width, y + height);
         canvas.drawRect(rectangle, paint);
 
-        MenuText menuText = new MenuText(text, 16, DEFAULT_TEXT_COLOR, width, isTextCentred);
-        menuText.draw(canvas, x, y, context);
+        MenuText menuText = new MenuText(text, DEFAULT_FONT_SIZE, DEFAULT_TEXT_COLOR, width, isTextCentred, context);
+        menuText.draw(canvas, x, y);
     }
 
     public int getWidth() {

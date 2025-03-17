@@ -114,7 +114,7 @@ public class GameView  extends SurfaceView implements Runnable{
             }
 
             if (isInBattle) {
-                battleView.draw(canvas, paint);
+                battleView.draw(canvas, paint, this.getContext());
             }
 
             // draw everything to the screen and unlock the drawing surface

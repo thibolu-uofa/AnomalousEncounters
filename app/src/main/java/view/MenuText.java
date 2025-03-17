@@ -21,20 +21,17 @@ public class MenuText {
     private final int HEADING_DIMENSION = 3;
     private final boolean isCentre;
     private final int BASE_FONT_SIZE = 32;
+    private int actualTextWidth;
+    private int height;
+    private final StaticLayout textStaticLayout;
 
-    public MenuText(String text, int fontSize, int color, int width, boolean isCentre){
+    public MenuText(String text, int fontSize, int color, int width, boolean isCentre, Context context){
         this.text = text;
         this.fontSize = fontSize;
         this.color = color;
         this.width= width;
         this.isCentre = isCentre;
-    }
 
-    /**
-     * The implementation of this function has code adapted from:
-     * Source: <a href="https://stackoverflow.com/questions/2655402/android-canvas-drawtext">...</a>
-     */
-    public void draw(Canvas canvas, int x, int y, Context context){
         // sets the attributes of the text to draw
         TextPaint textPaint = new TextPaint();
         textPaint.setAntiAlias(true);
@@ -52,12 +49,28 @@ public class MenuText {
             xTextPadding = 0;
         }
 
-        StaticLayout staticLayout = new StaticLayout(text, textPaint, width, textLayout, 1.0f, 0, false);
+        actualTextWidth = (int) textPaint.measureText(text);
 
+        textStaticLayout = new StaticLayout(text, textPaint, width, textLayout, 1.0f, 0, false);
+        height = textStaticLayout.getHeight();
+    }
+
+    /**
+     * The implementation of this function has code adapted from:
+     * Source: <a href="https://stackoverflow.com/questions/2655402/android-canvas-drawtext">...</a>
+     */
+    public void draw(Canvas canvas, int x, int y){
         canvas.save();
         canvas.translate(x + xTextPadding, y + yTextPadding);
-        staticLayout.draw(canvas);
+        textStaticLayout.draw(canvas);
         canvas.restore();
     }
 
+    public int getActualTextWidth() {
+        return actualTextWidth;
+    }
+
+    public int getHeight() {
+        return height;
+    }
 }
