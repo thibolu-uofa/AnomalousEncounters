@@ -45,7 +45,7 @@ public class BattleSystem {
         this.playerState = playerState;
         this.context = context;
         populatePlayerSkills();
-        populateEnemySkills(enemyId);
+        populateEnemySkills(enemyId);//
 
         createEnemy(enemyId);
 

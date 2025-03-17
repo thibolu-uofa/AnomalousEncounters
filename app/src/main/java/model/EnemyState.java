@@ -6,7 +6,7 @@ public class EnemyState {
     private int[] skills = new int[0]; // Empty integer array
     private int[] items = new int[0]; // Empty integer array
     private int[] itemDrops = new int[0]; // Items dropped upon defeat
-
+//
     // Default Constructor
     public EnemyState() {
         this.name = "Unknown";
