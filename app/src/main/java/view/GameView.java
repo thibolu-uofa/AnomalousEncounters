@@ -36,6 +36,7 @@ public class GameView  extends SurfaceView implements Runnable{
     private final PlayerSprite playerSprite;
     private final BackgroundImage backgroundImage;
     private final PlayerMenu playerMenu;
+    private BattleView battleView;
     int backgroundDirection;
     private boolean isOnOverworld;
     private boolean canPlayerMove;
@@ -72,8 +73,10 @@ public class GameView  extends SurfaceView implements Runnable{
         playerSprite.setAnimation("idle");
 
         playerMenu = new PlayerMenu(getContext());
+        battleView = new BattleView(this.getContext());
 
         isOnOverworld = true;
+        isInBattle = false;
         canPlayerMove = true;
     }
 
@@ -110,6 +113,10 @@ public class GameView  extends SurfaceView implements Runnable{
                 drawOverworldElements();
             }
 
+            if (isInBattle) {
+                battleView.draw(canvas, paint);
+            }
+
             // draw everything to the screen and unlock the drawing surface
             surfaceHolder.unlockCanvasAndPost(canvas);
         }
@@ -130,7 +137,8 @@ public class GameView  extends SurfaceView implements Runnable{
         // only check enemies every 500 millisecond
         if (currentTime - lastEnemyEncounterCheck >= 500) {
             if (presenter.hasPlayerEncounteredEnemy(backgroundImage.getX())) {
-//                Log.d("You Encountered an Enemy", "Enemy Enemy Enemy");
+                isInBattle = true;
+                isOnOverworld = false;
             }
             lastEnemyEncounterCheck = currentTime;
         }
