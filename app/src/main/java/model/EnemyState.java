@@ -30,6 +30,9 @@ public class EnemyState {
             enemyCurrentHealth = 0;
         }
     }
+    public void modifyHealth(int delta) {
+        updateHealth(delta); // Calls the private method internally
+    }
 
     // Add an ability to the ability list
     private void addAbility(int id) {
