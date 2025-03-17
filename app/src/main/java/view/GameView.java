@@ -73,10 +73,10 @@ public class GameView  extends SurfaceView implements Runnable{
         playerSprite.setAnimation("idle");
 
         playerMenu = new PlayerMenu(getContext());
-        battleView = new BattleView(this.getContext());
+        battleView = new BattleView(this.getContext(), presenter);
 
-        isOnOverworld = true;
-        isInBattle = false;
+        isOnOverworld = false;
+        isInBattle = true;
         canPlayerMove = true;
     }
 
@@ -114,6 +114,7 @@ public class GameView  extends SurfaceView implements Runnable{
             }
 
             if (isInBattle) {
+                battleView.updateMenuTexts();
                 battleView.draw(canvas, paint, this.getContext());
             }
 

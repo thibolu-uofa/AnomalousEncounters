@@ -14,23 +14,35 @@ import android.graphics.drawable.NinePatchDrawable;
 
 import com.example.anomalousencounters.R;
 
+import java.util.Objects;
+
+import presenter.GamePresenter;
+
 public class BattleView {
     private Sprite grid;
     private MenuText playerInfoText;
     private MenuText enemyInfoText;
     private MenuNinePatch playerInfo;
     private MenuNinePatch enemyInfo;
-    private final int MAX_CARD_WIDTH = 600;
+    private final int MAX_CARD_WIDTH = 650;
+    private GamePresenter presenter;
 
-    public BattleView(Context context){
+    public BattleView(Context context, GamePresenter presenter){
+        this.presenter = presenter;
+
         Bitmap gridBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.battle_grid);
         grid = new Sprite(gridBitmap, 800, 150);
 
         @SuppressLint("UseCompatLoadingForDrawables") NinePatchDrawable playerInfoNinePatchDrawable = (NinePatchDrawable) context.getResources().getDrawable(R.drawable.border1, null);
-        playerInfo = new MenuNinePatch(playerInfoNinePatchDrawable, 30, 100, "Bobette", MAX_CARD_WIDTH, false, context);
+        playerInfo = new MenuNinePatch(playerInfoNinePatchDrawable, 30, 100, presenter.getPlayerNameAndHealth(), MAX_CARD_WIDTH, false, context);
 
         @SuppressLint("UseCompatLoadingForDrawables") NinePatchDrawable enemyInfoNinePatchDrawable = (NinePatchDrawable) context.getResources().getDrawable(R.drawable.border1, null);
-        enemyInfo = new MenuNinePatch(enemyInfoNinePatchDrawable, 30, 100 + playerInfo.getHeight() + 50, "The Cursed Banana", MAX_CARD_WIDTH, false, context);
+        enemyInfo = new MenuNinePatch(enemyInfoNinePatchDrawable, 30, 100 + playerInfo.getHeight() + 150, "The Strange Triangle\nHP 9/10", MAX_CARD_WIDTH, false, context);
+    }
+
+    public void updateMenuTexts() {
+        playerInfo.updateText(presenter.getPlayerNameAndHealth());
+        enemyInfo.updateText("The Strange Triangle\nHP 9/10");
     }
 
     public void draw(Canvas canvas, Paint paint, Context context){

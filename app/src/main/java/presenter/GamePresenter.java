@@ -22,14 +22,14 @@ public class GamePresenter extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        playerState = new PlayerState("Nxy", 25); //make player name a string resource
+
         // Initialize gameView and set it as the view
         view = new GameView(this, this);
         setContentView(view);
 
         gameLogic = new GameLogic();
         encounterSystem = new EncounterSystem();
-
-        playerState = new PlayerState("Nxy", 25); //make player name a string resource
 
         //TESTING PURPOSES
         playerState.addSkill(0);
@@ -98,6 +98,13 @@ public class GamePresenter extends AppCompatActivity {
         String currentHealth = String.valueOf(playerState.getHealth());
         String tokens = String.valueOf(playerState.getTokens());
         return name + "\nHP: " + maxHealth + "/" + currentHealth + "\nTokens: " + tokens;
+    }
+
+    public String getPlayerNameAndHealth() {
+        String name = playerState.getName();
+        String maxHealth = String.valueOf(playerState.getPlayerMaxHealth());
+        String currentHealth = String.valueOf(playerState.getHealth());
+        return name + "\nHP: " + maxHealth + "/" + currentHealth;
     }
 
 

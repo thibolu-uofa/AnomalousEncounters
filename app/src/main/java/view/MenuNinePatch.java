@@ -13,27 +13,35 @@ public class MenuNinePatch {
     private final NinePatchDrawable ninePatchDrawable;
     private final int x;
     private final int y;
-    private final int width;
-    private final int height;
-    private final Rect bounds;
+    private int width;
+    private int height;
+    private Rect bounds;
     private MenuText menuText;
     private final int X_BORDER_WEIGHT = 30;
     private final int Y_BORDER_WEIGHT = 40;
+    private int PADDING = 100;
+
 
     public MenuNinePatch(NinePatchDrawable ninePatchDrawable, int x, int y, String text,  int maxWidth, boolean isCentred, Context context){
-        int padding = 100;
-
         menuText = new MenuText(text, DEFAULT_FONT_SIZE, DEFAULT_TEXT_COLOR, maxWidth, isCentred, context);
 
         this.ninePatchDrawable = ninePatchDrawable;
         this.x = x;
         this.y = y;
-        this.width = menuText.getActualTextWidth() + padding;
-        this.height = menuText.getHeight() + padding;
+        this.width = menuText.getActualTextWidth() + PADDING;
+        this.height = menuText.getHeight() + PADDING;
         this.bounds = new Rect(x, y, x + width, y + height);
         ninePatchDrawable.setBounds(bounds);
 
         Log.d("Text Width and Height", menuText.getActualTextWidth() + " " +  menuText.getHeight());
+    }
+
+    public void updateText(String text){
+        menuText.updateText(text);
+        width = menuText.getActualTextWidth() + PADDING;
+        height = menuText.getHeight() + PADDING;
+        bounds = new Rect(x, y, x + width, y + height);
+        ninePatchDrawable.setBounds(bounds);
     }
 
     public void draw(Canvas canvas, Context context){
