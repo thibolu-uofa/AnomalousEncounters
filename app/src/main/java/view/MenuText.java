@@ -20,26 +20,28 @@ public class MenuText {
     private int yTextPadding = 15;
     private final int HEADING_DIMENSION = 3;
     private final boolean isCentre;
-    private final int BASE_FONT_SIZE = 32;
-    private int actualTextWidth;
     private int height;
     private StaticLayout textStaticLayout;
     private Context context;
+    private boolean hasAutoPadding;
 
-    public MenuText(String text, int fontSize, int color, int width, boolean isCentre, Context context){
+    public MenuText(String text, int fontSize, int color, int width, boolean isCentre, Context context, boolean hasAutoPadding){
         this.text = text;
         this.fontSize = fontSize;
         this.color = color;
         this.width= width;
         this.isCentre = isCentre;
         this.context = context;
+        this.hasAutoPadding = hasAutoPadding;
+
+        createTextStaticLayout();
     }
 
     public void createTextStaticLayout() {
         // sets the attributes of the text to draw
         TextPaint textPaint = new TextPaint();
         textPaint.setAntiAlias(true);
-        textPaint.setTextSize(BASE_FONT_SIZE * HEADING_DIMENSION);
+        textPaint.setTextSize(fontSize * HEADING_DIMENSION);
         textPaint.setColor(color);
         Typeface typeface = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -53,7 +55,9 @@ public class MenuText {
             xTextPadding = 0;
         }
 
-        actualTextWidth = (int) textPaint.measureText(text);
+        if (!hasAutoPadding) {
+            xTextPadding = yTextPadding = 0;
+        }
 
         textStaticLayout = new StaticLayout(text, textPaint, width, textLayout, 1.0f, 0, false);
         height = textStaticLayout.getHeight();

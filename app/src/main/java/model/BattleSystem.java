@@ -1,6 +1,6 @@
 package model;
 
-import static model.Utils.getListOfDataProperty;
+import static model.Utils.getStringListOfDataProperty;
 import static model.Utils.getRepeatingPattern;
 import static model.Utils.getSingleDataProperty;
 
@@ -164,8 +164,8 @@ public class BattleSystem {
     }
 
     private Skill getRandomEnemySkill() {
-        // get skill ids from enemy, then choose a random id
-        // then get skill by id and return the selected skill
+        // choose a skill from the enemy skill list
+        // then return that skill
         return new Skill();
     }
 
@@ -222,8 +222,8 @@ public class BattleSystem {
     }
 
     private void populateSkills(int[] ids, String skillList) {
-        ArrayList<String> skillNames = getListOfDataProperty("skills.json", "name", ids, context);
-        ArrayList<String> skillAtkTypes = getListOfDataProperty("skills.json", "atkPattern", ids, context);
+        ArrayList<String> skillNames = getStringListOfDataProperty("skills.json", "name", ids, context);
+        ArrayList<String> skillAtkTypes = getStringListOfDataProperty("skills.json", "atkPattern", ids, context);
         for(int i = 0; i < ids.length; i++) {
             Skill skill = new Skill(skillNames.get(i), skillAtkTypes.get(i));
             switch (skillList) {

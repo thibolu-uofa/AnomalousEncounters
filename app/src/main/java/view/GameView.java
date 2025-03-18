@@ -115,7 +115,7 @@ public class GameView  extends SurfaceView implements Runnable{
 
             if (isInBattle) {
                 battleView.updateMenuTexts();
-                battleView.draw(canvas, paint, this.getContext());
+                battleView.draw(canvas, paint);
             }
 
             // draw everything to the screen and unlock the drawing surface
@@ -174,16 +174,25 @@ public class GameView  extends SurfaceView implements Runnable{
                 float eventX = motionEvent.getX();
                 float eventY = motionEvent.getY();
 
-                checkIfInventoryOpened(eventX, eventY);
-                checkIfInventoryClosed(eventX, eventY);
+                if (isOnOverworld) {
+                    checkIfInventoryOpened(eventX, eventY);
+                    checkIfInventoryClosed(eventX, eventY);
 
-                updatePlayerAnimation((int) eventX);
+                    updatePlayerAnimation((int) eventX);
+                }
+
+                if (isInBattle) {
+                    battleView.checkForUserTouch(eventX, eventY, presenter);
+                }
+
                 break;
 
             // user has removed finger from screen, so character should stop moving
             case MotionEvent.ACTION_UP:
-                playerSprite.setAnimation("idle");
-                backgroundImage.setDirection(0);
+                if (isOnOverworld) {
+                    playerSprite.setAnimation("idle");
+                    backgroundImage.setDirection(0);
+                }
                 break;
         }
         return true;

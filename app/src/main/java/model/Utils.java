@@ -70,7 +70,7 @@ public final class Utils {
      * @return An ArrayList containing the requested property values
      * @throws RuntimeException If property cannot be accessed or parsed
      */
-    public static ArrayList<String> getListOfDataProperty(String filename, String property, int[] ids, Context context) {
+    public static ArrayList<String> getStringListOfDataProperty(String filename, String property, int[] ids, Context context) {
         ArrayList<String> dataProperties = new ArrayList<String>();
         JSONArray jsonArray = loadJsonArrayFromFile(filename, context);
         for (int id: ids) {

@@ -1,13 +1,12 @@
 package view;
 
-import static view.ViewConstants.DEFAULT_FONT_SIZE;
+import static view.ViewConstants.FONT_SIZE_SMALL;
 import static view.ViewConstants.DEFAULT_TEXT_COLOR;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.NinePatchDrawable;
-import android.util.Log;
 
 public class MenuNinePatch {
     private final NinePatchDrawable ninePatchDrawable;
@@ -20,10 +19,11 @@ public class MenuNinePatch {
     private final int X_BORDER_WEIGHT = 30;
     private final int Y_BORDER_WEIGHT = 40;
     private int PADDING = 100;
+    private boolean hasText;
 
 
     public MenuNinePatch(NinePatchDrawable ninePatchDrawable, int x, int y, String text,  int maxWidth, boolean isCentred, Context context){
-        menuText = new MenuText(text, DEFAULT_FONT_SIZE, DEFAULT_TEXT_COLOR, maxWidth, isCentred, context);
+        menuText = new MenuText(text, FONT_SIZE_SMALL, DEFAULT_TEXT_COLOR, maxWidth, isCentred, context, true);
 
         this.ninePatchDrawable = ninePatchDrawable;
         this.x = x;
@@ -33,10 +33,27 @@ public class MenuNinePatch {
         this.bounds = new Rect(x, y, x + width, y + height);
         ninePatchDrawable.setBounds(bounds);
 
-        Log.d("Text Width and Height", menuText.getActualTextWidth() + " " +  menuText.getHeight());
+//        Log.d("Text Width and Height", menuText.getActualTextWidth() + " " +  menuText.getHeight());
+        hasText = true;
+    }
+
+    public MenuNinePatch(NinePatchDrawable ninePatchDrawable, int x, int y, int width, int height) {
+        this.ninePatchDrawable = ninePatchDrawable;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+
+        this.bounds = new Rect(x, y, x + width, y + height);
+        ninePatchDrawable.setBounds(bounds);
+
+        hasText = false;
     }
 
     public void updateText(String text){
+        if (!hasText) {
+            return;
+        }
         menuText.updateText(text);
         width = menuText.getActualTextWidth() + PADDING;
         height = menuText.getHeight() + PADDING;
@@ -44,9 +61,12 @@ public class MenuNinePatch {
         ninePatchDrawable.setBounds(bounds);
     }
 
-    public void draw(Canvas canvas, Context context){
+    public void draw(Canvas canvas){
         ninePatchDrawable.draw(canvas);
-        menuText.draw(canvas, x + X_BORDER_WEIGHT, y + Y_BORDER_WEIGHT);
+
+        if (hasText) {
+            menuText.draw(canvas, x + X_BORDER_WEIGHT, y + Y_BORDER_WEIGHT);
+        }
     }
 
     public int getX() {

@@ -1,6 +1,7 @@
 package view;
 
-import static view.ViewConstants.DEFAULT_FONT_SIZE;
+import static view.ViewConstants.FONT_SIZE_MEDIUM;
+import static view.ViewConstants.FONT_SIZE_SMALL;
 import static view.ViewConstants.DEFAULT_MENU_BACKGROUND_COLOR;
 import static view.ViewConstants.DEFAULT_TEXT_COLOR;
 
@@ -46,7 +47,7 @@ public class MenuItem {
         Rect rectangle = new Rect(x, y, x + width, y + height);
         canvas.drawRect(rectangle, paint);
 
-        MenuText menuText = new MenuText(text, DEFAULT_FONT_SIZE, DEFAULT_TEXT_COLOR, width, isTextCentred, context);
+        MenuText menuText = new MenuText(text, FONT_SIZE_MEDIUM, DEFAULT_TEXT_COLOR, width, isTextCentred, context, true);
         menuText.draw(canvas, x, y);
     }
 

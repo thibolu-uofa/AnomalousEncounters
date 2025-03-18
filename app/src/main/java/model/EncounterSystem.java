@@ -1,8 +1,5 @@
 package model;
 import static java.lang.Math.abs;
-import static model.Utils.getListOfDataProperty;
-
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Random;

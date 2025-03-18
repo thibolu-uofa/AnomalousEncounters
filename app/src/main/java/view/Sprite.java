@@ -30,6 +30,13 @@ public class Sprite {
         return y;
     }//end getY
 
+    public int getHeight() {
+        return imageResource.getHeight();
+    }
+
+    public int getWidth() {
+        return imageResource.getWidth();
+    }
 
     public boolean hasBeenTouched(float eventX, float eventY, GamePresenter presenter, int divisor) {
         return presenter.isInHitbox((int) eventX, (int) eventY, x, x + width/divisor, y + height, y);

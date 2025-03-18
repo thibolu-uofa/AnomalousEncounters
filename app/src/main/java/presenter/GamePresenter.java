@@ -1,9 +1,13 @@
 package presenter;
 
 import static model.Utils.getDataProperty;
+import static model.Utils.getStringListOfDataProperty;
+
 import android.os.Bundle;
-import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.ArrayList;
 
 import model.BattleSystem;
 import model.EncounterSystem;
@@ -23,6 +27,15 @@ public class GamePresenter extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         playerState = new PlayerState("Nxy", 25); //make player name a string resource
+        //TESTING PURPOSES
+        playerState.addSkill(0);
+        playerState.addSkill(1);
+        playerState.addSkill(2);
+        playerState.addSkill(6);
+        playerState.addSkill(9);
+
+        playerState.addItem(0);
+        playerState.addItem(1);
 
         // Initialize gameView and set it as the view
         view = new GameView(this, this);
@@ -31,18 +44,11 @@ public class GamePresenter extends AppCompatActivity {
         gameLogic = new GameLogic();
         encounterSystem = new EncounterSystem();
 
-        //TESTING PURPOSES
-        playerState.addSkill(0);
-        playerState.addSkill(1);
-        playerState.addSkill(2);
-
-        playerState.addItem(0);
-        playerState.addItem(1);
-
-        Log.d("Skill Names", getSkillNames());
-        Log.d("Skill Description", getSkillDescription(0));
-        Log.d("Item Names", getItemNames());
-        Log.d("Item Description", getItemDescription(0));
+        // MORE TESTING
+//        Log.d("Skill Names", getSkillNames());
+//        Log.d("Skill Description", getSkillDescription(0));
+//        Log.d("Item Names", getItemNames());
+//        Log.d("Item Description", getItemDescription(0));
 
         setUpBattle(0);
     }
@@ -108,9 +114,14 @@ public class GamePresenter extends AppCompatActivity {
     }
 
 
-    public String getSkillNames() {
+    public String getSkillNamesString() {
         int[] skillIds = playerState.getSkillList();
         return getDataProperty("skills.json", "name", skillIds, this);
+    }
+
+    public ArrayList<String> getSkillNamesArray() {
+        int[] skillIds = playerState.getSkillList();
+        return getStringListOfDataProperty("skills.json", "name", skillIds, this);
     }
 
     public String getSkillDescription(int skillId) {
