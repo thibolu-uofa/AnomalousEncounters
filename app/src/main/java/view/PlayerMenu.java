@@ -54,7 +54,7 @@ public class PlayerMenu {
     public void updateMenuTexts(GamePresenter presenter) {
         Objects.requireNonNull(menuItemsList.get("playerCard")).updateText(presenter.getPlayerNameHealthAndTokens());
         Objects.requireNonNull(menuItemsList.get("skills")).updateText("Skills\n" + presenter.getSkillNamesString());
-        Objects.requireNonNull(menuItemsList.get("skill_levels")).updateText("LV\n" + presenter.getSkillLevel());
+        Objects.requireNonNull(menuItemsList.get("skill_levels")).updateText("LV\n" + presenter.getSkillLevelsString());
         Objects.requireNonNull(menuItemsList.get("items")).updateText("Items\n" + presenter.getItemNames());
         Objects.requireNonNull(menuItemsList.get("item_amounts")).updateText("#\n" + presenter.getItemAmounts());
     }

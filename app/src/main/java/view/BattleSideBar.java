@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.NinePatchDrawable;
-import android.util.Log;
 
 import com.example.anomalousencounters.R;
 
@@ -13,7 +12,7 @@ import java.util.ArrayList;
 
 import presenter.GamePresenter;
 
-public class SideBar {
+public class BattleSideBar {
     private final MenuNinePatch menuNinePatch;
     private final RadioBtnList radioBtnList;
     private final int x;
@@ -21,7 +20,7 @@ public class SideBar {
     private final int WIDTH = 600;
     private final int HEIGHT = 950;
 
-    public SideBar (int x, int y, Context context, GamePresenter presenter) {
+    public BattleSideBar(int x, int y, Context context, GamePresenter presenter) {
         this.x = x;
         this.y = y;
 

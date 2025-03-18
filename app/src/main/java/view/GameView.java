@@ -75,8 +75,8 @@ public class GameView  extends SurfaceView implements Runnable{
         playerMenu = new PlayerMenu(getContext());
         battleView = new BattleView(this.getContext(), presenter);
 
-        isOnOverworld = false;
-        isInBattle = true;
+        isOnOverworld = true;
+        isInBattle = false;
         canPlayerMove = true;
     }
 

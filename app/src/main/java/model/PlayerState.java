@@ -1,10 +1,13 @@
 package model;
+
+import java.util.ArrayList;
+
 public class PlayerState {
     private int playerMaxHealth, playerCurrentHealth, currentPotionId, currentWeapon;
     private String name;
     private int tokens;
-    private int[] items = new int[0]; // Empty integer array
-    private int[] skills = new int[0]; // Empty integer array
+    private ArrayList<int[]> items = new ArrayList<>(); // Empty double integer array (first int is the item id, second is the number of items)
+    private ArrayList<int[]>  skills = new ArrayList<>(); // Empty double integer array (first int is the skill id, second is the skill level)
     private int[] currentWeaponList = new int[0]; // Empty integer array
 
     // Default Constructor
@@ -15,6 +18,7 @@ public class PlayerState {
         this.name = "Unknown";
         this.playerMaxHealth = 100;
         this.playerCurrentHealth = 100; // Start with full health
+        this.tokens = 0;
     }
 
     // Constructor with parameters
@@ -29,6 +33,7 @@ public class PlayerState {
         this.name = name;
         this.playerMaxHealth = maxHealth;
         this.playerCurrentHealth = maxHealth; // Start with full health
+        this.tokens = 0;
     }
 
     // Update health
@@ -54,7 +59,15 @@ public class PlayerState {
      * @param id The skill ID to be added.
      */
     public void addSkill(int id) {
-        skills = expandArray(skills, id);
+        // if player already has skill then return
+        for (int[] skill: skills) {
+            if (skill[0] == id) {
+                return;
+            }
+        }
+
+        int [] skill = {id, 1};
+        skills.add(skill);
     }
 
     // Add an item to the inventory
@@ -64,7 +77,17 @@ public class PlayerState {
      * @param id The item ID to be added.
      */
     public void addItem(int id) {
-        items = expandArray(items, id);
+        //add check for if item is in items already, if so iterate item[1] by 1
+        for (int[] item: items) {
+            if (item[0] == id) {
+                item[1] += 1;
+                return;
+            }
+        }
+
+        // means item not in inventory so add it as a new item
+        int [] item = {id, 1};
+        items.add(item);
     }
 
     // Remove an item from the inventory
@@ -75,7 +98,29 @@ public class PlayerState {
      * @param id The item ID to be removed.
      */
     public void removeItem(int id) {
-        items = removeFromArray(items, id);
+        for (int[] item: items) {
+            if (item[0] == id && item[1] == 1) {
+                items.remove(item);
+                return;
+            }
+
+            if (item[0] == id) {
+                item[1] -= 1;
+            }
+        }
+    }
+
+    public void removeSkill(int id) {
+        items.removeIf(skill -> skill[0] == id);
+    }
+
+    public boolean updateTokens(int delta) {
+        int newTokenAmount = tokens + delta;
+        if (newTokenAmount < 0) {
+            return false;
+        }
+        tokens += delta;
+        return true;
     }
 
     // Utility method to expand an array by adding a new element
@@ -92,16 +137,6 @@ public class PlayerState {
         newArray[array.length] = newElement;
         return newArray;
     }
-
-
-   /*
-   public void move(int[][] newPosition) {
-        this.position = newPosition;
-        System.out.println("Player moved to new position.");
-    }
-
-    */
-
 
     // Utility method to remove an element from an array
     /**
@@ -130,7 +165,6 @@ public class PlayerState {
         return newArray;
     }
 
-
     /**
      * Retrieves the player's current health.
      *
@@ -151,7 +185,11 @@ public class PlayerState {
      * @return An array of skill IDs.
      */
     public int[] getSkillList() {
-        return skills;
+        return getArrayFromIndexInDoubleArray(skills, 0);
+    }
+
+    public int[] getSkillLevels() {
+        return getArrayFromIndexInDoubleArray(skills, 1);
     }
 
     /**
@@ -160,8 +198,20 @@ public class PlayerState {
      * @return An array of item IDs.
      */
     public int[] getItemList() {
-        return items;
+        return getArrayFromIndexInDoubleArray(items, 0);
     }//
+
+    public int[] getItemAmountsList() {
+        return getArrayFromIndexInDoubleArray(items, 1);
+    }
+
+    public int[] getArrayFromIndexInDoubleArray(ArrayList<int[]> doubleArray, int index) {
+        int[] newArray = new int[0];
+        for (int[] array: doubleArray) {
+            newArray = expandArray(newArray, array[index]);
+        }
+        return newArray;
+    }
 
     public int getTokens() {
         return tokens;

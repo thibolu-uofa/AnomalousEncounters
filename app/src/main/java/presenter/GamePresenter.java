@@ -4,6 +4,7 @@ import static model.Utils.getDataProperty;
 import static model.Utils.getStringListOfDataProperty;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -36,6 +37,7 @@ public class GamePresenter extends AppCompatActivity {
 
         playerState.addItem(0);
         playerState.addItem(1);
+        playerState.addItem(1);
 
         // Initialize gameView and set it as the view
         view = new GameView(this, this);
@@ -45,10 +47,10 @@ public class GamePresenter extends AppCompatActivity {
         encounterSystem = new EncounterSystem();
 
         // MORE TESTING
-//        Log.d("Skill Names", getSkillNames());
-//        Log.d("Skill Description", getSkillDescription(0));
-//        Log.d("Item Names", getItemNames());
-//        Log.d("Item Description", getItemDescription(0));
+        Log.d("Skill Names", getSkillNamesString());
+        Log.d("Skill Description", getSkillDescription(0));
+        Log.d("Item Names", getItemNames());
+        Log.d("Item Description", getItemDescription(0));
 
         setUpBattle(0);
     }
@@ -129,13 +131,13 @@ public class GamePresenter extends AppCompatActivity {
         return getDataProperty("skills.json", "description", skillIds, this);
     }
 
-    public String getSkillLevel() {
-        int[] skillIds = playerState.getSkillList();
-        StringBuilder skillLevels = new StringBuilder();
-        for (int id: skillIds) {
-            skillLevels.append(1).append('\n');
+    public String getSkillLevelsString() {
+        int[] skillLevels = playerState.getSkillLevels();
+        StringBuilder skillLevelsString = new StringBuilder();
+        for (int level: skillLevels) {
+            skillLevelsString.append(level).append('\n');
         }
-        return String.valueOf(skillLevels);
+        return String.valueOf(skillLevelsString);
     }
 
     public String getItemNames() {
@@ -149,12 +151,12 @@ public class GamePresenter extends AppCompatActivity {
     }
 
     public String getItemAmounts() {
-        int[] itemIds = playerState.getItemList();
-        StringBuilder itemAmounts = new StringBuilder();
-        for (int id: itemIds) {
-            itemAmounts.append(12).append('\n');
+        int[] itemAmounts = playerState.getItemAmountsList();
+        StringBuilder itemAmountsString = new StringBuilder();
+        for (int amount: itemAmounts) {
+            itemAmountsString.append(amount).append('\n');
         }
-        return String.valueOf(itemAmounts);
+        return String.valueOf(itemAmountsString);
     }
 
     // This method executes when the user continues the game

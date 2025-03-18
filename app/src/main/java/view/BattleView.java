@@ -18,7 +18,7 @@ public class BattleView {
     private Sprite grid;
     private MenuNinePatch playerInfo;
     private MenuNinePatch enemyInfo;
-    private SideBar sideBar;
+    private BattleSideBar sideBar;
     private final int MAX_CARD_WIDTH = 650;
     private GamePresenter presenter;
 
@@ -34,7 +34,7 @@ public class BattleView {
         @SuppressLint("UseCompatLoadingForDrawables") NinePatchDrawable enemyInfoNinePatchDrawable = (NinePatchDrawable) context.getResources().getDrawable(R.drawable.border1, null);
         enemyInfo = new MenuNinePatch(enemyInfoNinePatchDrawable, 30, 75 + playerInfo.getHeight() + 30, "The Strange Triangle\nHP 9/10", MAX_CARD_WIDTH, false, context);
 
-        sideBar = new SideBar(1750, 75, context, presenter);
+        sideBar = new BattleSideBar(1750, 75, context, presenter);
     }
 
     public void updateMenuTexts() {
