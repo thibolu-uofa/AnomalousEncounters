@@ -57,8 +57,9 @@ public class PlayerState {
      * Adds a skill to the player's skill list.
      *
      * @param id The skill ID to be added.
+     * @param level The level of the skill to be added.
      */
-    public void addSkill(int id) {
+    public void addSkill(int id, int level) {
         // if player already has skill then return
         for (int[] skill: skills) {
             if (skill[0] == id) {
@@ -66,7 +67,7 @@ public class PlayerState {
             }
         }
 
-        int [] skill = {id, 1};
+        int [] skill = {id, level};
         skills.add(skill);
     }
 
@@ -75,8 +76,9 @@ public class PlayerState {
      * Adds an item to the player's inventory.
      *
      * @param id The item ID to be added.
+     * @param amount The amount of the item to add.
      */
-    public void addItem(int id) {
+    public void addItem(int id, int amount) {
         //add check for if item is in items already, if so iterate item[1] by 1
         for (int[] item: items) {
             if (item[0] == id) {
@@ -86,7 +88,7 @@ public class PlayerState {
         }
 
         // means item not in inventory so add it as a new item
-        int [] item = {id, 1};
+        int [] item = {id, amount};
         items.add(item);
     }
 

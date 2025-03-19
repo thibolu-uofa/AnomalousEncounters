@@ -1,12 +1,17 @@
 package presenter;
 
 import static model.Utils.getDataProperty;
+import static model.Utils.getSingleDataProperty;
 import static model.Utils.getStringListOfDataProperty;
 
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -27,17 +32,18 @@ public class GamePresenter extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        playerState = new PlayerState("Nxy", 25); //make player name a string resource
-        //TESTING PURPOSES
-        playerState.addSkill(0);
-        playerState.addSkill(1);
-        playerState.addSkill(2);
-        playerState.addSkill(6);
-        playerState.addSkill(9);
+        makeNewPlayer();
 
-        playerState.addItem(0);
-        playerState.addItem(1);
-        playerState.addItem(1);
+        //TESTING PURPOSES
+//        playerState.addSkill(0);
+//        playerState.addSkill(1);
+//        playerState.addSkill(2);
+//        playerState.addSkill(6);
+//        playerState.addSkill(9);
+//
+//        playerState.addItem(0);
+//        playerState.addItem(1);
+//        playerState.addItem(1);
 
         // Initialize gameView and set it as the view
         view = new GameView(this, this);
@@ -53,6 +59,46 @@ public class GamePresenter extends AppCompatActivity {
         Log.d("Item Description", getItemDescription(0));
 
         setUpBattle(0);
+    }
+
+    private void makeNewPlayer() {
+        int newPlayerIndex = 0;
+        String name = (String) getSingleDataProperty("player_config.json", "name", newPlayerIndex, this);
+        int maxHealth = (int) getSingleDataProperty("player_config.json", "maxHealth", newPlayerIndex, this);
+
+        playerState = new PlayerState(name, maxHealth);
+
+        loadPlayerItems(newPlayerIndex);
+        loadPlayerSkills(newPlayerIndex);
+    }
+
+    private void loadPlayerItems(int playerIndex) {
+        try {
+            JSONArray items = (JSONArray) getSingleDataProperty("player_config.json", "items", playerIndex, this);
+            for (int i = 0; i < items.length(); i++) {
+                JSONObject item = items.getJSONObject(i);
+                int itemId = item.getInt("id");
+                int itemAmount = item.getInt("amount");
+                playerState.addItem(itemId, itemAmount);
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void loadPlayerSkills(int playerIndex) {
+        try {
+            JSONArray skills = (JSONArray) getSingleDataProperty("player_config.json", "skills", playerIndex, this);
+            for (int i = 0; i < skills.length(); i++) {
+                JSONObject skill = skills.getJSONObject(i);
+                int skillId = skill.getInt("id");
+                int skillLevel = skill.getInt("level");
+                playerState.addSkill(skillId, skillLevel);
+            }
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean isInHitbox(int eventX, int eventY, int leftX, int rightX, int topY, int bottomY) {

@@ -54,4 +54,10 @@ public class Skill {
         return name;
     }
 
+    //POST BATTLE FUNCTIONS
+    //getCurrentExperience increase skill experience (use some math, can just increase experience by 10 for now), the add the calculated
+    //experience to currentExperience, if greater than maxExperience, find out the extra amount
+    //and setCurrent experience to the extra amount and increase skill level by one
+
+    //getCurrentLevel returns the current skill level
 }
