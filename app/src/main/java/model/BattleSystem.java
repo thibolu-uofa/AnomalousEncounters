@@ -168,7 +168,7 @@ public class BattleSystem {
     private void useEnemeySkill() {
         //get skill using getRandomEnemySkill
         //then use skill (similar logic to player using skill)
-        Skill skill = getSkillByName(skillName, enemySkills);
+        Skill skill = getRandomEnemySkill();
         if (skill == null) {
             return;
         } // Exit if skill not found
@@ -191,22 +191,12 @@ public class BattleSystem {
         // choose a skill from the enemy skill list
         // then return that skill
         // Step 1: Get the enemy's skill IDs (Stored in JSON array)
-        List<Integer> skillIds = enemyState.getSkillList(); // Returns List<Integer>
+        int[] skillIds = enemyState.getSkillList(); // Returns List<Integer>
 
-        // Step 2: Load all skills from the JSON file
-        List<Skill> allSkills = (List<Skill>) loadJsonArrayFromFile("skills.json", presenter.getBaseContext());
+       Random rand = new Random();
+       int random_skill_id = rand.nextInt(skillIds.length);
 
-        // Step 3: Filter available skills based on skill IDs
-        List<Skill> enemySkills = allSkills.stream()
-                .filter(skill -> skillIds.contains(skill.getId())) // Match IDs correctly
-                .collect(Collectors.toList());
-
-        // Step 4: Choose a random skill if available
-        if (!enemySkills.isEmpty()) {
-            Random random = new Random();
-            return enemySkills.get(random.nextInt(enemySkills.size()));
-        }
-        return null; // No skills available
+       return enemySkills.get(random_skill_id);
     }
     public Skill getSkillByName(String name, ArrayList<Skill> skillList) {
         // this function goes and finds the correct skill by matching the name to the name on
