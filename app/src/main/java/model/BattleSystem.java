@@ -3,13 +3,17 @@ package model;
 import static model.Utils.getStringListOfDataProperty;
 import static model.Utils.getRepeatingPattern;
 import static model.Utils.getSingleDataProperty;
+import static model.Utils.loadJsonArrayFromFile;
 
 import android.content.Context;
 import org.json.JSONArray;
 import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 import presenter.GamePresenter;
 
@@ -35,7 +39,9 @@ public class BattleSystem {
     private int maxCols;
 
     private boolean hasPlayerAttacked;
+    private boolean hasEnemyAttacked;
     private boolean hasPlayerMoved;
+    private boolean hasEnemyMoved;
 
 
     private static final Map<CurrentAction, Boolean> actionsPerformed = new HashMap<>() {{
@@ -89,6 +95,7 @@ public class BattleSystem {
         isPlayerTurn = !isPlayerTurn;
         hasPlayerMoved = false;
         hasPlayerAttacked = false;
+        hasEnemyMoved = false;
     }
 
     public boolean didAtkHit(ArrayList<int[]> coords) {
@@ -161,14 +168,46 @@ public class BattleSystem {
     private void useEnemeySkill() {
         //get skill using getRandomEnemySkill
         //then use skill (similar logic to player using skill)
+        Skill skill = getSkillByName(skillName, enemySkills);
+        if (skill == null) {
+            return;
+        } // Exit if skill not found
+
+        // Get affected tiles using player's position
+        ArrayList<int[]> affectedTiles = skill.getAffectedTiles(enemyPosition);
+
+        // Check if the attack hits
+        if (didAtkHit(affectedTiles)) {
+            // Get skill damage
+            int damage = skill.getDamage();
+
+            // Apply damage to enemyState using modifyHealth() (negative delta for damage)
+            playerState.modifyHealth(-damage);
+            hasEnemyAttacked = true;
+        }
     }
 
     private Skill getRandomEnemySkill() {
         // choose a skill from the enemy skill list
         // then return that skill
-        return new Skill();
-    }
+        // Step 1: Get the enemy's skill IDs (Stored in JSON array)
+        List<Integer> skillIds = enemyState.getSkillList(); // Returns List<Integer>
 
+        // Step 2: Load all skills from the JSON file
+        List<Skill> allSkills = (List<Skill>) loadJsonArrayFromFile("skills.json", presenter.getBaseContext());
+
+        // Step 3: Filter available skills based on skill IDs
+        List<Skill> enemySkills = allSkills.stream()
+                .filter(skill -> skillIds.contains(skill.getId())) // Match IDs correctly
+                .collect(Collectors.toList());
+
+        // Step 4: Choose a random skill if available
+        if (!enemySkills.isEmpty()) {
+            Random random = new Random();
+            return enemySkills.get(random.nextInt(enemySkills.size()));
+        }
+        return null; // No skills available
+    }
     public Skill getSkillByName(String name, ArrayList<Skill> skillList) {
         // this function goes and finds the correct skill by matching the name to the name on
         //each Skill in the the skill list
@@ -179,6 +218,21 @@ public class BattleSystem {
         }
         return null; // Skill not found, return null
     }
+    public ArrayList<Integer> getEnemySkillIDs(int enemyId) {
+        JSONArray skillIdsJson = (JSONArray) getSingleDataProperty("enemySkill.json", "skills", enemyId, context);
+        ArrayList<Integer> skillIds = new ArrayList<>();
+
+        try {
+            for (int i = 0; i < skillIdsJson.length(); i++) {
+                skillIds.add(skillIdsJson.getInt(i));
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException("Error parsing skill IDs from enemySkill.json", e);
+        }
+
+        return skillIds;
+    }
+
 
     public void updatePlayerPos(int[] position) {
         // this function just makes playerPosition equal to the position passed in

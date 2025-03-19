@@ -51,7 +51,9 @@ public class PlayerState {
             playerCurrentHealth = 0;
         }
     }
-
+    public void modifyHealth(int delta) {
+        updateHealth(delta); // Calls the private method internally
+    }
     // Add a skill to the skill list
     /**
      * Adds a skill to the player's skill list.
