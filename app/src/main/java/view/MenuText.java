@@ -24,12 +24,14 @@ public class MenuText {
     private StaticLayout textStaticLayout;
     private Context context;
     private boolean hasAutoPadding;
+    private int x;
+    private int y;
 
     public MenuText(String text, int fontSize, int color, int width, boolean isCentre, Context context, boolean hasAutoPadding){
         this.text = text;
         this.fontSize = fontSize;
         this.color = color;
-        this.width= width;
+        this.width = width;
         this.isCentre = isCentre;
         this.context = context;
         this.hasAutoPadding = hasAutoPadding;
@@ -71,6 +73,9 @@ public class MenuText {
         canvas.translate(x + xTextPadding, y + yTextPadding);
         textStaticLayout.draw(canvas);
         canvas.restore();
+
+        this.x = x;
+        this.y = y;
     }
 
     public void updateText(String text) {
@@ -102,5 +107,13 @@ public class MenuText {
         }
 
         return height;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 }

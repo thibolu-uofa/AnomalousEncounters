@@ -14,7 +14,7 @@ import presenter.GamePresenter;
 
 public class BattleSideBar {
     private final MenuNinePatch menuNinePatch;
-    private final RadioBtnList radioBtnList;
+    private final SkillBar skillBar;
     private final int x;
     private final int y;
     private final int WIDTH = 600;
@@ -27,21 +27,18 @@ public class BattleSideBar {
         @SuppressLint("UseCompatLoadingForDrawables") NinePatchDrawable playerInfoNinePatchDrawable = (NinePatchDrawable) context.getResources().getDrawable(R.drawable.border2, null);
         menuNinePatch = new MenuNinePatch(playerInfoNinePatchDrawable, x, y, WIDTH, HEIGHT);
 
-        ArrayList<String> skillArrayList = presenter.getSkillNamesArray();
-        radioBtnList = new RadioBtnList(x + 40, y + 120, context, skillArrayList, WIDTH, HEIGHT);
+        skillBar = new SkillBar(x, y, WIDTH, HEIGHT, presenter, context);
     }
 
     public void checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
         boolean hasBeenPressed = presenter.isInHitbox((int) eventX, (int) eventY, x, x + WIDTH, y + HEIGHT, y);
         if (hasBeenPressed) {
-            radioBtnList.checkForBtnPress(eventX, eventY, presenter);
+            skillBar.checkForUserTouch(eventX, eventY, presenter);
         }
     }
 
     public void draw(Canvas canvas, Paint paint) {
         menuNinePatch.draw(canvas);
-
-        //TESTING
-        radioBtnList.draw(canvas, paint);
+        skillBar.draw(canvas, paint);
     }
 }

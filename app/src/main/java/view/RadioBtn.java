@@ -74,4 +74,8 @@ public class RadioBtn {
     public int getHeight() {
         return checkedBtn.getHeight();
     }
+
+    public int getY() {
+        return y;
+    }
 }
