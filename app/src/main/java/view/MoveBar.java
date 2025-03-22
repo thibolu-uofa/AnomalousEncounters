@@ -10,10 +10,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.util.Log;
 
 import com.example.anomalousencounters.R;
 
 import java.util.ArrayList;
+
+import presenter.GamePresenter;
 
 public class MoveBar {
     private Sprite upArrow;
@@ -71,6 +74,19 @@ public class MoveBar {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
+
+    public String checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
+        for (MenuText btn: textButtons) {
+            int rightX = btn.getX() + btn.getActualTextWidth();
+            int topY = btn.getY() + btn.getHeight();
+            boolean hasBeenPressed = presenter.isInHitbox((int) eventX, (int) eventY, btn.getX(), rightX, topY, btn.getY());
+            if (hasBeenPressed) {
+                Log.d("Pressed a button >.<", "You pressed a button");
+                return btn.getText();
+            }
+        }
+        return "";
     }
 
     public void draw(Canvas canvas, Paint paint){

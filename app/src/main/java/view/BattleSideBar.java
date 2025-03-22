@@ -9,6 +9,8 @@ import android.graphics.drawable.NinePatchDrawable;
 import com.example.anomalousencounters.R;
 
 import java.util.ArrayList;
+import android.util.Log;
+import java.util.Objects;
 
 import presenter.GamePresenter;
 
@@ -49,13 +51,45 @@ public class BattleSideBar {
         if (hasBeenPressed) {
             switch(currentDisplay){
                 case ACTION_BAR:
-                    actionBar.checkForUserTouch(eventX, eventY, presenter);
+                    processActionBarTouch(actionBar.checkForUserTouch(eventX, eventY, presenter));
                     break;
                 case SKILL_BAR:
-                    skillBar.checkForUserTouch(eventX, eventY, presenter);
+                    processGoBack(skillBar.checkForUserTouch(eventX, eventY, presenter));
+                    break;
+                case MOVE_BAR:
+                    processGoBack(moveBar.checkForUserTouch(eventX, eventY, presenter));
                     break;
             }
         }
+    }
+
+    private void processActionBarTouch(String button_text) {
+        if (Objects.equals(button_text, "")) {
+            return;
+        }
+
+        switch(button_text){
+            case "[ATK]":
+                changeDisplay(DisplayOptions.SKILL_BAR);
+                break;
+            case "[MOVE]":
+                changeDisplay(DisplayOptions.MOVE_BAR);
+                break;
+            case "[USE]":
+                Log.d("Button Processing", "USE BTN");
+                break;
+            case "End Turn":
+                Log.d("Button Processing", "END MY TURN");
+                break;
+        }
+    }
+
+    private void processGoBack(String button_text) {
+        if (!Objects.equals(button_text, "[Go Back]")) {
+            return;
+        }
+        Log.d("User wants to go back", "GO BACK");
+        changeDisplay(DisplayOptions.ACTION_BAR);
     }
 
     public void draw(Canvas canvas, Paint paint) {

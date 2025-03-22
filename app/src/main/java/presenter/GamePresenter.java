@@ -47,7 +47,7 @@ public class GamePresenter extends AppCompatActivity {
 //        Log.d("Item Description", getItemDescription(0));
 
         //FOR TESTING PURPOSES
-        setUpBattle(0);
+//        setUpBattle(0);
     }
 
     private void makeNewPlayer() {
@@ -127,8 +127,11 @@ public class GamePresenter extends AppCompatActivity {
         }
     }
 
-    public boolean hasPlayerEncounteredEnemy(int playerX) {
-        return encounterSystem.hasEncounteredEnemy(playerX);
+    public void hasPlayerEncounteredEnemy(int playerX) {
+        if (encounterSystem.hasEncounteredEnemy(playerX)) {
+            int enemyId = encounterSystem.getRandomEnemyId();
+            setUpBattle(enemyId);
+        }
     }
 
     public void setUpBattle(int enemyId) {

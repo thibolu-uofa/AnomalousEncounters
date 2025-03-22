@@ -36,7 +36,7 @@ public class SkillBar {
         radioBtnList = new RadioBtnList(x + 40, y + 120, context, skillArrayList, width, height);
     }
 
-    public void checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
+    public String checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
         radioBtnList.checkForBtnPress(eventX, eventY, presenter);
 
         for (MenuText btn: buttons) {
@@ -45,8 +45,10 @@ public class SkillBar {
             boolean hasBeenPressed = presenter.isInHitbox((int) eventX, (int) eventY, btn.getX(), rightX, topY, btn.getY());
             if (hasBeenPressed) {
                 Log.d("Pressed a button >.<", "You pressed a button");
+                return btn.getText();
             }
         }
+        return "";
     }
 
     public void draw(Canvas canvas, Paint paint) {

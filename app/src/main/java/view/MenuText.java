@@ -116,4 +116,8 @@ public class MenuText {
     public int getY() {
         return y;
     }
+
+    public String getText() {
+        return text;
+    }
 }

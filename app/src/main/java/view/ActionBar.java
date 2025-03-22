@@ -36,7 +36,7 @@ public class ActionBar {
         endTurn = new MenuText("End Turn", FONT_SIZE_LARGE, SECONDARY_TEXT_COLOR, width, false, context, true);
     }
 
-    public void checkForUserTouch(float eventX, float eventY, GamePresenter presenter){
+    public String checkForUserTouch(float eventX, float eventY, GamePresenter presenter){
         ArrayList<MenuText> allButtons = new ArrayList<>(actionButtons);
         allButtons.add(endTurn);
 
@@ -47,10 +47,13 @@ public class ActionBar {
             int bottomY = button.getY();
             int topY = bottomY + button.getHeight();
             boolean actionBtnHasBeenPressed = presenter.isInHitbox((int) eventX, (int) eventY, leftX, rightX, topY, bottomY);
+            //do switch case on button text
             if (actionBtnHasBeenPressed) {
-                Log.d("You Pressed a Btn", "You pressed a btn");
+                Log.d("You Pressed a Btn", "You pressed a btn: " + button.getText());
+                return button.getText();
             }
         }
+        return "";
     }
 
     public void draw(Canvas canvas){
