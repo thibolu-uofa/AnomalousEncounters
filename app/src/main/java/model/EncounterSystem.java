@@ -11,6 +11,7 @@ public class EncounterSystem {
     private final ArrayList<int[]> startAndEndPoints = new ArrayList<>();
     private final int ENCOUNTER_PROBABILITY = 4;
     private int numberOfEnemies = 9;
+    private int previousEnemyId = -1;
 
     public EncounterSystem() {
         startAndEndPoints.add(new int[]{-927, -1172});
@@ -40,6 +41,16 @@ public class EncounterSystem {
 
     public int getRandomEnemyId() {
         Random rand = new Random();
-        return rand.nextInt(numberOfEnemies);
+        int enemyId = rand.nextInt(numberOfEnemies);
+
+        while (enemyId == previousEnemyId){
+            enemyId = rand.nextInt(numberOfEnemies);
+        }
+
+        if (previousEnemyId == -1){
+            previousEnemyId = enemyId;
+        }
+
+        return enemyId;
     }
 }
