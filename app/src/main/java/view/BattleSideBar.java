@@ -16,6 +16,7 @@ public class BattleSideBar {
     private final MenuNinePatch menuNinePatch;
     private final SkillBar skillBar;
     private final ActionBar actionBar;
+    private final MoveBar moveBar;
 
     private final int x;
     private final int y;
@@ -38,6 +39,7 @@ public class BattleSideBar {
 
         actionBar = new ActionBar(x, y, WIDTH, context);
         skillBar = new SkillBar(x, y, WIDTH, HEIGHT, presenter, context);
+        moveBar = new MoveBar(x, y, WIDTH, context);
 
         currentDisplay = DisplayOptions.ACTION_BAR;
     }
@@ -65,6 +67,8 @@ public class BattleSideBar {
             case SKILL_BAR:
                 skillBar.draw(canvas, paint);
                 break;
+            case MOVE_BAR:
+                moveBar.draw(canvas, paint);
         }
     }
 

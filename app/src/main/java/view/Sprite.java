@@ -6,7 +6,7 @@ import android.graphics.Paint;
 import presenter.GamePresenter;
 
 public class Sprite {
-    public final Bitmap imageResource;
+    public Bitmap imageResource;
     private int x;
     private int y;
     private int width;
@@ -22,6 +22,10 @@ public class Sprite {
     public void draw(Canvas canvas, Paint paint){
         canvas.drawBitmap(imageResource, x, y, paint);
     } // end draw
+
+    public void updateBitmap(Bitmap imageResource){
+        this.imageResource = imageResource;
+    }
     public int getX() {
         return x;
     }//end getX
