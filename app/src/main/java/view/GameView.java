@@ -257,6 +257,10 @@ public class GameView  extends SurfaceView implements Runnable{
         battleView.updateEnemyPosition(x, y);
     }
 
+    public void setEnemyImage(String name) {
+        battleView.setEnemyIcon(name, getContext());
+    }
+
     /**
      * Function to shutdown our thread when the activity if paused or stopped
      * The implementation of this function comes from:

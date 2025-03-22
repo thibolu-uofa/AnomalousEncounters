@@ -302,4 +302,8 @@ public class BattleSystem {
     public int getMaxCols() {
         return maxCols;
     }
+
+    public EnemyState getEnemyState() {
+        return enemyState;
+    }
 }

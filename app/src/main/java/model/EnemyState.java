@@ -104,4 +104,16 @@ public class EnemyState {
     public int[] getSkillList() {
         return skills;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getEnemyMaxHealth() {
+        return enemyMaxHealth;
+    }
+
+    public int getEnemyCurrentHealth() {
+        return enemyCurrentHealth;
+    }
 }//

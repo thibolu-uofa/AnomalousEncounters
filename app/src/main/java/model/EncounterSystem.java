@@ -10,7 +10,7 @@ public class EncounterSystem {
     private GamePresenter presenter;
     private final ArrayList<int[]> startAndEndPoints = new ArrayList<>();
     private final int ENCOUNTER_PROBABILITY = 4;
-    private int[] enemyIds = {0, 1, 2};
+    private int numberOfEnemies = 9;
 
     public EncounterSystem() {
         startAndEndPoints.add(new int[]{-927, -1172});
@@ -40,8 +40,6 @@ public class EncounterSystem {
 
     public int getRandomEnemyId() {
         Random rand = new Random();
-        int randomEnemyId = rand.nextInt(enemyIds.length);
-        return enemyIds[randomEnemyId];
+        return rand.nextInt(numberOfEnemies);
     }
-
 }

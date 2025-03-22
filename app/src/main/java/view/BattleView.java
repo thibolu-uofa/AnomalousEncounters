@@ -8,9 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
-import android.util.Log;
 
 import com.example.anomalousencounters.R;
 
@@ -19,7 +17,7 @@ import presenter.GamePresenter;
 public class BattleView {
     private Sprite grid;
     private Sprite playerIcon;
-    private Sprite entityIcon;
+    private Sprite enemyIcon;
     private MenuNinePatch playerInfo;
     private MenuNinePatch enemyInfo;
     private BattleSideBar sideBar;
@@ -39,7 +37,7 @@ public class BattleView {
         playerIcon = new Sprite(playerIconBitmap, gridX + 100, gridY + 100);
 
         Bitmap enemyIconBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.depressed_mustache);
-        entityIcon = new Sprite(enemyIconBitmap, gridX + GRID_BORDER_WEIGHT, gridY + GRID_BORDER_WEIGHT);
+        enemyIcon = new Sprite(enemyIconBitmap, gridX + GRID_BORDER_WEIGHT, gridY + GRID_BORDER_WEIGHT);
 
 
         @SuppressLint("UseCompatLoadingForDrawables") NinePatchDrawable playerInfoNinePatchDrawable = (NinePatchDrawable) context.getResources().getDrawable(R.drawable.border1, null);
@@ -53,7 +51,7 @@ public class BattleView {
 
     public void updateMenuTexts() {
         playerInfo.updateText(presenter.getPlayerNameAndHealth());
-        enemyInfo.updateText("The Strange Triangle\nHP 9/10");
+        enemyInfo.updateText(presenter.getEnemyNameAndHealth());
     }
 
     public void checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
@@ -64,7 +62,7 @@ public class BattleView {
         canvas.drawColor(BATTLE_BACKGROUND_COLOR);
         grid.draw(canvas, paint);
         playerIcon.draw(canvas, paint);
-        entityIcon.draw(canvas, paint);
+        enemyIcon.draw(canvas, paint);
         playerInfo.draw(canvas);
         enemyInfo.draw(canvas);
         sideBar.draw(canvas, paint);
@@ -84,7 +82,13 @@ public class BattleView {
     }
 
     public void updateEnemyPosition(int x, int y) {
-        entityIcon.setX(grid.getX() + x + GRID_BORDER_WEIGHT);
-        entityIcon.setY(grid.getY() + y + GRID_BORDER_WEIGHT);
+        enemyIcon.setX(grid.getX() + x + GRID_BORDER_WEIGHT);
+        enemyIcon.setY(grid.getY() + y + GRID_BORDER_WEIGHT);
+    }
+
+    public void setEnemyIcon(String imageName, Context context) {
+        int resourceId = context.getResources().getIdentifier(imageName, "drawable",  context.getPackageName());
+        Bitmap enemyIconBitmap = BitmapFactory.decodeResource(context.getResources(), resourceId);
+        enemyIcon.updateBitmap(enemyIconBitmap);
     }
 }

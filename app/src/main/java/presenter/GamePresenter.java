@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import model.BattleSystem;
 import model.EncounterSystem;
+import model.EnemyState;
 import model.GameLogic;
 import model.PlayerState;
 import view.GameView;
@@ -26,6 +27,7 @@ public class GamePresenter extends AppCompatActivity {
     private GameLogic gameLogic;
     private PlayerState playerState;
     private EncounterSystem encounterSystem;
+    private BattleSystem battleSystem;
 
 
     @Override
@@ -130,15 +132,28 @@ public class GamePresenter extends AppCompatActivity {
     public void hasPlayerEncounteredEnemy(int playerX) {
         if (encounterSystem.hasEncounteredEnemy(playerX)) {
             int enemyId = encounterSystem.getRandomEnemyId();
+            Log.d("Enemy ID picked", "Enemy ID:" + enemyId);
             setUpBattle(enemyId);
         }
     }
 
+    public String getEnemyNameAndHealth() {
+        EnemyState enemyState = battleSystem.getEnemyState();
+        String name = enemyState.getName();
+        String maxHealth = String.valueOf(enemyState.getEnemyMaxHealth());
+        String currentHealth = String.valueOf(enemyState.getEnemyCurrentHealth());
+        return name + "\nHP: " + maxHealth + "/" + currentHealth;
+    }
+
     public void setUpBattle(int enemyId) {
-        BattleSystem battleSystem = new BattleSystem(playerState, enemyId, this);
+        battleSystem = new BattleSystem(playerState, enemyId, this);
 
         // tell view that a battle has started
         view.displayBattle();
+
+        //tell view what enemy image to use
+        String image_name = (String) getSingleDataProperty("enemies.json", "image_name", enemyId, this);
+        view.setEnemyImage(image_name);
 
         // tell view to draw player and enemy
         int [] playerPosition = battleSystem.getPlayerPosition();
