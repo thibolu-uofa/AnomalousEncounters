@@ -55,8 +55,8 @@ public class SkillBar {
 
         radioBtnList.draw(canvas, paint);
 
-        int padding = 50;
-        int y_pos = radioBtnList.getTopY()   + padding;
+        int padding = 70;
+        int y_pos = radioBtnList.getTopY() + padding;
         for (MenuText btn: buttons) {
             btn.draw(canvas, x, y_pos);
             y_pos += padding;

@@ -5,7 +5,8 @@
     "maxhealth": 15,
     "type": "Life",
     "skills": [0, 1],
-    "item_drops": [7]
+    "item_drops": [7],
+    "image_url": "strange_triangle.png"
   },
   {
     "id": 1,
@@ -13,7 +14,8 @@
     "maxhealth": 15,
     "type": "Nothingness",
     "skills": [8, 11],
-    "item_drops": [7]
+    "item_drops": [7],
+    "image_url": "shapeless.png"
   },
   {
     "id": 2,
@@ -21,6 +23,7 @@
     "maxhealth": 15,
     "type": "Death",
     "skills": [4, 6],
-    "item_drops": [7]
+    "item_drops": [7],
+    "image_url": "cursed_banana.png"
   }
 ]

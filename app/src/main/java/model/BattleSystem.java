@@ -286,4 +286,20 @@ public class BattleSystem {
         int maxHealth = (int) getSingleDataProperty("enemies.json", "maxhealth", enemyId, context);
         enemyState = new EnemyState(name, maxHealth);
     }
+
+    public int[] getPlayerPosition() {
+        return playerPosition;
+    }
+
+    public int[] getEnemyPosition() {
+        return enemyPosition;
+    }
+
+    public int getMaxRows() {
+        return maxRows;
+    }
+
+    public int getMaxCols() {
+        return maxCols;
+    }
 }

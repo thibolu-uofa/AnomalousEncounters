@@ -33,18 +33,6 @@ public class GamePresenter extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         makeNewPlayer();
-
-        //TESTING PURPOSES
-//        playerState.addSkill(0);
-//        playerState.addSkill(1);
-//        playerState.addSkill(2);
-//        playerState.addSkill(6);
-//        playerState.addSkill(9);
-//
-//        playerState.addItem(0);
-//        playerState.addItem(1);
-//        playerState.addItem(1);
-
         // Initialize gameView and set it as the view
         view = new GameView(this, this);
         setContentView(view);
@@ -53,11 +41,12 @@ public class GamePresenter extends AppCompatActivity {
         encounterSystem = new EncounterSystem();
 
         // MORE TESTING
-        Log.d("Skill Names", getSkillNamesString());
-        Log.d("Skill Description", getSkillDescription(0));
-        Log.d("Item Names", getItemNames());
-        Log.d("Item Description", getItemDescription(0));
+//        Log.d("Skill Names", getSkillNamesString());
+//        Log.d("Skill Description", getSkillDescription(0));
+//        Log.d("Item Names", getItemNames());
+//        Log.d("Item Description", getItemDescription(0));
 
+        //FOR TESTING PURPOSES
         setUpBattle(0);
     }
 
@@ -144,6 +133,32 @@ public class GamePresenter extends AppCompatActivity {
 
     public void setUpBattle(int enemyId) {
         BattleSystem battleSystem = new BattleSystem(playerState, enemyId, this);
+
+        // tell view that a battle has started
+        view.displayBattle();
+
+        // tell view to draw player and enemy
+        int [] playerPosition = battleSystem.getPlayerPosition();
+        int [] enemyPosition = battleSystem.getEnemyPosition();
+
+        // covert position to board dimensions
+        int rows = battleSystem.getMaxRows();
+        int cols = battleSystem.getMaxCols();
+        int boardWidth = view.getBoardWidth();
+        int boardHeight = view.getBoardHeight();
+
+        int tileWidth = boardWidth / cols;
+        int tileHeight = boardHeight / rows;
+
+        int playerBoardX = playerPosition[0] * tileWidth;
+        int playerBoardY = playerPosition[1] * tileHeight;
+
+        int enemyBoardX = enemyPosition[0] * tileWidth;
+        int enemyBoardY = enemyPosition[1] * tileHeight;
+
+        //tell view to draw player and enemy
+        view.updatePlayerGridPosition(playerBoardX, playerBoardY);
+        view.updateEnemyGridPosition(enemyBoardX, enemyBoardY);
     }
 
     public String getPlayerNameHealthAndTokens() {

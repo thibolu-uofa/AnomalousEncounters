@@ -75,8 +75,8 @@ public class GameView  extends SurfaceView implements Runnable{
         playerMenu = new PlayerMenu(getContext());
         battleView = new BattleView(this.getContext(), presenter);
 
-        isOnOverworld = false;
-        isInBattle = true;
+        isOnOverworld = true;
+        isInBattle = false;
         canPlayerMove = true;
     }
 
@@ -224,6 +224,40 @@ public class GameView  extends SurfaceView implements Runnable{
     private void updateBackgroundDirection(String playerMovementState) {
         backgroundDirection = presenter.getBackgroundDirection(playerMovementState);
         backgroundImage.setDirection(backgroundDirection);
+    }
+
+    public void displayOverworld() {
+        isOnOverworld = true;
+        isInBattle = false;
+        canPlayerMove = true;
+    }
+
+    public void displayBattle() {
+        isOnOverworld = false;
+        isInBattle = true;
+        canPlayerMove = false;
+    }
+
+    public int getBoardWidth() {
+        if (!isInBattle) {
+            return 0;
+        }
+        return battleView.getBoardWidth();
+    }
+
+    public int getBoardHeight() {
+        if (!isInBattle) {
+            return 0;
+        }
+        return battleView.getBoardHeight();
+    }
+
+    public  void updatePlayerGridPosition(int x, int y) {
+        battleView.updatePlayerPosition(x, y);
+    }
+
+    public  void updateEnemyGridPosition(int x, int y) {
+        battleView.updateEnemyPosition(x, y);
     }
 
     /**
