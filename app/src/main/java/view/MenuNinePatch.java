@@ -16,14 +16,16 @@ public class MenuNinePatch {
     private int height;
     private Rect bounds;
     private MenuText menuText;
-    private final int X_BORDER_WEIGHT = 30;
-    private final int Y_BORDER_WEIGHT = 40;
-    private int PADDING = 100;
-    private boolean hasText;
+    private final int PADDING = 100;
+    private final boolean hasText;
 
 
     public MenuNinePatch(NinePatchDrawable ninePatchDrawable, int x, int y, String text,  int maxWidth, boolean isCentred, Context context){
         menuText = new MenuText(text, FONT_SIZE_SMALL, DEFAULT_TEXT_COLOR, maxWidth, isCentred, context, true);
+
+        int x_BORDER_WEIGHT = 30;
+        int y_BORDER_WEIGHT = 40;
+        menuText.setXAndY(x + x_BORDER_WEIGHT, y + y_BORDER_WEIGHT);
 
         this.ninePatchDrawable = ninePatchDrawable;
         this.x = x;
@@ -33,7 +35,6 @@ public class MenuNinePatch {
         this.bounds = new Rect(x, y, x + width, y + height);
         ninePatchDrawable.setBounds(bounds);
 
-//        Log.d("Text Width and Height", menuText.getActualTextWidth() + " " +  menuText.getHeight());
         hasText = true;
     }
 
@@ -65,7 +66,7 @@ public class MenuNinePatch {
         ninePatchDrawable.draw(canvas);
 
         if (hasText) {
-            menuText.draw(canvas, x + X_BORDER_WEIGHT, y + Y_BORDER_WEIGHT);
+            menuText.draw(canvas);
         }
     }
 

@@ -39,6 +39,11 @@ public class MenuText {
         createTextStaticLayout();
     }
 
+    public void setXAndY(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
     public void createTextStaticLayout() {
         // sets the attributes of the text to draw
         TextPaint textPaint = new TextPaint();
@@ -64,18 +69,16 @@ public class MenuText {
         textStaticLayout = new StaticLayout(text, textPaint, width, textLayout, 1.0f, 0, false);
         height = textStaticLayout.getHeight();
     }
+
     /**
      * The implementation of this function has code adapted from:
      * Source: <a href="https://stackoverflow.com/questions/2655402/android-canvas-drawtext">...</a>
      */
-    public void draw(Canvas canvas, int x, int y){
+    public void draw(Canvas canvas){
         canvas.save();
         canvas.translate(x + xTextPadding, y + yTextPadding);
         textStaticLayout.draw(canvas);
         canvas.restore();
-
-        this.x = x;
-        this.y = y;
     }
 
     public void updateText(String text) {
@@ -115,6 +118,14 @@ public class MenuText {
 
     public int getY() {
         return y;
+    }
+
+    public int[] getTextPositionBound() {
+        int leftX = x;
+        int rightX = x + getActualTextWidth();
+        int topY = y + height;
+        int bottomY = y;
+        return new int[]{leftX, rightX, topY, bottomY};
     }
 
     public String getText() {

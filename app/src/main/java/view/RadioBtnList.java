@@ -10,39 +10,39 @@ import java.util.ArrayList;
 import presenter.GamePresenter;
 
 public class RadioBtnList {
-    private final int numberOfBoxes;
-    private final ArrayList<RadioBtn> radioBtns = new ArrayList<>();
+    private final ArrayList<RadioBtn> radioButtons = new ArrayList<>();
     private RadioBtn checkedBtn;
-    private final ArrayList<String> btnTexts;
     private final int height;
     private final int y;
 
     public RadioBtnList(int x, int y, Context context, ArrayList<String> stringArrayList, int width, int height) {
         this.height = height;
         this.y = y;
-        this.btnTexts = stringArrayList;
-        this.numberOfBoxes = btnTexts.size();
+        int numberOfBoxes = stringArrayList.size();
 
         int PADDING = 35;
         int localY = y;
 
         for (int i = 0; i < numberOfBoxes; i++) {
             RadioBtn radioBtn = new RadioBtn(x, localY, stringArrayList.get(i), width, context);
-            radioBtns.add(radioBtn);
+            radioButtons.add(radioBtn);
             localY += PADDING + radioBtn.getHeight();
         }
     }
 
-    public void checkForBtnPress(float eventX, float eventY, GamePresenter presenter) {
-        for (RadioBtn radioBtn: radioBtns) {
+    public String checkForBtnPress(float eventX, float eventY, GamePresenter presenter) {
+        for (RadioBtn radioBtn: radioButtons) {
             radioBtn.checkForBtnPress(eventX, eventY, presenter);
         }
 
-        for (RadioBtn radioBtn: radioBtns) {
+        for (RadioBtn radioBtn: radioButtons) {
             if (radioBtn.getIsChecked()  && radioBtn != checkedBtn) {
                 setCheckedBtn(radioBtn);
+                Log.d("Clicked radio button", radioBtn.getText());
+                return radioBtn.getText();
             }
         }
+        return "";
     }
 
     private void setCheckedBtn(RadioBtn radioBtn) {
@@ -51,12 +51,12 @@ public class RadioBtnList {
             return;
         }
 
-        checkedBtn.unCheckBtn();
+        checkedBtn.uncheckBtn();
         checkedBtn = radioBtn;
     }
 
     public void draw(Canvas canvas, Paint paint) {
-        for (RadioBtn radioBtn: radioBtns) {
+        for (RadioBtn radioBtn: radioButtons) {
             radioBtn.draw(canvas, paint);
         }
     }
@@ -66,7 +66,7 @@ public class RadioBtnList {
     }
 
     public int getTopY() {
-        RadioBtn lastRadioBtn = radioBtns.get(radioBtns.size() - 1);
+        RadioBtn lastRadioBtn = radioButtons.get(radioButtons.size() - 1);
         return lastRadioBtn.getY() + lastRadioBtn.getHeight();
     }
 

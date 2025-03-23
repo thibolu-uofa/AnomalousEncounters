@@ -13,57 +13,44 @@ import java.util.ArrayList;
 
 import presenter.GamePresenter;
 
-public class ActionBar {
-    private int x;
-    private int y;
-    private ArrayList<MenuText> actionButtons = new ArrayList<>();
-    private MenuText endTurn;
+public class ActionBar extends BaseMenuBar {
     int LEFT_PADDING = 90;
     int TOP_PADDING = 100;
 
     public ActionBar(int x, int y, int width, Context context){
-        this.x = x;
-        this.y = y;
+        super(x, y, width, context);
         MenuText attack = new MenuText("[ATK]", FONT_SIZE_LARGE, DEFAULT_TEXT_COLOR, width, false, context, true);
-        actionButtons.add(attack);
+        textButtons.add(attack);
 
         MenuText use = new MenuText("[USE]", FONT_SIZE_LARGE, DEFAULT_TEXT_COLOR, width, false, context, true);
-        actionButtons.add(use);
+        textButtons.add(use);
 
         MenuText move = new MenuText("[MOVE]", FONT_SIZE_LARGE, DEFAULT_TEXT_COLOR, width, false, context, true);
-        actionButtons.add(move);
+        textButtons.add(move);
 
-        endTurn = new MenuText("End Turn", FONT_SIZE_LARGE, SECONDARY_TEXT_COLOR, width, false, context, true);
+        MenuText endTurn = new MenuText("End Turn", FONT_SIZE_LARGE, SECONDARY_TEXT_COLOR, width, false, context, true);
+        textButtons.add(endTurn);
+
+        setTextPositions();
+    }
+
+    private void setTextPositions() {
+        int PADDING = 30;
+        int text_y = y + PADDING + TOP_PADDING;
+        for(MenuText button: textButtons) {
+            button.setXAndY(x + LEFT_PADDING, text_y);
+            text_y += PADDING + button.getHeight();
+        }
+
+        int END_TURN_Y = 550;
+        textButtons.get(textButtons.size() - 1).setXAndY(x + LEFT_PADDING, y + END_TURN_Y);
     }
 
     public String checkForUserTouch(float eventX, float eventY, GamePresenter presenter){
-        ArrayList<MenuText> allButtons = new ArrayList<>(actionButtons);
-        allButtons.add(endTurn);
-
-        for (int i = 0; i < allButtons.size(); i++) {
-            MenuText button = allButtons.get(i);
-            int leftX = x + LEFT_PADDING;
-            int rightX = leftX + button.getActualTextWidth();
-            int bottomY = button.getY();
-            int topY = bottomY + button.getHeight();
-            boolean actionBtnHasBeenPressed = presenter.isInHitbox((int) eventX, (int) eventY, leftX, rightX, topY, bottomY);
-            //do switch case on button text
-            if (actionBtnHasBeenPressed) {
-                Log.d("You Pressed a Btn", "You pressed a btn: " + button.getText());
-                return button.getText();
-            }
-        }
-        return "";
+        return checkForUserTouchTextButtons(eventX, eventY, presenter);
     }
 
     public void draw(Canvas canvas){
-        int PADDING = 30;
-        int text_y = y + PADDING + TOP_PADDING;
-        for(MenuText actionButton: actionButtons) {
-            actionButton.draw(canvas, x + LEFT_PADDING, text_y);
-            text_y += PADDING + actionButton.getHeight();
-        }
-        int END_TURN_Y = 550;
-        endTurn.draw(canvas, x + LEFT_PADDING, y + END_TURN_Y);
+        drawTextButtons(canvas);
     }
 }

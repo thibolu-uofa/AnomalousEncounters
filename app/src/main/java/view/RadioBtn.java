@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
 
 import com.example.anomalousencounters.R;
 
@@ -19,10 +18,9 @@ public class RadioBtn {
     private final Sprite checkedBtn;
     private Sprite currentBtn;
     private final MenuText menuText;
-    private boolean isTextCentred = false;
-    private int BTN_RIGHT_PADDING = 25;
-    private int x;
-    private int y;
+    private final int BTN_RIGHT_PADDING = 25;
+    private final int x;
+    private final int y;
 
     public RadioBtn(int x, int y, String text, int textWidth, Context context) {
         this.x = x;
@@ -36,17 +34,19 @@ public class RadioBtn {
 
         currentBtn = uncheckedBtn;
 
+        boolean isTextCentred = false;
         menuText = new MenuText(text, FONT_SIZE_SMALL, DEFAULT_TEXT_COLOR, textWidth, isTextCentred, context, false);
+        menuText.setXAndY(x + uncheckedBtn.getWidth() + BTN_RIGHT_PADDING, y);
     }
 
     public void draw(Canvas canvas, Paint paint) {
         currentBtn.draw(canvas, paint);
-        menuText.draw(canvas, x + uncheckedBtn.getWidth() + BTN_RIGHT_PADDING, y);
+        menuText.draw(canvas);
     }
 
     public void checkForBtnPress(float eventX, float eventY, GamePresenter presenter) {
         int rightX = x + BTN_RIGHT_PADDING + uncheckedBtn.getWidth() + menuText.getActualTextWidth();
-        int topY = y + uncheckedBtn.getHeight();
+        int topY = y + menuText.getHeight();
         boolean hasBeenPressed = presenter.isInHitbox((int) eventX, (int) eventY, x, rightX, topY, y);
         if (hasBeenPressed) {
             checkBtn();
@@ -60,7 +60,7 @@ public class RadioBtn {
         currentBtn = checkedBtn;
     }
 
-    public void unCheckBtn() {
+    public void uncheckBtn() {
         if (currentBtn == uncheckedBtn) {
             return;
         }
@@ -77,5 +77,9 @@ public class RadioBtn {
 
     public int getY() {
         return y;
+    }
+
+    public String getText() {
+        return menuText.getText();
     }
 }

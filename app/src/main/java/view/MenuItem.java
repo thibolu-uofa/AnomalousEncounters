@@ -48,7 +48,8 @@ public class MenuItem {
         canvas.drawRect(rectangle, paint);
 
         MenuText menuText = new MenuText(text, FONT_SIZE_MEDIUM, DEFAULT_TEXT_COLOR, width, isTextCentred, context, true);
-        menuText.draw(canvas, x, y);
+        menuText.setXAndY(x, y);
+        menuText.draw(canvas);
     }
 
     public int getWidth() {
