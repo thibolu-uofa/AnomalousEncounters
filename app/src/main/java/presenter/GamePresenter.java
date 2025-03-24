@@ -172,6 +172,75 @@ public class GamePresenter extends AppCompatActivity {
         view.updateEnemyGridPosition(enemyBoardX, enemyBoardY);
     }
 
+    public int[] getPlayerPosition() {
+        return convertPositionToBoardDimensions(battleSystem.getPlayerPosition());
+    }
+
+    public void movePlayer(String direction) {
+        int[] newPlayerPos = getBoardPlayerPosition(direction);
+        battleSystem.updatePlayerPos(newPlayerPos);
+    }
+
+    public int[] getTemporaryPlayerPosition(String direction) {
+        int[] playerPosition = battleSystem.getPlayerPosition();
+        int[] playerTempPosition = new int[2];
+        switch (direction) {
+            case "up":
+                playerTempPosition[0] = playerPosition[0];
+                playerTempPosition[1] = playerPosition[1] - 1;
+                break;
+            case "down":
+                playerTempPosition[0] = playerPosition[0];
+                playerTempPosition[1] = playerPosition[1] + 1;
+                break;
+            case "right":
+                playerTempPosition[0] = playerPosition[0] + 1;
+                playerTempPosition[1] = playerPosition[1];
+                break;
+            case "left":
+                playerTempPosition[0] = playerPosition[0] - 1;
+                playerTempPosition[1] = playerPosition[1];
+                break;
+        }
+        ArrayList<int[]> availableMoves = battleSystem.getAvailableMoveTilesForPlayer();
+//        if (availableMoves.contains(playerTempPosition)) {
+//            convertPositionToBoardDimensions(playerTempPosition);
+//        }
+//        return convertPositionToBoardDimensions(playerPosition);
+        return convertPositionToBoardDimensions(playerTempPosition);
+    }
+
+    private int[] getBoardPlayerPosition(String direction) {
+        int[] playerPosition = battleSystem.getPlayerPosition();
+        int[] playerTempPosition = new int[2];
+        switch (direction) {
+            case "up":
+                playerTempPosition[0] = playerPosition[0];
+                playerTempPosition[1] = playerPosition[1] - 1;
+                break;
+            case "down":
+                playerTempPosition[0] = playerPosition[0];
+                playerTempPosition[1] = playerPosition[1] + 1;
+                break;
+            case "right":
+                playerTempPosition[0] = playerPosition[0] + 1;
+                playerTempPosition[1] = playerPosition[1];
+                break;
+            case "left":
+                playerTempPosition[0] = playerPosition[0] - 1;
+                playerTempPosition[1] = playerPosition[1];
+                break;
+        }
+        ArrayList<int[]> availableMoves = battleSystem.getAvailableMoveTilesForPlayer();
+//        if (availableMoves.contains(playerTempPosition)) {
+//            convertPositionToBoardDimensions(playerTempPosition);
+//        }
+//        return convertPositionToBoardDimensions(playerPosition);
+        return playerTempPosition;
+    }
+
+
+
     private int[] convertPositionToBoardDimensions(int[] position) {
         // covert position to board dimensions
         int rows = battleSystem.getMaxRows();
@@ -197,6 +266,10 @@ public class GamePresenter extends AppCompatActivity {
             affectedTilesRealPositions.add(realPosition);
         }
         return affectedTilesRealPositions;
+    }
+
+    public void usePlayerSkill(String skillName) {
+        battleSystem.usePlayerSkill(skillName);
     }
 
     public String getPlayerNameHealthAndTokens() {

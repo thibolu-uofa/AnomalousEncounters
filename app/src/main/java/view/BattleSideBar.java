@@ -10,6 +10,8 @@ import com.example.anomalousencounters.R;
 
 import java.util.ArrayList;
 import android.util.Log;
+
+import java.util.Arrays;
 import java.util.Objects;
 
 import presenter.GamePresenter;
@@ -59,19 +61,23 @@ public class BattleSideBar {
         }
 
         boolean hasBeenPressed = presenter.isInHitbox((int) eventX, (int) eventY, x, x + WIDTH, y + HEIGHT, y);
+        String selectedText;
         if (hasBeenPressed) {
             switch(currentDisplay){
                 case ACTION_BAR:
                     processActionBarTouch(actionBar.checkForUserTouch(eventX, eventY, presenter));
                     break;
                 case SKILL_BAR:
-                    String selectedText = skillBar.checkForUserTouch(eventX, eventY, presenter);
+                    selectedText = skillBar.checkForUserTouch(eventX, eventY, presenter);
+                    processSkillSelected(selectedText);
                     processConfirmSkill(selectedText);
                     processGoBack(selectedText);
-                    processSkillSelected(selectedText);
                     break;
                 case MOVE_BAR:
-                    processGoBack(moveBar.checkForUserTouch(eventX, eventY, presenter));
+                    selectedText = moveBar.checkForUserTouch(eventX, eventY, presenter);
+                    processMoveSelected(selectedText);
+                    processConfirmMove(selectedText);
+                    processGoBack(selectedText);
                     break;
             }
         }
@@ -86,6 +92,19 @@ public class BattleSideBar {
             ArrayList<int[]> affectedTiles = presenter.getAffectedTilesForPlayer(selectedText);
             battleView.highlightTiles(affectedTiles);
         }
+    }
+
+    private void processMoveSelected(String selectedText) {
+        if (Objects.equals(selectedText, "")) {
+            return;
+        }
+
+        String[] moves = {"up", "down", "left", "right"};
+        if (Arrays.asList(moves).contains(selectedText)) {
+            int[] newPlayerPosition = presenter.getTemporaryPlayerPosition(selectedText);
+            battleView.updatePlayerPosition(newPlayerPosition[0], newPlayerPosition[1]);
+        }
+
     }
 
     private void processActionBarTouch(String selectedText) {
@@ -118,12 +137,26 @@ public class BattleSideBar {
         isAnimationPlaying = true;
     }
 
+    public void processConfirmMove(String selectedText){
+        if (!Objects.equals(selectedText, "[Confirm]")) {
+            return;
+        }
+        Log.d("User wants to move", "Move");
+
+        String movementDirection = moveBar.getSelectedArrowDirection();
+        presenter.movePlayer(movementDirection);
+        changeDisplay(DisplayOptions.ACTION_BAR);
+    }
+
     private void processGoBack(String selectedText) {
         if (!Objects.equals(selectedText, "[Go Back]")) {
             return;
         }
         battleView.clearGrid();
         Log.d("User wants to go back", "GO BACK");
+
+        int[] playerPos = presenter.getPlayerPosition();
+        battleView.updatePlayerPosition(playerPos[0], playerPos[1]);
         changeDisplay(DisplayOptions.ACTION_BAR);
     }
 

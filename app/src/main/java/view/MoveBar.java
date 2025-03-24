@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import presenter.GamePresenter;
 
 public class MoveBar extends BaseMenuBar {
-    private final ArrayList<Sprite> movementArrows = new ArrayList<>();
+    private final ArrayList<ToggleSprite> movementArrows = new ArrayList<>();
+    private ToggleSprite selectedArrow;
     private final Sprite squircle;
     int LEFT_PADDING = 40;
 
@@ -29,27 +30,28 @@ public class MoveBar extends BaseMenuBar {
         int PADDING = 35;
 
         Bitmap upArrowBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.up_arrow_blank);
+        Bitmap upArrowBitmapSelected = BitmapFactory.decodeResource(context.getResources(), R.drawable.up_arrow_fill);
         int upArrowY = y + 150;
-        movementArrows.add(new Sprite(upArrowBitmap, centerOfSideBar - (upArrowBitmap.getWidth()/2), upArrowY));
+        movementArrows.add(new ToggleSprite(upArrowBitmap, upArrowBitmapSelected, centerOfSideBar - (upArrowBitmap.getWidth()/2), upArrowY, "up"));
 
         Bitmap squircleBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.blank_squircle);
         int squircleY = upArrowY + upArrowBitmap.getHeight() + PADDING;
         squircle = new Sprite(squircleBitmap, centerOfSideBar - (squircleBitmap.getWidth()/2), squircleY);
 
-        Bitmap downArrowBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.up_arrow_blank);
-        downArrowBitmap = rotateBitmap(downArrowBitmap, 180);
+        Bitmap downArrowBitmap = rotateBitmap(upArrowBitmap, 180);
+        Bitmap downArrowBitmapSelected = rotateBitmap(upArrowBitmapSelected, 180);
         int downArrowY = squircleY + squircleBitmap.getHeight() + PADDING;
-        movementArrows.add(new Sprite(downArrowBitmap, centerOfSideBar - (downArrowBitmap.getWidth()/2), downArrowY));
+        movementArrows.add(new ToggleSprite(downArrowBitmap, downArrowBitmapSelected, centerOfSideBar - (downArrowBitmap.getWidth()/2), downArrowY, "down"));
 
-        Bitmap rightArrowBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.up_arrow_blank);
-        rightArrowBitmap = rotateBitmap(rightArrowBitmap, 90);
+        Bitmap rightArrowBitmap = rotateBitmap(upArrowBitmap, 90);
+        Bitmap rightArrowBitmapSelected = rotateBitmap(upArrowBitmapSelected, 90);
         int rightArrowX = centerOfSideBar - (rightArrowBitmap.getWidth()/2) + rightArrowBitmap.getWidth();
-        movementArrows.add(new Sprite(rightArrowBitmap, rightArrowX + 10, squircleY - 20));
+        movementArrows.add(new ToggleSprite(rightArrowBitmap, rightArrowBitmapSelected, rightArrowX + 10, squircleY - 20, "right"));
 
-        Bitmap leftArrowBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.up_arrow_blank);
-        leftArrowBitmap = rotateBitmap(leftArrowBitmap, 270);
+        Bitmap leftArrowBitmap = rotateBitmap(upArrowBitmap, 270);
+        Bitmap leftArrowBitmapSelected = rotateBitmap(upArrowBitmapSelected, 270);
         int leftArrowX = centerOfSideBar - (leftArrowBitmap.getWidth()/2) - leftArrowBitmap.getWidth();
-        movementArrows.add(new Sprite(leftArrowBitmap, leftArrowX - 10, squircleY - 20));
+        movementArrows.add(new ToggleSprite(leftArrowBitmap, leftArrowBitmapSelected, leftArrowX - 10, squircleY - 20, "left"));
 
         addNavigationButtons(context);
         setTextPositions();
@@ -73,17 +75,45 @@ public class MoveBar extends BaseMenuBar {
     }
 
     public String checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
+        for (ToggleSprite arrow: movementArrows) {
+            if (arrow.hasBeenTouched(eventX, eventY, presenter, 1)) {
+                arrow.select();
+            }
+        }
+
+        for (ToggleSprite arrow: movementArrows) {
+            if (arrow.getIsSelected()  && arrow != selectedArrow) {
+                setSelectedArrow(arrow);
+                Log.d("Clicked movement arrow", arrow.getText());
+                return arrow.getText();
+            }
+        }
+
         return checkForUserTouchTextButtons(eventX, eventY, presenter);
+    }
+
+    private void setSelectedArrow(ToggleSprite arrow) {
+        if (selectedArrow == null) {
+            selectedArrow = arrow;
+            return;
+        }
+
+        selectedArrow.unSelect();
+        selectedArrow = arrow;
     }
 
     public void draw(Canvas canvas, Paint paint){
         squircle.draw(canvas, paint);
 
-        for (Sprite arrow: movementArrows) {
+        for (ToggleSprite arrow: movementArrows) {
             arrow.draw(canvas, paint);
         }
 
         drawTextButtons(canvas);
+    }
+
+    public String getSelectedArrowDirection() {
+        return selectedArrow.getText();
     }
 
 }
