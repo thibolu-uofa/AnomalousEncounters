@@ -9,7 +9,7 @@ public class MenuEmpty {
     private final int y;
     private final int height;
     private final int width;
-    private final int color;
+    private int color;
 
 
     public MenuEmpty(int x, int y, int height, int width, int color){
@@ -21,9 +21,15 @@ public class MenuEmpty {
     }
 
     public void draw(Canvas canvas, Paint paint){
+        int currentColor = paint.getColor();
         paint.setColor(color);
         Rect borderRect = new Rect(x, y , x + width, y + height);
         canvas.drawRect(borderRect, paint);
+        paint.setColor(currentColor);
+    }
+
+    public void setColor(int color){
+        this.color = color;
     }
 
     public int getWidth() {

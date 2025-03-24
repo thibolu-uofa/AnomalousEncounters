@@ -34,6 +34,7 @@ public class BattleSideBar {
         ITEM_BAR
     }
     private DisplayOptions currentDisplay;
+    private boolean isAnimationPlaying = false;
 
     public BattleSideBar(int x, int y, Context context, GamePresenter presenter, BattleView battleView) {
         this.x = x;
@@ -53,6 +54,10 @@ public class BattleSideBar {
     }
 
     public void checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
+        if (isAnimationPlaying) {
+            return;
+        }
+
         boolean hasBeenPressed = presenter.isInHitbox((int) eventX, (int) eventY, x, x + WIDTH, y + HEIGHT, y);
         if (hasBeenPressed) {
             switch(currentDisplay){
@@ -61,6 +66,7 @@ public class BattleSideBar {
                     break;
                 case SKILL_BAR:
                     String selectedText = skillBar.checkForUserTouch(eventX, eventY, presenter);
+                    processConfirmSkill(selectedText);
                     processGoBack(selectedText);
                     processSkillSelected(selectedText);
                     break;
@@ -77,13 +83,9 @@ public class BattleSideBar {
         }
 
         if (skillArrayList.contains(selectedText)) {
-            Log.d("Skill Selected", selectedText);
-
-            // get the tiles affected by the skill from the presenter
             ArrayList<int[]> affectedTiles = presenter.getAffectedTilesForPlayer(selectedText);
             battleView.highlightTiles(affectedTiles);
         }
-
     }
 
     private void processActionBarTouch(String selectedText) {
@@ -105,6 +107,15 @@ public class BattleSideBar {
                 Log.d("Button Processing", "END MY TURN");
                 break;
         }
+    }
+
+    public void processConfirmSkill(String selectedText){
+        if (!Objects.equals(selectedText, "[Confirm]")) {
+            return;
+        }
+        Log.d("User wants to use a skill", "Confirm");
+        battleView.flashTiles();
+        isAnimationPlaying = true;
     }
 
     private void processGoBack(String selectedText) {
@@ -132,5 +143,9 @@ public class BattleSideBar {
 
     public void changeDisplay(DisplayOptions displayOption){
         currentDisplay = displayOption;
+    }
+
+    public void endAnimation() {
+        isAnimationPlaying = false;
     }
 }

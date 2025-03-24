@@ -13,6 +13,7 @@ import presenter.GamePresenter;
 public class SkillBar extends BaseMenuBar {
     private final MenuText title;
     private final RadioBtnList radioBtnList;
+    private String selectedSkill;
 
     public SkillBar(int x, int y, int width, int height, ArrayList<String> skillArrayList, Context context) {
         super(x, y, width, context);
@@ -38,7 +39,10 @@ public class SkillBar extends BaseMenuBar {
 
     public String checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
         String radioBtnPressed = radioBtnList.checkForBtnPress(eventX, eventY, presenter);
-        if (!Objects.equals(radioBtnPressed, "")) {return radioBtnPressed;}
+        if (!Objects.equals(radioBtnPressed, "")) {
+            selectedSkill = radioBtnPressed;
+            return radioBtnPressed;
+        }
 
         String textBtnPressed = checkForUserTouchTextButtons(eventX, eventY, presenter);
         if (!Objects.equals(textBtnPressed, "")) {return textBtnPressed;}
@@ -50,5 +54,9 @@ public class SkillBar extends BaseMenuBar {
         title.draw(canvas);
         radioBtnList.draw(canvas, paint);
         drawTextButtons(canvas);
+    }
+
+    public String getSelectedSkill() {
+        return selectedSkill;
     }
 }

@@ -1,20 +1,23 @@
 package view;
 
 import static view.ViewConstants.BATTLE_BACKGROUND_COLOR;
+import static view.ViewConstants.DEFAULT_TEXT_COLOR;
 import static view.ViewConstants.PLAYER_TILE_HIGHLIGHT_COLOR;
+import static view.ViewConstants.TRANSPARENT_COLOR;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.NinePatchDrawable;
+import android.util.Log;
 
 import com.example.anomalousencounters.R;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import presenter.GamePresenter;
 
@@ -29,6 +32,11 @@ public class BattleView {
     private final int MAX_CARD_WIDTH = 650;
     private GamePresenter presenter;
     private int GRID_BORDER_WEIGHT = 5;
+    boolean isFlashingTiles = false;
+    private int timeInterval = 250; // animation speed in frames per milliseconds
+    int current_color = PLAYER_TILE_HIGHLIGHT_COLOR;
+    private long lastFrameTime = 0;
+    private int ticks = 6;
 
     public BattleView(Context context, GamePresenter presenter){
         this.presenter = presenter;
@@ -66,14 +74,25 @@ public class BattleView {
     public void draw(Canvas canvas, Paint paint){
         canvas.drawColor(BATTLE_BACKGROUND_COLOR);
         grid.draw(canvas, paint);
-        for (MenuEmpty tileHighlight: tileHighlights) {
-            tileHighlight.draw(canvas, paint);
+
+        if (isFlashingTiles) {
+            drawFlashingTiles(canvas, paint);
+        } else {
+            drawTiles(canvas, paint);
         }
+
+        drawTiles(canvas, paint);
         playerIcon.draw(canvas, paint);
         enemyIcon.draw(canvas, paint);
         playerInfo.draw(canvas);
         enemyInfo.draw(canvas);
         sideBar.draw(canvas, paint);
+    }
+
+    private void drawTiles(Canvas canvas, Paint paint) {
+        for (MenuEmpty tileHighlight: tileHighlights) {
+            tileHighlight.draw(canvas, paint);
+        }
     }
 
     public void updatePlayerPosition(int x, int y) {
@@ -99,6 +118,69 @@ public class BattleView {
             int y = grid.getY() + tile[1];
             MenuEmpty tileHighlight = new MenuEmpty(x, y, enemyIcon.getHeight(), enemyIcon.getWidth(), PLAYER_TILE_HIGHLIGHT_COLOR);
             tileHighlights.add(tileHighlight);
+        }
+    }
+
+    public void flashTiles() {
+        isFlashingTiles = true;
+        lastFrameTime = 0;
+        ticks = 5;
+    }
+
+//    public void drawFlashingTiles(Canvas canvas, Paint paint){
+//        int timeInterval = 500; // animation speed in frames per milliseconds
+//        long lastFrameTime = 0;
+//        int ticks = 5;
+//        int current_color = PLAYER_TILE_HIGHLIGHT_COLOR;
+//
+//        while (ticks > 0) {
+//            long deltaTime = System.currentTimeMillis() - lastFrameTime;
+//            if (deltaTime >= timeInterval) {
+//                current_color = current_color == PLAYER_TILE_HIGHLIGHT_COLOR ? TRANSPARENT_COLOR : PLAYER_TILE_HIGHLIGHT_COLOR;
+//                Log.d("Current Color", "Color: " + current_color);
+//                for (MenuEmpty tileHighlight : tileHighlights) {
+//                    tileHighlight.setColor(current_color);
+//                    tileHighlight.draw(canvas, paint);
+//                }
+//                lastFrameTime = System.currentTimeMillis();
+//                ticks--;
+//            }
+//        }
+//
+//        isFlashingTiles = false;
+//    }
+
+    public void drawFlashingTiles(Canvas canvas, Paint paint) {
+        long currentTime = System.currentTimeMillis();
+
+        // If this is the first frame of flashing
+        if (lastFrameTime == 0) {
+            lastFrameTime = currentTime;
+        }
+
+        long deltaTime = currentTime - lastFrameTime;
+
+        if (deltaTime >= timeInterval) {
+            // Toggle color
+            current_color = (current_color == PLAYER_TILE_HIGHLIGHT_COLOR) ? TRANSPARENT_COLOR : PLAYER_TILE_HIGHLIGHT_COLOR;
+
+            // Update each tile's color
+            for (MenuEmpty tileHighlight : tileHighlights) {
+                tileHighlight.setColor(current_color);
+                tileHighlight.draw(canvas, paint);
+            }
+
+            // Reset last frame time and decrement ticks
+            lastFrameTime = currentTime;
+            ticks--;
+        }
+
+        // Stop flashing when ticks reach 0
+        if (ticks <= 0) {
+            isFlashingTiles = false;
+            current_color = PLAYER_TILE_HIGHLIGHT_COLOR;
+            clearGrid();
+            sideBar.endAnimation();
         }
     }
 

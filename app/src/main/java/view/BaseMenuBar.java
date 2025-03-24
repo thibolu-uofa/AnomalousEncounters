@@ -1,6 +1,7 @@
 package view;
 
 import static view.ViewConstants.DEFAULT_TEXT_COLOR;
+import static view.ViewConstants.FONT_SIZE_MEDIUM;
 import static view.ViewConstants.FONT_SIZE_SMALL;
 import static view.ViewConstants.SECONDARY_TEXT_COLOR;
 
@@ -15,8 +16,6 @@ public abstract class BaseMenuBar {
     protected int y;
     protected int width;
     protected ArrayList<MenuText> textButtons = new ArrayList<>();
-    protected static final int LEFT_PADDING = 40;
-
     public BaseMenuBar(int x, int y, int width, Context context) {
         this.x = x;
         this.y = y;
@@ -28,10 +27,10 @@ public abstract class BaseMenuBar {
     }
 
     protected void addNavigationButtons(Context context) {
-        MenuText confirmBtn = createButton("[Confirm]", FONT_SIZE_SMALL, DEFAULT_TEXT_COLOR, false, context);
+        MenuText confirmBtn = createButton("[Confirm]", FONT_SIZE_MEDIUM, DEFAULT_TEXT_COLOR, false, context);
         textButtons.add(confirmBtn);
 
-        MenuText goBackBtn = createButton("[Go Back]", FONT_SIZE_SMALL, SECONDARY_TEXT_COLOR, false, context);
+        MenuText goBackBtn = createButton("[Go Back]", FONT_SIZE_MEDIUM, SECONDARY_TEXT_COLOR, false, context);
         textButtons.add(goBackBtn);
     }
 
