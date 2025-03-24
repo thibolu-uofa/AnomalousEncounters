@@ -14,13 +14,11 @@ public class SkillBar extends BaseMenuBar {
     private final MenuText title;
     private final RadioBtnList radioBtnList;
 
-    public SkillBar(int x, int y, int width, int height, GamePresenter presenter, Context context) {
+    public SkillBar(int x, int y, int width, int height, ArrayList<String> skillArrayList, Context context) {
         super(x, y, width, context);
 
         title = createButton("Skills & Cooldowns", FONT_SIZE_SMALL, DEFAULT_TEXT_COLOR, true, context);
         addNavigationButtons(context);
-
-        ArrayList<String> skillArrayList = presenter.getSkillNamesArray();
         radioBtnList = new RadioBtnList(x + 40, y + 120, context, skillArrayList, width, height);
 
         setTextPositions();

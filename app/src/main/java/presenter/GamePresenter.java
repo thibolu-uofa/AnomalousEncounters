@@ -159,6 +159,20 @@ public class GamePresenter extends AppCompatActivity {
         int [] playerPosition = battleSystem.getPlayerPosition();
         int [] enemyPosition = battleSystem.getEnemyPosition();
 
+        int[] playerBoardPosition = convertPositionToBoardDimensions(playerPosition);
+        int playerBoardX = playerBoardPosition[0];
+        int playerBoardY = playerBoardPosition[1];
+
+        int[] enemyBoardPosition = convertPositionToBoardDimensions(enemyPosition);
+        int enemyBoardX = enemyBoardPosition[0];
+        int enemyBoardY = enemyBoardPosition[1];
+
+        //tell view to draw player and enemy
+        view.updatePlayerGridPosition(playerBoardX, playerBoardY);
+        view.updateEnemyGridPosition(enemyBoardX, enemyBoardY);
+    }
+
+    private int[] convertPositionToBoardDimensions(int[] position) {
         // covert position to board dimensions
         int rows = battleSystem.getMaxRows();
         int cols = battleSystem.getMaxCols();
@@ -168,15 +182,21 @@ public class GamePresenter extends AppCompatActivity {
         int tileWidth = boardWidth / cols;
         int tileHeight = boardHeight / rows;
 
-        int playerBoardX = playerPosition[0] * tileWidth;
-        int playerBoardY = playerPosition[1] * tileHeight;
+        int[] convertedDimensions = new int[2];
+        convertedDimensions[0] = position[0] * tileWidth;
+        convertedDimensions[1] = position[1] * tileHeight;
 
-        int enemyBoardX = enemyPosition[0] * tileWidth;
-        int enemyBoardY = enemyPosition[1] * tileHeight;
+        return convertedDimensions;
+    }
 
-        //tell view to draw player and enemy
-        view.updatePlayerGridPosition(playerBoardX, playerBoardY);
-        view.updateEnemyGridPosition(enemyBoardX, enemyBoardY);
+    public ArrayList<int[]> getAffectedTilesForPlayer(String skillName) {
+        ArrayList<int[]> affectedTiles = battleSystem.getAffectedTilesForPlayer(skillName);
+        ArrayList<int[]> affectedTilesRealPositions = new ArrayList<>();
+        for (int[] position: affectedTiles) {
+            int[] realPosition = convertPositionToBoardDimensions(position);
+            affectedTilesRealPositions.add(realPosition);
+        }
+        return affectedTilesRealPositions;
     }
 
     public String getPlayerNameHealthAndTokens() {

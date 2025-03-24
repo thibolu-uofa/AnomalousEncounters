@@ -1,16 +1,20 @@
 package view;
 
 import static view.ViewConstants.BATTLE_BACKGROUND_COLOR;
+import static view.ViewConstants.PLAYER_TILE_HIGHLIGHT_COLOR;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.NinePatchDrawable;
 
 import com.example.anomalousencounters.R;
+
+import java.util.ArrayList;
 
 import presenter.GamePresenter;
 
@@ -21,6 +25,7 @@ public class BattleView {
     private MenuNinePatch playerInfo;
     private MenuNinePatch enemyInfo;
     private BattleSideBar sideBar;
+    private ArrayList<MenuEmpty> tileHighlights = new ArrayList<>();
     private final int MAX_CARD_WIDTH = 650;
     private GamePresenter presenter;
     private int GRID_BORDER_WEIGHT = 5;
@@ -46,7 +51,7 @@ public class BattleView {
         @SuppressLint("UseCompatLoadingForDrawables") NinePatchDrawable enemyInfoNinePatchDrawable = (NinePatchDrawable) context.getResources().getDrawable(R.drawable.border1, null);
         enemyInfo = new MenuNinePatch(enemyInfoNinePatchDrawable, 30, 75 + playerInfo.getHeight() + 30, "The Strange Triangle\nHP 9/10", MAX_CARD_WIDTH, false, context);
 
-        sideBar = new BattleSideBar(1750, 75, context, presenter);
+        sideBar = new BattleSideBar(1750, 75, context, presenter, this);
     }
 
     public void updateMenuTexts() {
@@ -61,19 +66,14 @@ public class BattleView {
     public void draw(Canvas canvas, Paint paint){
         canvas.drawColor(BATTLE_BACKGROUND_COLOR);
         grid.draw(canvas, paint);
+        for (MenuEmpty tileHighlight: tileHighlights) {
+            tileHighlight.draw(canvas, paint);
+        }
         playerIcon.draw(canvas, paint);
         enemyIcon.draw(canvas, paint);
         playerInfo.draw(canvas);
         enemyInfo.draw(canvas);
         sideBar.draw(canvas, paint);
-    }
-
-    public int getBoardWidth() {
-        return grid.getWidth();
-    }
-
-    public int getBoardHeight() {
-        return grid.getHeight();
     }
 
     public void updatePlayerPosition(int x, int y) {
@@ -90,5 +90,27 @@ public class BattleView {
         int resourceId = context.getResources().getIdentifier(imageName, "drawable",  context.getPackageName());
         Bitmap enemyIconBitmap = BitmapFactory.decodeResource(context.getResources(), resourceId);
         enemyIcon.updateBitmap(enemyIconBitmap);
+    }
+
+    public void highlightTiles(ArrayList<int[]> tileList) {
+        clearGrid();
+        for (int [] tile: tileList) {
+            int x = grid.getX() + tile[0];
+            int y = grid.getY() + tile[1];
+            MenuEmpty tileHighlight = new MenuEmpty(x, y, enemyIcon.getHeight(), enemyIcon.getWidth(), PLAYER_TILE_HIGHLIGHT_COLOR);
+            tileHighlights.add(tileHighlight);
+        }
+    }
+
+    public void clearGrid() {
+        tileHighlights = new ArrayList<>();
+    }
+
+    public int getBoardWidth() {
+        return grid.getWidth();
+    }
+
+    public int getBoardHeight() {
+        return grid.getHeight();
     }
 }

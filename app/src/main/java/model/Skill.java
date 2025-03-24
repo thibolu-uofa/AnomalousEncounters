@@ -21,6 +21,7 @@ public class Skill {
         this.baseDamage = 10;
         this.atkType = AttackPattern.AttackType.DIAGONAL;
         this.length = 2;
+        this.atkPattern = new AttackPattern(atkType);
     }
 
     public Skill(String name, String atkPattern) {
@@ -43,6 +44,7 @@ public class Skill {
             default:
                 this.atkType = AttackPattern.AttackType.STAIGHT;
         }
+        this.atkPattern = new AttackPattern(atkType);
     }
     public ArrayList<int[]> getAffectedTiles(int[] origin_pos){
         return atkPattern.getAttackPattern(origin_pos, length);

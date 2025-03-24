@@ -15,6 +15,8 @@ import java.util.Objects;
 import presenter.GamePresenter;
 
 public class BattleSideBar {
+    GamePresenter presenter;
+    BattleView battleView;
     private final MenuNinePatch menuNinePatch;
     private final SkillBar skillBar;
     private final ActionBar actionBar;
@@ -24,6 +26,7 @@ public class BattleSideBar {
     private final int y;
     private final int WIDTH = 600;
     private final int HEIGHT = 950;
+    private final ArrayList<String> skillArrayList;
     public enum DisplayOptions{
         ACTION_BAR,
         SKILL_BAR,
@@ -32,15 +35,18 @@ public class BattleSideBar {
     }
     private DisplayOptions currentDisplay;
 
-    public BattleSideBar(int x, int y, Context context, GamePresenter presenter) {
+    public BattleSideBar(int x, int y, Context context, GamePresenter presenter, BattleView battleView) {
         this.x = x;
         this.y = y;
+        this.presenter = presenter;
+        this.battleView = battleView;
 
         @SuppressLint("UseCompatLoadingForDrawables") NinePatchDrawable playerInfoNinePatchDrawable = (NinePatchDrawable) context.getResources().getDrawable(R.drawable.border2, null);
         menuNinePatch = new MenuNinePatch(playerInfoNinePatchDrawable, x, y, WIDTH, HEIGHT);
 
         actionBar = new ActionBar(x, y, WIDTH, context);
-        skillBar = new SkillBar(x, y, WIDTH, HEIGHT, presenter, context);
+        skillArrayList = presenter.getSkillNamesArray();
+        skillBar = new SkillBar(x, y, WIDTH, HEIGHT, skillArrayList, context);
         moveBar = new MoveBar(x, y, WIDTH, context);
 
         currentDisplay = DisplayOptions.ACTION_BAR;
@@ -54,7 +60,9 @@ public class BattleSideBar {
                     processActionBarTouch(actionBar.checkForUserTouch(eventX, eventY, presenter));
                     break;
                 case SKILL_BAR:
-                    processGoBack(skillBar.checkForUserTouch(eventX, eventY, presenter));
+                    String selectedText = skillBar.checkForUserTouch(eventX, eventY, presenter);
+                    processGoBack(selectedText);
+                    processSkillSelected(selectedText);
                     break;
                 case MOVE_BAR:
                     processGoBack(moveBar.checkForUserTouch(eventX, eventY, presenter));
@@ -63,12 +71,27 @@ public class BattleSideBar {
         }
     }
 
-    private void processActionBarTouch(String button_text) {
-        if (Objects.equals(button_text, "")) {
+    private void processSkillSelected(String selectedText) {
+        if (Objects.equals(selectedText, "")) {
             return;
         }
 
-        switch(button_text){
+        if (skillArrayList.contains(selectedText)) {
+            Log.d("Skill Selected", selectedText);
+
+            // get the tiles affected by the skill from the presenter
+            ArrayList<int[]> affectedTiles = presenter.getAffectedTilesForPlayer(selectedText);
+            battleView.highlightTiles(affectedTiles);
+        }
+
+    }
+
+    private void processActionBarTouch(String selectedText) {
+        if (Objects.equals(selectedText, "")) {
+            return;
+        }
+
+        switch(selectedText){
             case "[ATK]":
                 changeDisplay(DisplayOptions.SKILL_BAR);
                 break;
@@ -84,10 +107,11 @@ public class BattleSideBar {
         }
     }
 
-    private void processGoBack(String button_text) {
-        if (!Objects.equals(button_text, "[Go Back]")) {
+    private void processGoBack(String selectedText) {
+        if (!Objects.equals(selectedText, "[Go Back]")) {
             return;
         }
+        battleView.clearGrid();
         Log.d("User wants to go back", "GO BACK");
         changeDisplay(DisplayOptions.ACTION_BAR);
     }
