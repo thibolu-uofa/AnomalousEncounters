@@ -9,7 +9,7 @@
     ],
     "skills": [
       {"id": 2, "level": 3, "experience": 0, "maxExperience": 100},
-      {"id": 3, "level": 1, "experience": 0, "maxExperience": 100},
+      {"id": 3, "level": 2, "experience": 0, "maxExperience": 100},
       {"id": 9, "level": 1, "experience": 0, "maxExperience": 100}
     ]
   }

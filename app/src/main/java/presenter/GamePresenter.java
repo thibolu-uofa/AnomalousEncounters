@@ -4,18 +4,19 @@ import static model.Utils.getDataProperty;
 import static model.Utils.getSingleDataProperty;
 import static model.Utils.getStringListOfDataProperty;
 
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
+import android.media.AudioAttributes;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.util.Log;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import model.BattleSystem;
 import model.EncounterSystem;
 import model.EnemyState;
@@ -29,6 +30,7 @@ public class GamePresenter extends AppCompatActivity {
     private PlayerState playerState;
     private EncounterSystem encounterSystem;
     private BattleSystem battleSystem;
+    private SoundPool soundPool;
 
 
     @Override
@@ -51,7 +53,53 @@ public class GamePresenter extends AppCompatActivity {
 
         //FOR TESTING PURPOSES
 //        setUpBattle(0);
+
+//        playSound("sample_sound.wav");
     }
+
+    // https://gamecodeschool.com/android/playing-sound-fx-demo/
+    //https://www.geeksforgeeks.org/soundpool-in-android-with-examples/
+    private void playSound(String filename) {
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build();
+
+        soundPool = new SoundPool.Builder()
+                .setMaxStreams(10)
+                .setAudioAttributes(audioAttributes)
+                .build();
+
+        try {
+            AssetManager assetManager = this.getAssets();
+            AssetFileDescriptor descriptor;
+
+            // load sound in memory ready for use
+            descriptor = assetManager.openFd("sample_sound.wav");
+            int soundID = soundPool.load(descriptor, 0);
+
+            soundPool.setOnLoadCompleteListener((soundPool, sampleId, status) -> {
+                if (status == 0) {
+                    // sound loaded successfully
+                    soundPool.play(soundID, 1, 1, 0, 0, 1);
+                } else {
+                    Log.e("Error with sound", "Sound load failed");
+                }
+            });
+
+        } catch (IOException e) {
+            Log.e("Error with sound", "failed to load sound files", e);
+        }
+    }
+
+    // release sound pool when no longer in use, like when game is paused
+    public void release() {
+        if (soundPool != null) {
+            soundPool.release();
+            soundPool = null;
+        }
+    }
+
 
     private void makeNewPlayer() {
         int newPlayerIndex = 0;
@@ -171,6 +219,18 @@ public class GamePresenter extends AppCompatActivity {
         //tell view to draw player and enemy
         view.updatePlayerGridPosition(playerBoardX, playerBoardY);
         view.updateEnemyGridPosition(enemyBoardX, enemyBoardY);
+    }
+
+    public String getSkillCooldownsString() {
+        if (battleSystem == null) {
+            return "";
+        }
+        ArrayList<Integer> playerSkillCooldowns = battleSystem.getPlayerSkillCooldowns();
+        StringBuilder skillCooldowns = new StringBuilder();
+        for (Integer cooldown: playerSkillCooldowns) {
+            skillCooldowns.append(cooldown).append('\n');
+        }
+        return String.valueOf(skillCooldowns);
     }
 
     public int[] getPlayerPosition() {

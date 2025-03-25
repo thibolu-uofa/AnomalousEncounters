@@ -24,6 +24,7 @@ public class MenuText {
     private StaticLayout textStaticLayout;
     private Context context;
     private boolean hasAutoPadding;
+    private float lineSpacingMultiplier = 1f;
     private int x;
     private int y;
 
@@ -66,7 +67,7 @@ public class MenuText {
             xTextPadding = yTextPadding = 0;
         }
 
-        textStaticLayout = new StaticLayout(text, textPaint, width, textLayout, 1.0f, 0, false);
+        textStaticLayout = new StaticLayout(text, textPaint, width, textLayout, lineSpacingMultiplier, 0, false);
         height = textStaticLayout.getHeight();
     }
 
@@ -88,6 +89,11 @@ public class MenuText {
 
     public void setColor(int color) {
         this.color = color;
+        createTextStaticLayout();
+    }
+
+    public void setLineSpacingMultiplier(float lineSpacingMultiplier) {
+        this.lineSpacingMultiplier = lineSpacingMultiplier;
         createTextStaticLayout();
     }
 

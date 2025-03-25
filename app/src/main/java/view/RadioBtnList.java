@@ -78,6 +78,22 @@ public class RadioBtnList {
         return lastRadioBtn.getY() + lastRadioBtn.getHeight();
     }
 
+    public int getBottomY() {
+        RadioBtn firstRadioBtn = radioButtons.get(0);
+        return firstRadioBtn.getY();
+    }
+
+    public int getActualWidth() {
+        RadioBtn firstRadioBtn = radioButtons.get(0);
+        int maxWidth = firstRadioBtn.getWidth();
+        for (RadioBtn radioBtn: radioButtons) {
+            if (radioBtn.getWidth() > maxWidth) {
+                maxWidth = radioBtn.getWidth();
+            }
+        }
+        return maxWidth;
+    }
+
     public int getY() {
         return y;
     }

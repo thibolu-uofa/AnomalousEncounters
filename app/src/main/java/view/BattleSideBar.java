@@ -52,7 +52,8 @@ public class BattleSideBar {
 
         actionBar = new ActionBar(x, y, WIDTH, context);
         skillArrayList = presenter.getSkillNamesArray();
-        skillBar = new SkillBar(x, y, WIDTH, HEIGHT, skillArrayList, context);
+        String skillCooldowns = presenter.getSkillCooldownsString();
+        skillBar = new SkillBar(x, y, WIDTH, HEIGHT, skillArrayList, skillCooldowns, context);
         moveBar = new MoveBar(x, y, WIDTH, context);
 
         currentDisplay = DisplayOptions.ACTION_BAR;

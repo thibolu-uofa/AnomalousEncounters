@@ -3,18 +3,14 @@ package model;
 import java.util.ArrayList;
 
 public class Skill {
-    private String name;
-    private int level;
-    private int maxExperience;
-    private int currentExperience;
-    private int maxCooldown;
+    private final String name;
+    private final int MAX_COOLDOWN;
     private int currentCooldown;
-    private int length;
+    private final int length;
+    private final int baseDamage;
+    private final AttackPattern atkPattern;
 
-    private int baseDamage;
-    private AttackPattern atkPattern;
-
-    private AttackPattern.AttackType atkType;
+    private final AttackPattern.AttackType atkType;
 
     public Skill(){
         this.name = "Entity";
@@ -22,12 +18,12 @@ public class Skill {
         this.atkType = AttackPattern.AttackType.DIAGONAL;
         this.length = 2;
         this.atkPattern = new AttackPattern(atkType);
+        this.MAX_COOLDOWN = 1;
+        this.currentCooldown = 0;
     }
 
-    public Skill(String name, String atkPattern) {
+    public Skill(String name, String atkPattern, int level, int MAX_COOLDOWN) {
         this.name = name;
-        this.baseDamage = 10;
-        this.length = 2;
         switch (atkPattern.toUpperCase()) {
             case "DIAGONAL":
                 this.atkType = AttackPattern.AttackType.DIAGONAL;
@@ -45,7 +41,35 @@ public class Skill {
                 this.atkType = AttackPattern.AttackType.STAIGHT;
         }
         this.atkPattern = new AttackPattern(atkType);
+        this.length = calculateSkillDistance(level);
+        this.baseDamage = calculateSkillBaseDamage(level);
+        this.MAX_COOLDOWN = MAX_COOLDOWN;
+        this.currentCooldown = 0;
     }
+
+    private int calculateSkillDistance(int level) {
+        //return level for STAR and CONE and level + 1 for Diagonal and Straight
+        //maybe calculate distance based on level and type in a different way later?
+        return level;
+    }
+
+    private int calculateSkillBaseDamage(int level) {
+        //come up with an equation to calculate skill base damage based off of level and atk type
+        //maybe also have a degree of randomness
+
+        return level * 2;
+    }
+
+    public boolean canUseSkill() {
+        //if skill cooldown is greater than 0 returns false
+        return true;
+    }
+
+    public void updateSkillCooldown() {
+        //if cooldown is equal to zero than return, because skill not on a cooldown
+        //else decrease cooldown by 1
+    }
+
     public ArrayList<int[]> getAffectedTiles(int[] origin_pos){
         return atkPattern.getAttackPattern(origin_pos, length);
     }//
@@ -55,11 +79,7 @@ public class Skill {
     public String getName() {
         return name;
     }
-
-    //POST BATTLE FUNCTIONS
-    //getCurrentExperience increase skill experience (use some math, can just increase experience by 10 for now), the add the calculated
-    //experience to currentExperience, if greater than maxExperience, find out the extra amount
-    //and setCurrent experience to the extra amount and increase skill level by one
-
-    //getCurrentLevel returns the current skill level
+    public int getCurrentCooldown() {
+        return currentCooldown;
+    }
 }

@@ -8,6 +8,8 @@ import android.content.Context;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -255,26 +257,45 @@ public class BattleSystem {
         }
     }
 
+    //TO DO: add maxCooldown as an attribute in skills.json and retrieve all skills maxCooldown and pass that instead of 1
     private void populateSkills(int[] ids, String skillList) {
         ArrayList<String> skillNames = getStringListOfDataProperty("skills.json", "name", ids, context);
         ArrayList<String> skillAtkTypes = getStringListOfDataProperty("skills.json", "atkPattern", ids, context);
+        int[] playerSkillLevels = playerState.getSkillLevels();
         for(int i = 0; i < ids.length; i++) {
-            Skill skill = new Skill(skillNames.get(i), skillAtkTypes.get(i));
+            Skill skill;
             switch (skillList) {
                 case "playerSkills":
+                    skill = new Skill(skillNames.get(i), skillAtkTypes.get(i), playerSkillLevels[i], 1);
                     playerSkills.add(skill);
                     break;
                 case "enemySkills":
+                    int skillLevel = generateEnemySkillLevel();
+                    skill = new Skill(skillNames.get(i), skillAtkTypes.get(i), skillLevel, 1);
                     enemySkills.add(skill);
                     break;
             }
         }
     }
 
+    // Make this method more sophisticated later (maybe generate skill levels according to player phase)
+    private int generateEnemySkillLevel() {
+        Random rand = new Random();
+        return rand.nextInt(3);
+    }
+
     private void createEnemy(int enemyId) {
         String name = (String) getSingleDataProperty("enemies.json", "name", enemyId, context);
         int maxHealth = (int) getSingleDataProperty("enemies.json", "maxhealth", enemyId, context);
         enemyState = new EnemyState(name, maxHealth);
+    }
+
+    public ArrayList<Integer> getPlayerSkillCooldowns() {
+        ArrayList<Integer> playerSkillCooldowns = new ArrayList<>();
+        for (Skill skill: playerSkills) {
+            playerSkillCooldowns.add(skill.getCurrentCooldown());
+        }
+        return playerSkillCooldowns;
     }
 
     public int[] getPlayerPosition() {

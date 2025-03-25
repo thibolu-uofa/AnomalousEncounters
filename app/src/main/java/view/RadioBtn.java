@@ -45,7 +45,7 @@ public class RadioBtn {
     }
 
     public void checkForBtnPress(float eventX, float eventY, GamePresenter presenter) {
-        int rightX = x + BTN_RIGHT_PADDING + uncheckedBtn.getWidth() + menuText.getActualTextWidth();
+        int rightX = x + getWidth();
         int topY = y + menuText.getHeight();
         boolean hasBeenPressed = presenter.isInHitbox((int) eventX, (int) eventY, x, rightX, topY, y);
         if (hasBeenPressed) {
@@ -73,6 +73,10 @@ public class RadioBtn {
 
     public int getHeight() {
         return checkedBtn.getHeight();
+    }
+
+    public int getWidth() {
+        return checkedBtn.getWidth() + BTN_RIGHT_PADDING + menuText.getActualTextWidth();
     }
 
     public int getY() {
