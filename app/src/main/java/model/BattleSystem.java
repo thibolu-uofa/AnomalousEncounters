@@ -3,17 +3,14 @@ package model;
 import static model.Utils.getStringListOfDataProperty;
 import static model.Utils.getRepeatingPattern;
 import static model.Utils.getSingleDataProperty;
-import static model.Utils.loadJsonArrayFromFile;
 
 import android.content.Context;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Arrays;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import presenter.GamePresenter;
 
@@ -27,28 +24,12 @@ public class BattleSystem {
     private int[] playerPosition = new int[2];
     private ArrayList<Skill> playerSkills = new ArrayList<>();
     private ArrayList<Skill> enemySkills = new ArrayList<>();
-    private enum CurrentAction{
-        MOVE,
-        ATTACK,
-        USE
-    }
     private boolean isPlayerTurn = true;
-
     private GridModel gridModel;
-    private int maxRows;
-    private int maxCols;
-
+    private final int maxRows;
+    private final int maxCols;
     private boolean hasPlayerAttacked;
-    private boolean hasEnemyAttacked;
     private boolean hasPlayerMoved;
-    private boolean hasEnemyMoved;
-
-
-    private static final Map<CurrentAction, Boolean> actionsPerformed = new HashMap<>() {{
-        put(CurrentAction.MOVE, false);
-        put(CurrentAction.ATTACK, false);
-        put(CurrentAction.USE, false);
-    }};
 
     public BattleSystem(PlayerState playerState, int enemyId, Context context) {
         this.playerState = playerState;
@@ -71,23 +52,7 @@ public class BattleSystem {
 
     }
 
-//    public void updateCurrentBattleAction(String action) {
-//        switch (action.toUpperCase()) {
-//            case "MOVE":
-//                this.currentAction = CurrentAction.MOVE;
-//                break;
-//            case "ATTACK":
-//                this.currentAction = CurrentAction.ATTACK;
-//                break;
-//            case "USE":
-//                this.currentAction = CurrentAction.USE;
-//                break;
-//            default:
-//                System.out.println("Invalid action");
-//        }
-//    }
-
-    public boolean canEndTurn() {
+    public boolean canEndPlayerTurn() {
         return hasPlayerMoved || hasPlayerAttacked;
     }
 
@@ -95,7 +60,6 @@ public class BattleSystem {
         isPlayerTurn = !isPlayerTurn;
         hasPlayerMoved = false;
         hasPlayerAttacked = false;
-        hasEnemyMoved = false;
     }
 
     public boolean didAtkHit(ArrayList<int[]> coords) {
@@ -141,13 +105,6 @@ public class BattleSystem {
     }
 
     public void usePlayerSkill(String skillName) {
-        // this function gets the Skill using getSkillByName, passing in skillName and playerSkills
-        // then the function gets affectedTiles from skill.getAffectedTiles, passing in the playerPosition as the origin_pos
-        // then this functions calls didAtkHit, passing in affectedTiles
-        // if didAtkHit is true then this function gets the damage from the Skill using skill.getDamage and
-        // calls updateHealth on enemyState with -damage as delta
-        // Get the skill by name from playerSkills
-
         Skill skill = getSkillByName(skillName, playerSkills);
         if (skill == null) return; // Exit if skill not found
 
@@ -183,21 +140,18 @@ public class BattleSystem {
 
             // Apply damage to enemyState using modifyHealth() (negative delta for damage)
             playerState.modifyHealth(-damage);
-            hasEnemyAttacked = true;
         }
     }
 
     private Skill getRandomEnemySkill() {
-        // choose a skill from the enemy skill list
-        // then return that skill
-        // Step 1: Get the enemy's skill IDs (Stored in JSON array)
-        int[] skillIds = enemyState.getSkillList(); // Returns List<Integer>
+        int[] skillIds = enemyState.getSkillList();
 
-       Random rand = new Random();
-       int random_skill_id = rand.nextInt(skillIds.length);
+        Random rand = new Random();
+        int random_skill_id = rand.nextInt(skillIds.length);
 
-       return enemySkills.get(random_skill_id);
+        return enemySkills.get(random_skill_id);
     }
+    
     public Skill getSkillByName(String name, ArrayList<Skill> skillList) {
         // this function goes and finds the correct skill by matching the name to the name on
         //each Skill in the the skill list
@@ -208,6 +162,7 @@ public class BattleSystem {
         }
         return null; // Skill not found, return null
     }
+
     public ArrayList<Integer> getEnemySkillIDs(int enemyId) {
         JSONArray skillIdsJson = (JSONArray) getSingleDataProperty("enemySkill.json", "skills", enemyId, context);
         ArrayList<Integer> skillIds = new ArrayList<>();
@@ -234,12 +189,47 @@ public class BattleSystem {
         enemyPosition = position;
     }
 
-    public ArrayList<int[]> getAvailableMoveTilesForPlayer() {
-        // this function gets the position in the four cardinal directions from the player
-        // and returns those available move tiles
-        // (I wrote this code since its the same tiles as a straight atk with a distance of 1)
+    public int[] getNewPlayerBoardPosition(String direction) {
+        int[] playerTempPosition = new int[2];
+        switch (direction) {
+            case "up":
+                playerTempPosition[0] = playerPosition[0];
+                playerTempPosition[1] = playerPosition[1] - 1;
+                break;
+            case "down":
+                playerTempPosition[0] = playerPosition[0];
+                playerTempPosition[1] = playerPosition[1] + 1;
+                break;
+            case "right":
+                playerTempPosition[0] = playerPosition[0] + 1;
+                playerTempPosition[1] = playerPosition[1];
+                break;
+            case "left":
+                playerTempPosition[0] = playerPosition[0] - 1;
+                playerTempPosition[1] = playerPosition[1];
+                break;
+        }
+        ArrayList<int[]> availableMoves = getAvailableMoveTilesForPlayer();
+        boolean isValidMove = isPlayerMoveValid(playerTempPosition, availableMoves);
+        if (isValidMove) {
+            return playerTempPosition;
+        }
+        return playerPosition;
+    }
+
+    private ArrayList<int[]> getAvailableMoveTilesForPlayer() {
         int[][] positionVectors = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
         return getRepeatingPattern(playerPosition, 1, positionVectors, maxRows, maxCols);
+    }
+
+    // make sure move is in available moves and not equal to enemy position
+    private boolean isPlayerMoveValid(int[] newPosition, ArrayList<int[]> availableMoves) {
+        for (int[] move : availableMoves) {
+            if (Arrays.equals(newPosition, move) && !Arrays.equals(newPosition, enemyPosition)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public ArrayList<Skill> getEnemySkills() {

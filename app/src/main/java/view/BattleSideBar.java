@@ -36,6 +36,9 @@ public class BattleSideBar {
         ITEM_BAR
     }
     private DisplayOptions currentDisplay;
+    private boolean hasAttacked = false;
+    private boolean hasMoved = false;
+    private boolean hasUsedItem = false;
     private boolean isAnimationPlaying = false;
 
     public BattleSideBar(int x, int y, Context context, GamePresenter presenter, BattleView battleView) {
@@ -61,26 +64,65 @@ public class BattleSideBar {
         }
 
         boolean hasBeenPressed = presenter.isInHitbox((int) eventX, (int) eventY, x, x + WIDTH, y + HEIGHT, y);
-        String selectedText;
-        if (hasBeenPressed) {
-            switch(currentDisplay){
-                case ACTION_BAR:
-                    processActionBarTouch(actionBar.checkForUserTouch(eventX, eventY, presenter));
-                    break;
-                case SKILL_BAR:
-                    selectedText = skillBar.checkForUserTouch(eventX, eventY, presenter);
-                    processSkillSelected(selectedText);
-                    processConfirmSkill(selectedText);
-                    processGoBack(selectedText);
-                    break;
-                case MOVE_BAR:
-                    selectedText = moveBar.checkForUserTouch(eventX, eventY, presenter);
-                    processMoveSelected(selectedText);
-                    processConfirmMove(selectedText);
-                    processGoBack(selectedText);
-                    break;
-            }
+        if (!hasBeenPressed) {
+            return;
         }
+
+        String selectedText;
+        switch (currentDisplay) {
+            case ACTION_BAR:
+                processActionBarTouch(actionBar.checkForUserTouch(eventX, eventY, presenter));
+                break;
+            case SKILL_BAR:
+                selectedText = skillBar.checkForUserTouch(eventX, eventY, presenter);
+                processSkillSelected(selectedText);
+                processConfirm(selectedText, currentDisplay);
+                processGoBack(selectedText, currentDisplay);
+                break;
+            case MOVE_BAR:
+                selectedText = moveBar.checkForUserTouch(eventX, eventY, presenter);
+                processMoveSelected(selectedText);
+                processConfirm(selectedText, currentDisplay);
+                processGoBack(selectedText, currentDisplay);
+                break;
+        }
+    }
+
+    private void processActionBarTouch(String selectedText) {
+        if (Objects.equals(selectedText, "")) {
+            return;
+        }
+
+        switch(selectedText){
+            case "[ATK]":
+                if (!hasAttacked) {
+                    skillBar.resetCheckedBtn();
+                    changeDisplay(DisplayOptions.SKILL_BAR);
+                }
+                break;
+            case "[MOVE]":
+                if (!hasMoved) {
+                    moveBar.resetSelectedArrow();
+                    changeDisplay(DisplayOptions.MOVE_BAR);
+                }
+                break;
+            case "[USE]":
+                if (!hasUsedItem) {
+                    Log.d("Button Processing", "USE BTN");
+                }
+                break;
+            case "End Turn":
+                resetActionFlags(); //Finish end turn later
+                Log.d("Button Processing", "END MY TURN");
+                break;
+        }
+    }
+
+    public void resetActionFlags() {
+        hasAttacked = false;
+        hasMoved = false;
+        hasUsedItem = false;
+        actionBar.resetButtons();
     }
 
     private void processSkillSelected(String selectedText) {
@@ -107,56 +149,42 @@ public class BattleSideBar {
 
     }
 
-    private void processActionBarTouch(String selectedText) {
-        if (Objects.equals(selectedText, "")) {
-            return;
-        }
-
-        switch(selectedText){
-            case "[ATK]":
-                changeDisplay(DisplayOptions.SKILL_BAR);
-                break;
-            case "[MOVE]":
-                changeDisplay(DisplayOptions.MOVE_BAR);
-                break;
-            case "[USE]":
-                Log.d("Button Processing", "USE BTN");
-                break;
-            case "End Turn":
-                Log.d("Button Processing", "END MY TURN");
-                break;
-        }
-    }
-
-    public void processConfirmSkill(String selectedText){
+    public void processConfirm(String selectedText, DisplayOptions currentDisplay){
         if (!Objects.equals(selectedText, "[Confirm]")) {
             return;
         }
-        Log.d("User wants to use a skill", "Confirm");
-        battleView.flashTiles();
-        isAnimationPlaying = true;
-    }
-
-    public void processConfirmMove(String selectedText){
-        if (!Objects.equals(selectedText, "[Confirm]")) {
-            return;
+        switch(currentDisplay){
+            case SKILL_BAR:
+                Log.d("User wants to use a skill", "Confirm");
+                battleView.flashTiles();
+                isAnimationPlaying = true;
+                hasAttacked = true;
+                actionBar.disableButton("[ATK]");
+                break;
+            case MOVE_BAR:
+                Log.d("User wants to move", "Move");
+                String movementDirection = moveBar.getSelectedArrowDirection();
+                presenter.movePlayer(movementDirection);
+                hasMoved = true;
+                actionBar.disableButton("[MOVE]");
+                break;
         }
-        Log.d("User wants to move", "Move");
-
-        String movementDirection = moveBar.getSelectedArrowDirection();
-        presenter.movePlayer(movementDirection);
         changeDisplay(DisplayOptions.ACTION_BAR);
     }
 
-    private void processGoBack(String selectedText) {
+    private void processGoBack(String selectedText, DisplayOptions currentDisplay) {
         if (!Objects.equals(selectedText, "[Go Back]")) {
             return;
         }
-        battleView.clearGrid();
-        Log.d("User wants to go back", "GO BACK");
-
-        int[] playerPos = presenter.getPlayerPosition();
-        battleView.updatePlayerPosition(playerPos[0], playerPos[1]);
+        switch(currentDisplay){
+            case SKILL_BAR:
+                battleView.clearGrid();
+                break;
+            case MOVE_BAR:
+                int[] playerPos = presenter.getPlayerPosition();
+                battleView.updatePlayerPosition(playerPos[0], playerPos[1]);
+                break;
+        }
         changeDisplay(DisplayOptions.ACTION_BAR);
     }
 

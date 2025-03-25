@@ -86,6 +86,11 @@ public class MenuText {
         createTextStaticLayout();
     }
 
+    public void setColor(int color) {
+        this.color = color;
+        createTextStaticLayout();
+    }
+
     public int getActualTextWidth() {
         if (textStaticLayout == null) {
             return 0;

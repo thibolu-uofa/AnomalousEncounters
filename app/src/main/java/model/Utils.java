@@ -114,7 +114,7 @@ public final class Utils {
                 int[] newTile = new int[2];
                 newTile[0] = currentTile[0] + vector[0];
                 newTile[1] = currentTile[1] + vector[1];
-                if (!(newTile[0] < 0 || newTile[0] >= maxRows || newTile[1] < 0 || newTile[1] >= maxCols)) {
+                if (!(newTile[0] < 0 || newTile[0] >= maxCols || newTile[1] < 0 || newTile[1] >= maxRows)) {
                     attackPattern.add(newTile);
                 }
                 currentTile = newTile;

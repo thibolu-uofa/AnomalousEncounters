@@ -56,6 +56,10 @@ public class SkillBar extends BaseMenuBar {
         drawTextButtons(canvas);
     }
 
+    public void resetCheckedBtn() {
+        radioBtnList.resetCheckedBtn();
+    }
+
     public String getSelectedSkill() {
         return selectedSkill;
     }

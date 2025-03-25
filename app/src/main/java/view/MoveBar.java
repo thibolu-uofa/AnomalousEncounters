@@ -102,6 +102,14 @@ public class MoveBar extends BaseMenuBar {
         selectedArrow = arrow;
     }
 
+    public void resetSelectedArrow() {
+        if (selectedArrow == null) {
+            return;
+        }
+        selectedArrow.unSelect();
+        selectedArrow = null;
+    }
+
     public void draw(Canvas canvas, Paint paint){
         squircle.draw(canvas, paint);
 

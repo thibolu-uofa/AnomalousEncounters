@@ -55,6 +55,14 @@ public class RadioBtnList {
         checkedBtn = radioBtn;
     }
 
+    public void resetCheckedBtn() {
+        if (checkedBtn == null) {
+            return;
+        }
+        checkedBtn.uncheckBtn();
+        checkedBtn = null;
+    }
+
     public void draw(Canvas canvas, Paint paint) {
         for (RadioBtn radioBtn: radioButtons) {
             radioBtn.draw(canvas, paint);
