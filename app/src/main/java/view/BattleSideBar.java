@@ -210,4 +210,8 @@ public class BattleSideBar {
     public void endAnimation() {
         isAnimationPlaying = false;
     }
+
+    public String getSelectedSkill(){
+        return skillBar.getSelectedSkill();
+    }
 }

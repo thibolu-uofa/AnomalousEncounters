@@ -191,7 +191,7 @@ public class GamePresenter extends AppCompatActivity {
         String name = enemyState.getName();
         String maxHealth = String.valueOf(enemyState.getEnemyMaxHealth());
         String currentHealth = String.valueOf(enemyState.getEnemyCurrentHealth());
-        return name + "\nHP: " + maxHealth + "/" + currentHealth;
+        return name + "\nHP: " + currentHealth + "/" + maxHealth;
     }
 
     public void setUpBattle(int enemyId) {
@@ -283,14 +283,14 @@ public class GamePresenter extends AppCompatActivity {
         String maxHealth = String.valueOf(playerState.getPlayerMaxHealth());
         String currentHealth = String.valueOf(playerState.getHealth());
         String tokens = String.valueOf(playerState.getTokens());
-        return name + "\nHP: " + maxHealth + "/" + currentHealth + "\nTokens: " + tokens;
+        return name + "\nHP: " + currentHealth + "/" + maxHealth + "\nTokens: " + tokens;
     }
 
     public String getPlayerNameAndHealth() {
         String name = playerState.getName();
         String maxHealth = String.valueOf(playerState.getPlayerMaxHealth());
         String currentHealth = String.valueOf(playerState.getHealth());
-        return name + "\nHP: " + maxHealth + "/" + currentHealth;
+        return name + "\nHP: " + currentHealth + "/" + maxHealth;
     }
 
 

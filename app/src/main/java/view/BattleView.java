@@ -1,7 +1,6 @@
 package view;
 
 import static view.ViewConstants.BATTLE_BACKGROUND_COLOR;
-import static view.ViewConstants.DEFAULT_TEXT_COLOR;
 import static view.ViewConstants.PLAYER_TILE_HIGHLIGHT_COLOR;
 import static view.ViewConstants.TRANSPARENT_COLOR;
 
@@ -12,12 +11,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.NinePatchDrawable;
-import android.util.Log;
 
 import com.example.anomalousencounters.R;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import presenter.GamePresenter;
 
@@ -127,28 +124,14 @@ public class BattleView {
         ticks = 5;
     }
 
-//    public void drawFlashingTiles(Canvas canvas, Paint paint){
-//        int timeInterval = 500; // animation speed in frames per milliseconds
-//        long lastFrameTime = 0;
-//        int ticks = 5;
-//        int current_color = PLAYER_TILE_HIGHLIGHT_COLOR;
-//
-//        while (ticks > 0) {
-//            long deltaTime = System.currentTimeMillis() - lastFrameTime;
-//            if (deltaTime >= timeInterval) {
-//                current_color = current_color == PLAYER_TILE_HIGHLIGHT_COLOR ? TRANSPARENT_COLOR : PLAYER_TILE_HIGHLIGHT_COLOR;
-//                Log.d("Current Color", "Color: " + current_color);
-//                for (MenuEmpty tileHighlight : tileHighlights) {
-//                    tileHighlight.setColor(current_color);
-//                    tileHighlight.draw(canvas, paint);
-//                }
-//                lastFrameTime = System.currentTimeMillis();
-//                ticks--;
-//            }
-//        }
-//
-//        isFlashingTiles = false;
-//    }
+    public void stopFlashingTiles(){
+        isFlashingTiles = false;
+        current_color = PLAYER_TILE_HIGHLIGHT_COLOR;
+        clearGrid();
+        sideBar.endAnimation();
+        useSkill();
+    }
+
 
     public void drawFlashingTiles(Canvas canvas, Paint paint) {
         long currentTime = System.currentTimeMillis();
@@ -177,11 +160,13 @@ public class BattleView {
 
         // Stop flashing when ticks reach 0
         if (ticks <= 0) {
-            isFlashingTiles = false;
-            current_color = PLAYER_TILE_HIGHLIGHT_COLOR;
-            clearGrid();
-            sideBar.endAnimation();
+            stopFlashingTiles();
         }
+    }
+
+    public void useSkill(){
+        String skillName = sideBar.getSelectedSkill();
+        presenter.usePlayerSkill(skillName);
     }
 
     public void clearGrid() {
