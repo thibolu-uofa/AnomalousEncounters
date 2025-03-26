@@ -17,6 +17,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
+
 import model.BattleSystem;
 import model.EncounterSystem;
 import model.EnemyState;
@@ -45,15 +47,7 @@ public class GamePresenter extends AppCompatActivity {
         gameLogic = new GameLogic();
         encounterSystem = new EncounterSystem();
 
-        // MORE TESTING
-//        Log.d("Skill Names", getSkillNamesString());
-//        Log.d("Skill Description", getSkillDescription(0));
-//        Log.d("Item Names", getItemNames());
-//        Log.d("Item Description", getItemDescription(0));
-
         //FOR TESTING PURPOSES
-//        setUpBattle(0);
-
 //        playSound("sample_sound.wav");
     }
 
@@ -233,6 +227,10 @@ public class GamePresenter extends AppCompatActivity {
         return String.valueOf(skillCooldowns);
     }
 
+    public boolean isPlayerWinner() {
+        return battleSystem.isPlayerWinner();
+    }
+
     public int[] getPlayerPosition() {
         return convertPositionToBoardDimensions(battleSystem.getPlayerPosition());
     }
@@ -316,6 +314,40 @@ public class GamePresenter extends AppCompatActivity {
             skillLevelsString.append(level).append('\n');
         }
         return String.valueOf(skillLevelsString);
+    }
+
+    public String getEnemyDropsString() {
+        StringBuilder enemyDrops = new StringBuilder("Entity has been purified\n\nAnamolous Drops\n");
+        int enemyId = battleSystem.getEnemyId();
+
+        try {
+            JSONArray itemIds = (JSONArray) getSingleDataProperty("enemies.json", "item_drops", enemyId, this);
+            for (int i = 0; i < itemIds.length(); i++) {
+                int id = itemIds.getInt(i);
+                String itemName = (String) getSingleDataProperty("items.json", "name", id, this);
+                enemyDrops.append(itemName).append('\n');
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        return String.valueOf(enemyDrops);
+    }
+
+    //TODO: Choose a proper way to generate the amount of items the enemy drops
+    public String getEnemyDropAmountsString() {
+        StringBuilder dropAmounts = new StringBuilder();
+        int length;
+        int enemyId = battleSystem.getEnemyId();
+        JSONArray itemIds = (JSONArray) getSingleDataProperty("enemies.json", "item_drops", enemyId, this);
+        length = itemIds.length();
+
+        Random rand = new Random();
+        for (int i = 0; i < length; i++) {
+            int amount = rand.nextInt(4) + 1;
+            dropAmounts.append("\nx").append(amount);
+        }
+        return String.valueOf(dropAmounts);
     }
 
     public String getItemNames() {

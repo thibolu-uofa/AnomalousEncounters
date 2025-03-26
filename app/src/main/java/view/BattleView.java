@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import presenter.GamePresenter;
 
 public class BattleView {
+    private GamePresenter presenter;
+    private GameView view;
     private Sprite grid;
     private Sprite playerIcon;
     private Sprite enemyIcon;
@@ -27,7 +29,6 @@ public class BattleView {
     private BattleSideBar sideBar;
     private ArrayList<MenuEmpty> tileHighlights = new ArrayList<>();
     private final int MAX_CARD_WIDTH = 650;
-    private GamePresenter presenter;
     private int GRID_BORDER_WEIGHT = 5;
     boolean isFlashingTiles = false;
     private int timeInterval = 250; // animation speed in frames per milliseconds
@@ -35,8 +36,9 @@ public class BattleView {
     private long lastFrameTime = 0;
     private int ticks = 6;
 
-    public BattleView(Context context, GamePresenter presenter){
+    public BattleView(Context context, GamePresenter presenter, GameView view){
         this.presenter = presenter;
+        this.view = view;
 
         Bitmap gridBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.battle_grid);
         int gridX = 720;
@@ -130,6 +132,11 @@ public class BattleView {
         clearGrid();
         sideBar.endAnimation();
         useSkill();
+
+        boolean isPlayerWinner = presenter.isPlayerWinner();
+        if (isPlayerWinner) {
+            view.endBattle(true);
+        }
     }
 
 

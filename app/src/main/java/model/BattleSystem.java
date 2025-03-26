@@ -287,7 +287,7 @@ public class BattleSystem {
     private void createEnemy(int enemyId) {
         String name = (String) getSingleDataProperty("enemies.json", "name", enemyId, context);
         int maxHealth = (int) getSingleDataProperty("enemies.json", "maxhealth", enemyId, context);
-        enemyState = new EnemyState(name, maxHealth);
+        enemyState = new EnemyState(name, maxHealth, enemyId);
     }
 
     public ArrayList<Integer> getPlayerSkillCooldowns() {
@@ -316,5 +316,9 @@ public class BattleSystem {
 
     public EnemyState getEnemyState() {
         return enemyState;
+    }
+
+    public int getEnemyId() {
+        return enemyState.getId();
     }
 }

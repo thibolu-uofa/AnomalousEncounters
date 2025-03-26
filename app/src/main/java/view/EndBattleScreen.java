@@ -20,14 +20,14 @@ public class EndBattleScreen {
     private MenuItem continueButton;
     private boolean isPlayerWinner;
 
-    public EndBattleScreen(boolean isPlayerWinner, Context context){
+    public EndBattleScreen(boolean isPlayerWinner, Context context, GamePresenter presenter){
         this.isPlayerWinner = isPlayerWinner;
         String endBattleText;
         String dropAmountsText;
         String continueButtonText = "Press Onwards";
         if (isPlayerWinner){
-            endBattleText = "Entity has been purified\n\nAnomalous Drops\nAnomalous Essence\nAnomalous Shard\nAnomalous Crystal";
-            dropAmountsText =  "\nx4\nx2\nx1";
+            endBattleText = presenter.getEnemyDropsString();
+            dropAmountsText =  presenter.getEnemyDropAmountsString();
             int x = 850, y = 200, width = 750, height = 450;
             endBattleMsg = new MenuItem(x, y, height, width, endBattleText, false, context);
             dropAmounts = new MenuText(dropAmountsText, FONT_SIZE_MEDIUM, DEFAULT_TEXT_COLOR, width, false, context, false);

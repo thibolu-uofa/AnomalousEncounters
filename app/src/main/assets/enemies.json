@@ -5,7 +5,7 @@
     "maxhealth": 15,
     "type": "Life",
     "skills": [1, 2],
-    "item_drops": [7],
+    "item_drops": [7, 8, 9],
     "image_name": "strange_triangle"
   },
   {
@@ -14,7 +14,7 @@
     "maxhealth": 15,
     "type": "Life",
     "skills": [0, 3],
-    "item_drops": [7],
+    "item_drops": [7, 8, 9],
     "image_name": "enraged_chair"
   },
   {
@@ -23,7 +23,7 @@
     "maxhealth": 15,
     "type": "Nothingness",
     "skills": [10, 11],
-    "item_drops": [7],
+    "item_drops": [7, 8, 9],
     "image_name": "shapeless"
   },
   {
@@ -32,7 +32,7 @@
     "maxhealth": 15,
     "type": "Nothingness",
     "skills": [8, 9],
-    "item_drops": [7],
+    "item_drops": [7, 8, 9],
     "image_name": "pointed_circle"
   },
   {
@@ -40,8 +40,8 @@
     "name": "The Silent Banshee",
     "maxhealth": 15,
     "type": "Death",
-    "skills": [7],
-    "item_drops": [7],
+    "skills": [7, 8, 9],
+    "item_drops": [7, 8, 9],
     "image_name": "silent_banshee"
   },
   {
@@ -50,7 +50,7 @@
     "maxhealth": 15,
     "type": "Death",
     "skills": [5, 6],
-    "item_drops": [7],
+    "item_drops": [7, 8, 9],
     "image_name": "cursed_banana"
   },
   {
@@ -59,7 +59,7 @@
     "maxhealth": 15,
     "type": "Nothingness",
     "skills": [8, 11],
-    "item_drops": [7],
+    "item_drops": [7, 8, 9],
     "image_name": "creative_erasure"
   },
   {
@@ -67,8 +67,8 @@
     "name": "The Depressed Mustache",
     "maxhealth": 15,
     "type": "Death",
-    "skills": [7],
-    "item_drops": [7],
+    "skills": [7, 8, 9],
+    "item_drops": [7, 8, 9],
     "image_name": "depressed_mustache"
   },
   {
@@ -77,7 +77,7 @@
     "maxhealth": 15,
     "type": "Death",
     "skills": [6],
-    "item_drops": [7],
+    "item_drops": [7, 8, 9],
     "image_name": "basic_acid"
   },
   {
@@ -86,7 +86,7 @@
     "maxhealth": 15,
     "type": "Life",
     "skills": [2, 0],
-    "item_drops": [7],
+    "item_drops": [7, 8, 9],
     "image_name": ""
   }
 ]

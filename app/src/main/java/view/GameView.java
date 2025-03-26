@@ -77,8 +77,8 @@ public class GameView  extends SurfaceView implements Runnable{
         playerMenu = new PlayerMenu(getContext());
 
         //TESTING
-        displayBattle();
-        endBattle(false);
+//        displayBattle();
+//        endBattle(false);
     }
 
     /**
@@ -245,26 +245,30 @@ public class GameView  extends SurfaceView implements Runnable{
     }
 
     public void displayBattle() {
-        battleView = new BattleView(this.getContext(), presenter);
-        isOnOverworld = false;
+        battleView = new BattleView(this.getContext(), presenter, this);
         isInBattle = true;
+
+        isOnOverworld = false;
         canPlayerMove = false;
     }
 
     public void endBattle(boolean isPlayerWinner){
-        isInBattle = false;
+        isInBattle = !isInBattle;
         battleView = null;
         displayEndBattleInfo(isPlayerWinner);
     }
 
     public void displayEndBattleInfo(boolean isPlayerWinner){
         isDisplayingEndBattleInfo = true;
-        endBattleScreen = new EndBattleScreen(isPlayerWinner, this.getContext());
+        endBattleScreen = new EndBattleScreen(isPlayerWinner, this.getContext(), presenter);
     }
 
     public void closeEndBattleInfo() {
         isDisplayingEndBattleInfo = false;
         endBattleScreen = null;
+        //prevents player from immediately encountering another enemy
+        int stopGap = 5000;
+        lastEnemyEncounterCheck = System.currentTimeMillis() + stopGap;
         displayOverworld();
     }
 

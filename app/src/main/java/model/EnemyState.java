@@ -1,6 +1,7 @@
 package model;
 
 public class EnemyState {
+    private int id;
     private int enemyMaxHealth, enemyCurrentHealth, currentAttackId;
     private String name;
     private int[] skills = new int[0]; // Empty integer array
@@ -15,10 +16,11 @@ public class EnemyState {
     }
 
     // Constructor with parameters
-    public EnemyState(String name, int maxHealth) {
+    public EnemyState(String name, int maxHealth, int enemyId) {
         this.name = name;
         this.enemyMaxHealth = maxHealth;
         this.enemyCurrentHealth = maxHealth; // Start with full health
+        this.id = enemyId;
     }
 
     // Update health
@@ -115,5 +117,9 @@ public class EnemyState {
 
     public int getEnemyCurrentHealth() {
         return enemyCurrentHealth;
+    }
+
+    public int getId() {
+        return id;
     }
 }//
