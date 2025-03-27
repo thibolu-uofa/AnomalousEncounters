@@ -413,9 +413,20 @@ public class GamePresenter extends AppCompatActivity {
         return (String) getPropertyByName("items.json", name, "description", this);
     }
 
+
     public ArrayList<String> getPlayerItemNamesArray() {
         int[] itemIds = playerState.getItemList();
         return getStringListOfDataProperty("items.json", "name", itemIds, this);
+    }
+
+    public ArrayList<String> getPlayerSkillNamesArray() {
+        int[] itemIds = playerState.getSkillList();
+        return getStringListOfDataProperty("skills.json", "name", itemIds, this);
+    }
+
+    public ArrayList<String> getShopItemsArray() {
+        int[] shopItemIds = {0, 1, 2, 3, 4, 5, 6};
+        return getStringListOfDataProperty("items.json", "name", shopItemIds, this);
     }
 
     public String getEnemyDescription(int id) {
