@@ -78,7 +78,7 @@ public class GameView  extends SurfaceView implements Runnable{
         playerSprite = new PlayerSprite(playerBitmap, 1100, 448);
         playerSprite.setAnimation("idle");
 
-        playerMenu = new PlayerMenu(getContext());
+        playerMenu = new PlayerMenu(presenter, getContext());
 
         //TESTING
 //        displayBattle();
@@ -189,6 +189,9 @@ public class GameView  extends SurfaceView implements Runnable{
                 if (isOnOverworld) {
                     checkIfInventoryOpened(eventX, eventY);
                     checkIfShopOpened(eventX, eventY);
+                    if (playerMenu.isOpen()) {
+                        playerMenu.checkForUserTouch(eventX, eventY, presenter);
+                    }
                     if (shopMenu != null) {
                         shopMenu.checkForUserTouch(eventX, eventY, presenter);
                     }

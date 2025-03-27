@@ -30,18 +30,27 @@ public class ShopMenu {
         menuItemsList.put("playerCard", playerCard);
         x += playerCard.getWidth() + margin;
 
-        MenuItem items = new MenuItem(x, y, 700, 750, "ITEMS", false, context);
+        int MENU_HEADING_HEIGHT = 90;
+        int MENU_HEIGHT = 600;
+        int MENU_WIDTH = 750;
+        MenuItem items_heading = new MenuItem(x, y, MENU_HEADING_HEIGHT, MENU_WIDTH, "ITEMS", true, context);
+        MenuItem items = new MenuItem(x, y + MENU_HEADING_HEIGHT, MENU_HEIGHT, MENU_WIDTH, "", false, context);
+        menuItemsList.put("items_heading", items_heading);
         menuItemsList.put("items", items);
+
         ArrayList<String> itemArrayList = presenter.getShopItemsArray();
-        itemRadioBtnList = new RadioBtnList(x + 15, y + 80, context, itemArrayList, 750, 700);
+        itemRadioBtnList = new RadioBtnList(x + 15, y + MENU_HEADING_HEIGHT + 20, context, itemArrayList, MENU_WIDTH, MENU_HEIGHT);
         x += items.getWidth();
 
-        MenuItem itemInfo = new MenuItem(x, y, 700, 650, "[Item Name]", false, context);
+        MenuItem itemName = new MenuItem(x, y, MENU_HEADING_HEIGHT, MENU_WIDTH, "[Item Name]", true, context);
+        MenuItem itemInfo = new MenuItem(x, y + MENU_HEADING_HEIGHT, MENU_HEIGHT, MENU_WIDTH, "", false, context);
         itemInfo.changeFontSize(FONT_SIZE_SMALL);
+        menuItemsList.put("item_name", itemName);
         menuItemsList.put("item_info", itemInfo);
+
         x += itemInfo.getWidth() + margin;
 
-        MenuItem closeButton = new MenuItem(x, y, 80, 80, "X", true, context);
+        MenuItem closeButton = new MenuItem(x, y, 70, 60, "X", false, context);
         menuItemsList.put("close_button", closeButton);
 
     }
@@ -51,6 +60,7 @@ public class ShopMenu {
     }
 
     private void updateItemInfo(GamePresenter presenter){
+        Objects.requireNonNull(menuItemsList.get("item_name")).updateText(selectedItem);
         Objects.requireNonNull(menuItemsList.get("item_info")).updateText(presenter.getItemShopInfo(selectedItem));
     }
 

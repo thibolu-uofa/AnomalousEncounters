@@ -435,7 +435,7 @@ public class GamePresenter extends AppCompatActivity {
     }
 
     public String getItemShopInfo(String name) {
-        StringBuilder itemInfo = new StringBuilder(name);
+        StringBuilder itemInfo = new StringBuilder();
         String description = getItemDescriptionByName(name);
         int price = getItemPriceByName(name);
         itemInfo.append('\n').append(description).append("\n\nPrice: ").append(price);

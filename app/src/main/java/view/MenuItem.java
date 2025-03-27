@@ -32,6 +32,9 @@ public class MenuItem {
         this.text = text;
         this.context = context;
         this.isTextCentred = isTextCentred;
+        if (isTextCentred) {
+            PADDING = 0;
+        }
         menuText = new MenuText(text, FONT_SIZE_MEDIUM, DEFAULT_TEXT_COLOR, width - PADDING, isTextCentred, context, true);
         menuText.setXAndY(x, y);
     }
