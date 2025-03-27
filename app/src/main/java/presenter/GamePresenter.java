@@ -1,11 +1,14 @@
 package presenter;
 
 import static model.Utils.getDataProperty;
+import static model.Utils.getEnemyImage;
+import static model.Utils.getPropertyByName;
 import static model.Utils.getSingleDataProperty;
 import static model.Utils.getStringListOfDataProperty;
 
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
 import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.os.Bundle;
@@ -49,6 +52,15 @@ public class GamePresenter extends AppCompatActivity {
 
         //FOR TESTING PURPOSES
 //        playSound("sample_sound.wav");
+
+        getPlayerItemNamesArray();
+        Log.d("Item description", getItemDescription(0));
+        Log.d("Item description", getItemDescriptionByName("Anomalous Essence"));
+        Log.d("Item price", String.valueOf(getItemPriceByName("Anomalous Essence")));
+        Log.d("Item Shop Info", getItemShopInfo("Death Skill Stone"));
+        Log.d("Skill description", getSkillDescription(5));
+        Log.d("Skill description", getSkillDescriptionByName("Dying Light"));
+        Log.d("Enemy description", getEnemyDescription(5));
     }
 
     // https://gamecodeschool.com/android/playing-sound-fx-demo/
@@ -195,10 +207,10 @@ public class GamePresenter extends AppCompatActivity {
         view.displayBattle();
 
         //tell view what enemy image to use
-        String image_name = (String) getSingleDataProperty("enemies.json", "image_name", enemyId, this);
-        view.setEnemyImage(image_name);
+        Bitmap enemyImage = getEnemyImage(enemyId, this);
+        view.setEnemyImage(enemyImage);
 
-        // tell view to draw player and enemy
+        //tell view to draw player and enemy
         int [] playerPosition = battleSystem.getPlayerPosition();
         int [] enemyPosition = battleSystem.getEnemyPosition();
 
@@ -276,21 +288,26 @@ public class GamePresenter extends AppCompatActivity {
         battleSystem.usePlayerSkill(skillName);
     }
 
-    public String getPlayerNameHealthAndTokens() {
+    private String formatPlayerInfo(boolean includeTokens) {
+        StringBuilder sb = new StringBuilder();
         String name = playerState.getName();
-        String maxHealth = String.valueOf(playerState.getPlayerMaxHealth());
-        String currentHealth = String.valueOf(playerState.getHealth());
-        String tokens = String.valueOf(playerState.getTokens());
-        return name + "\nHP: " + currentHealth + "/" + maxHealth + "\nTokens: " + tokens;
+        int currentHealth = playerState.getHealth(), maxHealth = playerState.getPlayerMaxHealth();
+
+        sb.append(name).append("\nHP: ").append(currentHealth).append("/").append(maxHealth);
+
+        if (includeTokens) {
+            sb.append("\nTokens: ").append(playerState.getTokens());
+        }
+        return sb.toString();
+    }
+
+    public String getPlayerNameHealthAndTokens() {
+        return formatPlayerInfo(true);
     }
 
     public String getPlayerNameAndHealth() {
-        String name = playerState.getName();
-        String maxHealth = String.valueOf(playerState.getPlayerMaxHealth());
-        String currentHealth = String.valueOf(playerState.getHealth());
-        return name + "\nHP: " + currentHealth + "/" + maxHealth;
+        return formatPlayerInfo(false);
     }
-
 
     public String getSkillNamesString() {
         int[] skillIds = playerState.getSkillList();
@@ -305,6 +322,10 @@ public class GamePresenter extends AppCompatActivity {
     public String getSkillDescription(int skillId) {
         int[] skillIds = {skillId};
         return getDataProperty("skills.json", "description", skillIds, this);
+    }
+
+    public String getSkillDescriptionByName(String name) {
+        return (String) getPropertyByName("skills.json", name, "description", this);
     }
 
     public String getSkillLevelsString() {
@@ -340,24 +361,34 @@ public class GamePresenter extends AppCompatActivity {
         int length;
         int enemyId = battleSystem.getEnemyId();
         JSONArray itemIds = (JSONArray) getSingleDataProperty("enemies.json", "item_drops", enemyId, this);
+        ArrayList<Integer> itemAmounts = new ArrayList<>();
         length = itemIds.length();
 
         Random rand = new Random();
         for (int i = 0; i < length; i++) {
             int amount = rand.nextInt(4) + 1;
             dropAmounts.append("\nx").append(amount);
+            itemAmounts.add(amount);
         }
+        addEnemyDropsToPlayerInventory(itemIds, itemAmounts);
         return String.valueOf(dropAmounts);
+    }
+
+    private void addEnemyDropsToPlayerInventory(JSONArray itemIds, ArrayList<Integer> itemAmounts) {
+        try {
+            for (int i = 0; i < itemIds.length(); i++) {
+                int id = (int) itemIds.get(i);
+                int amount = itemAmounts.get(i);
+                playerState.addItem(id, amount);
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getItemNames() {
         int[] itemIds = playerState.getItemList();
         return getDataProperty("items.json", "name", itemIds, this);
-    }
-
-    public String getItemDescription(int itemId) {
-        int[] itemIds = {itemId};
-        return getDataProperty("items.json", "description", itemIds, this);
     }
 
     public String getItemAmounts() {
@@ -367,6 +398,37 @@ public class GamePresenter extends AppCompatActivity {
             itemAmountsString.append(amount).append('\n');
         }
         return String.valueOf(itemAmountsString);
+    }
+
+    public String getItemDescription(int itemId) {
+        int[] itemIds = {itemId};
+        return getDataProperty("items.json", "description", itemIds, this);
+    }
+
+    public int getItemPriceByName(String name) {
+        return (int) getPropertyByName("items.json", name, "price", this);
+    }
+
+    public String getItemDescriptionByName(String name) {
+        return (String) getPropertyByName("items.json", name, "description", this);
+    }
+
+    public ArrayList<String> getPlayerItemNamesArray() {
+        int[] itemIds = playerState.getItemList();
+        return getStringListOfDataProperty("items.json", "name", itemIds, this);
+    }
+
+    public String getEnemyDescription(int id) {
+        int[] itemIds = {id};
+        return getDataProperty("enemies.json", "description", itemIds, this);
+    }
+
+    public String getItemShopInfo(String name) {
+        StringBuilder itemInfo = new StringBuilder(name);
+        String description = getItemDescriptionByName(name);
+        int price = getItemPriceByName(name);
+        itemInfo.append('\n').append(description).append("\n\nPrice: ").append(price);
+        return String.valueOf(itemInfo);
     }
 
     // This method executes when the user continues the game

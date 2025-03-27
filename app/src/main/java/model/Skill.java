@@ -70,6 +70,10 @@ public class Skill {
         //else decrease cooldown by 1
     }
 
+    public void activateSkillCooldown() {
+        // set current cooldown equal to max cooldown
+    }
+
     public ArrayList<int[]> getAffectedTiles(int[] origin_pos){
         return atkPattern.getAttackPattern(origin_pos, length);
     }//

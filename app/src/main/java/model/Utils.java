@@ -1,8 +1,13 @@
 package model;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -94,6 +99,30 @@ public final class Utils {
             throw new RuntimeException(e);
         }
         return dataProperty;
+    }
+
+    public static Object getPropertyByName(String filename, String name, String property, Context context) {
+        JSONArray jsonArray = loadJsonArrayFromFile(filename, context);
+        try {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject object = jsonArray.getJSONObject(i);
+                String itemName = object.getString("name");
+                if (itemName.equals(name)) {
+                    return object.get(property);
+                }
+
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        return "";
+    }
+
+    public static Bitmap getEnemyImage(int id, Context context) {
+        String imageName = (String) getSingleDataProperty("enemies.json", "image_name", id, context);
+        int resourceId = context.getResources().getIdentifier(imageName, "drawable",  context.getPackageName());
+        return BitmapFactory.decodeResource(context.getResources(), resourceId);
     }
 
     /**

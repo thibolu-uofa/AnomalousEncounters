@@ -6,7 +6,8 @@
     "type": "Life",
     "skills": [1, 2],
     "item_drops": [7, 8, 9],
-    "image_name": "strange_triangle"
+    "image_name": "strange_triangle",
+    "description": "Apparitions of a strange triangle called Billy, best friends with the Pointed Circle."
   },
   {
     "id": 1,
@@ -15,7 +16,8 @@
     "type": "Life",
     "skills": [0, 3],
     "item_drops": [7, 8, 9],
-    "image_name": "enraged_chair"
+    "image_name": "enraged_chair",
+    "description": "Consumed by the rage of a thousand suns from the inconsiderate bastards who keep sitting on it."
   },
   {
     "id": 2,
@@ -24,7 +26,8 @@
     "type": "Nothingness",
     "skills": [10, 11],
     "item_drops": [7, 8, 9],
-    "image_name": "shapeless"
+    "image_name": "shapeless",
+    "description": "Once the ultimate shape, lord of higher dimensions, slipped down on George the Banana and fell into the In-between, forever losing its shape."
   },
   {
     "id": 3,
@@ -33,7 +36,8 @@
     "type": "Nothingness",
     "skills": [8, 9],
     "item_drops": [7, 8, 9],
-    "image_name": "pointed_circle"
+    "image_name": "pointed_circle",
+    "description": "Forged from the trials of infinite pokes from its close friend, Billy, The Strange Triangle."
   },
   {
     "id": 4,
@@ -42,7 +46,8 @@
     "type": "Death",
     "skills": [7, 8, 9],
     "item_drops": [7, 8, 9],
-    "image_name": "silent_banshee"
+    "image_name": "silent_banshee",
+    "description": "After screaming for a millennium in the basement of a beauty salon, a sleep-deprived tailor sewed her mouth shut with golden thread."
   },
   {
     "id": 5,
@@ -51,7 +56,8 @@
     "type": "Death",
     "skills": [5, 6],
     "item_drops": [7, 8, 9],
-    "image_name": "cursed_banana"
+    "image_name": "cursed_banana",
+    "description": "A fateful banana that has been forever cursed by his dastardly cousin, George, to never make anyone trip and fall in a cartoonish manner."
   },
   {
     "id": 6,
@@ -60,7 +66,8 @@
     "type": "Nothingness",
     "skills": [8, 11],
     "item_drops": [7, 8, 9],
-    "image_name": "creative_erasure"
+    "image_name": "creative_erasure",
+    "description": "Created by The Alchemist, who was conducting an experiment on human suffering and the meaning of life."
   },
   {
     "id": 7,
@@ -69,7 +76,8 @@
     "type": "Death",
     "skills": [7, 8, 9],
     "item_drops": [7, 8, 9],
-    "image_name": "depressed_mustache"
+    "image_name": "depressed_mustache",
+    "description": "Name: The Depressed Mustache\nAge: 0 days – 78 years\nSex: IDK\nDiagnoses: Seasonal Depression.\nReason Stated: Neighbours with The Cloud of Perpetual Sadness."
   },
   {
     "id": 8,
@@ -78,7 +86,8 @@
     "type": "Death",
     "skills": [6],
     "item_drops": [7, 8, 9],
-    "image_name": "basic_acid"
+    "image_name": "basic_acid",
+    "description": "A failed creation of The Alchemist who was trying to make a solution that could dissolve Anomalies."
   },
   {
     "id": 9,
@@ -87,6 +96,7 @@
     "type": "Life",
     "skills": [2, 0],
     "item_drops": [7, 8, 9],
-    "image_name": ""
+    "image_name": "",
+    "description": ""
   }
 ]

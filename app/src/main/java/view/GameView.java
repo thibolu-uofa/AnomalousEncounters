@@ -32,7 +32,7 @@ public class GameView  extends SurfaceView implements Runnable{
     private Canvas canvas;
     private final Paint paint;
     private final HealthBar healthBar;
-    private final Sprite inventory, settingsIcon, shopIcon;
+    private final Sprite inventory, settingsIcon, shopIcon, indexIcon;
     private final PlayerSprite playerSprite;
     private final BackgroundImage backgroundImage;
     private final PlayerMenu playerMenu;
@@ -56,8 +56,11 @@ public class GameView  extends SurfaceView implements Runnable{
         Bitmap settingsIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.settings_icon);
         settingsIcon = new Sprite(settingsIconBitmap, 2235, 50);
 
+        Bitmap indexIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.book_icon);
+        indexIcon = new Sprite(indexIconBitmap, 2235, settingsIcon.getY() + settingsIconBitmap.getHeight() + 20);
+
         Bitmap shopIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.shop_icon);
-        shopIcon = new Sprite(shopIconBitmap, 2235, settingsIcon.getY() + settingsIconBitmap.getHeight() + 20);
+        shopIcon = new Sprite(shopIconBitmap, 2235, indexIcon.getY() + indexIconBitmap.getHeight() + 20);
 
         Bitmap inventoryBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.quick_inventory);
         inventory = new Sprite(inventoryBitmap, 950, 840);
@@ -148,6 +151,7 @@ public class GameView  extends SurfaceView implements Runnable{
         }
 
         settingsIcon.draw(canvas, paint);
+        indexIcon.draw(canvas, paint);
         shopIcon.draw(canvas, paint);
         inventory.draw(canvas, paint);
 
@@ -308,8 +312,8 @@ public class GameView  extends SurfaceView implements Runnable{
         battleView.updateEnemyPosition(x, y);
     }
 
-    public void setEnemyImage(String name) {
-        battleView.setEnemyIcon(name, getContext());
+    public void setEnemyImage(Bitmap enemyImage) {
+        battleView.setEnemyIcon(enemyImage);
     }
 
     /**

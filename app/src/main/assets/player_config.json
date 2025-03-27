@@ -4,8 +4,8 @@
     "health": 25,
     "maxHealth": 25,
     "items": [
-      {"id": 3, "amount": 4},
-      {"id": 7, "amount": 12}
+      {"id": 3, "amount": 1},
+      {"id": 7, "amount": 2}
     ],
     "skills": [
       {"id": 2, "level": 3, "experience": 0, "maxExperience": 100},

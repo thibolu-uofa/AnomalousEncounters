@@ -1,86 +1,86 @@
 [
-    {
-      "name": "Life Drain",
-      "id": 0,
-      "type": "Life",
-      "atkPattern": "Straight",
-      "description": "N/A"
-    },
-    {
-      "name": "Blood Bending",
-      "id": 1,
-      "type": "Life",
-      "atkPattern": "Diagonal",
-      "description": "N/A"
-    },
-    {
-      "name": "Nature's Madness",
-      "id": 2,
-      "type": "Life",
-      "atkPattern": "Star",
-      "description": "N/A"
-    },
-    {
-      "name": "Roar of Gaia",
-      "id": 3,
-      "type": "Life",
-      "atkPattern": "Cone",
-      "description": "N/A"
-    },
-    {
-      "name": "Dying Light",
-      "id": 4,
-      "type": "Death",
-      "atkPattern": "Straight",
-      "description": "N/A"
-    },
-    {
-      "name": "Reaper's Scythe",
-      "id": 5,
-      "type": "Death",
-      "atkPattern": "Diagonal",
-      "description": "N/A"
-    },
-    {
-      "name": "Death Personified",
-      "id": 6,
-      "type": "Death",
-      "atkPattern": "Star",
-      "description": "N/A"
-    },
-    {
-      "name": "Cerberus' Bite",
-      "id": 7,
-      "type": "Death",
-      "atkPattern": "Cone",
-      "description": "N/A"
-    },
-    {
-      "name": "Erasure",
-      "id": 8,
-      "type": "Nothingness",
-      "atkPattern": "Straight",
-      "description": "N/A"
-    },
-    {
-      "name": "Segmented Void",
-      "id": 9,
-      "type": "Nothingness",
-      "atkPattern": "Diagonal",
-      "description": "N/A"
-    },
-    {
-      "name": "The Singularity",
-      "id": 10,
-      "type": "Nothingness",
-      "atkPattern": "Star",
-      "description": "N/A"
-    },
-    {
-      "name": "Nihil River",
-      "id": 11,
-      "type": "Nothingness",
-      "atkPattern": "Cone",
-      "description": "N/A"
-    }
+  {
+    "name": "Life Drain",
+    "id": 0,
+    "type": "Life",
+    "atkPattern": "Straight",
+    "description": "A beam that siphons vitality from the target.\nAttack Type: Straight"
+  },
+  {
+    "name": "Blood Bending",
+    "id": 1,
+    "type": "Life",
+    "atkPattern": "Diagonal",
+    "description": "Drawing from the power of blood of one's own blood to strike the enemy.\nAttack Type: Diagonal"
+  },
+  {
+    "name": "Nature's Madness",
+    "id": 2,
+    "type": "Life",
+    "atkPattern": "Star",
+    "description": "Unleash the unbounded fury of Mother Nature.\nAttack Type: Star"
+  },
+  {
+    "name": "Roar of Gaia",
+    "id": 3,
+    "type": "Life",
+    "atkPattern": "Cone",
+    "description": "A primal bellow from the earth's core.\nAttack Type: Cone"
+  },
+  {
+    "name": "Dying Light",
+    "id": 4,
+    "type": "Death",
+    "atkPattern": "Straight",
+    "description": "A fading beam of eerie light that drains am enemy's life force.\nAttack Type: Straight"
+  },
+  {
+    "name": "Reaper's Scythe",
+    "id": 5,
+    "type": "Death",
+    "atkPattern": "Diagonal",
+    "description": "Call upon death's right hand man to slash a spectral scythe through the battlefield.\nAttack Type: Diagonal"
+  },
+  {
+    "name": "Death Personified",
+    "id": 6,
+    "type": "Death",
+    "atkPattern": "Star",
+    "description": "Manifest ______'s power.\nAttack Type: Star"
+  },
+  {
+    "name": "Cerberus' Bite",
+    "id": 7,
+    "type": "Death",
+    "atkPattern": "Cone",
+    "description": "A ferocious bite from the guardian of the underworld.\nAttack Type: Cone"
+  },
+  {
+    "name": "Erasure",
+    "id": 8,
+    "type": "Nothingness",
+    "atkPattern": "Straight",
+    "description": "A strike that deletes a fragment of existence, leaving only a void where the target once stood."
+  },
+  {
+    "name": "Segmented Void",
+    "id": 9,
+    "type": "Nothingness",
+    "atkPattern": "Diagonal",
+    "description": "Reality fractures. Slashed by nothingness.\nAttack Type: Diagonal"
+  },
+  {
+    "name": "The Singularity",
+    "id": 10,
+    "type": "Nothingness",
+    "atkPattern": "Star",
+    "description": "A collapsing point of infinite density, bring upon oblivion.\nAttack Type: Star"
+  },
+  {
+    "name": "Nihil River",
+    "id": 11,
+    "type": "Nothingness",
+    "atkPattern": "Cone",
+    "description": "A tide of empty darkness washing over the battlefield.\nAttack Type: Cone"
+  }
 ]

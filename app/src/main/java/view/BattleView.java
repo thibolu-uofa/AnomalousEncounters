@@ -104,10 +104,8 @@ public class BattleView {
         enemyIcon.setY(grid.getY() + y + GRID_BORDER_WEIGHT);
     }
 
-    public void setEnemyIcon(String imageName, Context context) {
-        int resourceId = context.getResources().getIdentifier(imageName, "drawable",  context.getPackageName());
-        Bitmap enemyIconBitmap = BitmapFactory.decodeResource(context.getResources(), resourceId);
-        enemyIcon.updateBitmap(enemyIconBitmap);
+    public void setEnemyIcon(Bitmap enemyImage) {
+        enemyIcon.updateBitmap(enemyImage);
     }
 
     public void highlightTiles(ArrayList<int[]> tileList) {

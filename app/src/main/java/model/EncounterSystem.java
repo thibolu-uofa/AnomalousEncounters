@@ -53,4 +53,8 @@ public class EncounterSystem {
 
         return enemyId;
     }
+
+    public int getNumberOfEnemies() {
+        return numberOfEnemies;
+    }
 }
