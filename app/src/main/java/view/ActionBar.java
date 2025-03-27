@@ -25,7 +25,7 @@ public class ActionBar extends BaseMenuBar {
         MenuText use = new MenuText("[USE]", FONT_SIZE_LARGE, DEFAULT_TEXT_COLOR, width, false, context, true);
         textButtons.add(use);
 
-        MenuText endTurn = new MenuText("End Turn", FONT_SIZE_LARGE, SECONDARY_TEXT_COLOR, width, false, context, true);
+        MenuText endTurn = new MenuText("End Turn", FONT_SIZE_LARGE, DEFAULT_TEXT_COLOR, width, false, context, true);
         textButtons.add(endTurn);
 
         setTextPositions();

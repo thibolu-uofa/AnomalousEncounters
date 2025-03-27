@@ -189,7 +189,10 @@ public class GameView  extends SurfaceView implements Runnable{
                 if (isOnOverworld) {
                     checkIfInventoryOpened(eventX, eventY);
                     checkIfShopOpened(eventX, eventY);
-                    if (hasInventoryBeenClosed(eventX, eventY)) {
+                    if (shopMenu != null) {
+                        shopMenu.checkForUserTouch(eventX, eventY, presenter);
+                    }
+                    if (hasInventoryBeenClosed(eventX, eventY) || hasShopBeenClosed(eventX, eventY)) {
                         break;
                     }
                     updatePlayerAnimation((int) eventX);
@@ -225,7 +228,7 @@ public class GameView  extends SurfaceView implements Runnable{
 
     private void checkIfShopOpened(float eventX, float eventY) {
         if (shopIcon.hasBeenTouched(eventX, eventY, presenter, 1)) {
-            shopMenu = new ShopMenu(getContext());
+            shopMenu = new ShopMenu(presenter, getContext());
             canPlayerMove = false;
         }
     }
@@ -233,6 +236,18 @@ public class GameView  extends SurfaceView implements Runnable{
     private boolean hasInventoryBeenClosed(float eventX, float eventY) {
         if (playerMenu.isOpen() && playerMenu.hasClosedMenu(eventX, eventY, presenter)) {
             playerMenu.closeMenu();
+            canPlayerMove = true;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean hasShopBeenClosed(float eventX, float eventY) {
+        if (shopMenu == null) {
+            return false;
+        }
+        if (shopMenu.hasClosedMenu(eventX, eventY, presenter)) {
+            shopMenu = null;
             canPlayerMove = true;
             return true;
         }
