@@ -56,22 +56,32 @@ public class Skill {
     private int calculateSkillBaseDamage(int level) {
         //come up with an equation to calculate skill base damage based off of level and atk type
         //maybe also have a degree of randomness
+        //((skillDmg * level /tier from 1 to 4) + random number between 1 and 3 ^ 2) * enemy resistance
 
         return level * 2;
     }
 
     public boolean canUseSkill() {
         //if skill cooldown is greater than 0 returns false
+        if (currentCooldown != 0){
+            return false;
+        }
         return true;
     }
 
     public void updateSkillCooldown() {
         //if cooldown is equal to zero than return, because skill not on a cooldown
         //else decrease cooldown by 1
+        if (currentCooldown == 0){
+            return;
+        }
+        currentCooldown--;
     }
 
     public void activateSkillCooldown() {
         // set current cooldown equal to max cooldown
+        currentCooldown = MAX_COOLDOWN;
+
     }
 
     public ArrayList<int[]> getAffectedTiles(int[] origin_pos){
