@@ -87,6 +87,11 @@ public class MenuText {
         createTextStaticLayout();
     }
 
+    public void updateFontSize(int fontSize) {
+        this.fontSize = fontSize;
+        createTextStaticLayout();
+    }
+
     public void setColor(int color) {
         this.color = color;
         createTextStaticLayout();

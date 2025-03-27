@@ -18,6 +18,7 @@ public class MenuItem {
     private int y;
     private int height;
     private int width;
+    private int PADDING = 15;
     private MenuText menuText;
     private String text;
     private boolean isTextCentred;
@@ -31,10 +32,17 @@ public class MenuItem {
         this.text = text;
         this.context = context;
         this.isTextCentred = isTextCentred;
+        menuText = new MenuText(text, FONT_SIZE_MEDIUM, DEFAULT_TEXT_COLOR, width - PADDING, isTextCentred, context, true);
+        menuText.setXAndY(x, y);
+    }
+
+
+    public void changeFontSize(int fontSize){
+        menuText.updateFontSize(fontSize);
     }
 
     public void updateText(String text){
-        this.text = text;
+        menuText.updateText(text);
     }
     public void draw(Canvas canvas, Paint paint){
         // draws a background rectangle that acts as a border
@@ -47,8 +55,6 @@ public class MenuItem {
         Rect rectangle = new Rect(x, y, x + width, y + height);
         canvas.drawRect(rectangle, paint);
 
-        MenuText menuText = new MenuText(text, FONT_SIZE_MEDIUM, DEFAULT_TEXT_COLOR, width, isTextCentred, context, true);
-        menuText.setXAndY(x, y);
         menuText.draw(canvas);
     }
 

@@ -14,4 +14,5 @@ public class ViewConstants {
     public static final int FONT_SIZE_LARGE = 50;
     public static final int FONT_SIZE_MEDIUM = 32;
     public static final int FONT_SIZE_SMALL = 28;
+    public static final int FONT_SIZE_EXTRA_SMALL = 20;
 }

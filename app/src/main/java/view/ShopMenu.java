@@ -1,5 +1,7 @@
 package view;
 
+import static view.ViewConstants.FONT_SIZE_EXTRA_SMALL;
+import static view.ViewConstants.FONT_SIZE_SMALL;
 import static view.ViewConstants.OVERLAY_DARK_COLOR;
 
 import android.content.Context;
@@ -34,7 +36,8 @@ public class ShopMenu {
         itemRadioBtnList = new RadioBtnList(x + 15, y + 80, context, itemArrayList, 750, 700);
         x += items.getWidth();
 
-        MenuItem itemInfo = new MenuItem(x, y, 700, 600, "[Item Name]", false, context);
+        MenuItem itemInfo = new MenuItem(x, y, 700, 650, "[Item Name]", false, context);
+        itemInfo.changeFontSize(FONT_SIZE_SMALL);
         menuItemsList.put("item_info", itemInfo);
         x += itemInfo.getWidth() + margin;
 
@@ -47,14 +50,15 @@ public class ShopMenu {
         Objects.requireNonNull(menuItemsList.get("playerCard")).updateText(presenter.getPlayerNameHealthAndTokens());
     }
 
-    public void updateItemInfo(String info, GamePresenter presenter){
-        Objects.requireNonNull(menuItemsList.get("items")).updateText("Skill Tome\nAn iten that can be used to increase the experience of any skill\n\nPrice: 10 tokens");
+    private void updateItemInfo(GamePresenter presenter){
+        Objects.requireNonNull(menuItemsList.get("item_info")).updateText(presenter.getItemShopInfo(selectedItem));
     }
 
     public String checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
         String radioBtnPressed = itemRadioBtnList.checkForBtnPress(eventX, eventY, presenter);
         if (!Objects.equals(radioBtnPressed, "")) {
             selectedItem = radioBtnPressed;
+            updateItemInfo(presenter);
             return radioBtnPressed;
         }
 
