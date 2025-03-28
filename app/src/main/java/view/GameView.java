@@ -44,8 +44,6 @@ public class GameView  extends SurfaceView implements Runnable{
     private boolean canPlayerMove = true;
     long fps; //keeps track of frame rate
     private long lastEnemyEncounterCheck = 0;
-    private boolean isInBattle = false;
-    private boolean isDisplayingEndBattleInfo = false;
 
     public GameView(Context context, GamePresenter presenter){
         super(context);
@@ -118,12 +116,12 @@ public class GameView  extends SurfaceView implements Runnable{
                 drawOverworldElements();
             }
 
-            if (isInBattle) {
+            if (battleView != null) {
                 battleView.updateMenuTexts();
                 battleView.draw(canvas, paint);
             }
 
-            if (isDisplayingEndBattleInfo) {
+            if (endBattleScreen != null) {
                 endBattleScreen.draw(canvas, paint);
             }
 
@@ -201,11 +199,11 @@ public class GameView  extends SurfaceView implements Runnable{
                     updatePlayerAnimation((int) eventX);
                 }
 
-                if (isInBattle) {
+                if (battleView != null) {
                     battleView.checkForUserTouch(eventX, eventY, presenter);
                 }
 
-                if (isDisplayingEndBattleInfo && hasEndBattleScreenBeenClosed(eventX, eventY)) {
+                if (endBattleScreen != null && hasEndBattleScreenBeenClosed(eventX, eventY)) {
                     closeEndBattleInfo();
                 }
 
@@ -282,25 +280,20 @@ public class GameView  extends SurfaceView implements Runnable{
 
     public void displayBattle() {
         battleView = new BattleView(this.getContext(), presenter, this);
-        isInBattle = true;
-
         isOnOverworld = false;
         canPlayerMove = false;
     }
 
     public void endBattle(boolean isPlayerWinner){
-        isInBattle = !isInBattle;
         battleView = null;
         displayEndBattleInfo(isPlayerWinner);
     }
 
     public void displayEndBattleInfo(boolean isPlayerWinner){
-        isDisplayingEndBattleInfo = true;
         endBattleScreen = new EndBattleScreen(isPlayerWinner, this.getContext(), presenter);
     }
 
     public void closeEndBattleInfo() {
-        isDisplayingEndBattleInfo = false;
         endBattleScreen = null;
         //prevents player from immediately encountering another enemy
         int stopGap = 5000;
@@ -309,14 +302,14 @@ public class GameView  extends SurfaceView implements Runnable{
     }
 
     public int getBoardWidth() {
-        if (!isInBattle) {
+        if (battleView == null) {
             return 0;
         }
         return battleView.getBoardWidth();
     }
 
     public int getBoardHeight() {
-        if (!isInBattle) {
+        if (battleView == null) {
             return 0;
         }
         return battleView.getBoardHeight();
@@ -332,6 +325,10 @@ public class GameView  extends SurfaceView implements Runnable{
 
     public void setEnemyImage(Bitmap enemyImage) {
         battleView.setEnemyIcon(enemyImage);
+    }
+
+    public void resetActionFlags() {
+        battleView.resetActionFlags();
     }
 
     /**

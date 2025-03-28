@@ -201,7 +201,7 @@ public class GamePresenter extends AppCompatActivity {
     }
 
     public void setUpBattle(int enemyId) {
-        battleSystem = new BattleSystem(playerState, enemyId, this);
+        battleSystem = new BattleSystem(this, playerState, enemyId, this);
 
         // tell view that a battle has started
         view.displayBattle();
@@ -227,6 +227,26 @@ public class GamePresenter extends AppCompatActivity {
         view.updateEnemyGridPosition(enemyBoardX, enemyBoardY);
     }
 
+    public void visuallyUpdateEnemyPos(int[] position) {
+        position = convertPositionToBoardDimensions(position);
+        view.updateEnemyGridPosition(position[0], position[1]);
+    }
+
+    public void startEnemyTurn() {
+        //make sure view side panel is disabled
+        battleSystem.changeTurn();
+        battleSystem.executeEnemyTurn();
+    }
+
+    public void endEnemyTurn() {
+        battleSystem.changeTurn();
+//        int[] enemyPosition = battleSystem.getEnemyPosition();
+//        int[] actualEnemyPosition = convertPositionToBoardDimensions(enemyPosition);
+//        view.updateEnemyGridPosition(actualEnemyPosition[0], actualEnemyPosition[1]);
+        view.resetActionFlags();
+        //activate view side panel
+    }
+
     public String getSkillCooldownsString() {
         if (battleSystem == null) {
             return "";
@@ -237,6 +257,10 @@ public class GamePresenter extends AppCompatActivity {
             skillCooldowns.append(cooldown).append('\n');
         }
         return String.valueOf(skillCooldowns);
+    }
+
+    public boolean isPlayerLoser() {
+        return battleSystem.isPlayerLoser();
     }
 
     public boolean isPlayerWinner() {
@@ -383,6 +407,16 @@ public class GamePresenter extends AppCompatActivity {
             }
         } catch (JSONException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    //TODO: make tokens lost vary based on how strong the player (maxHealth, skillLevels)
+    public void playerLost() {
+        int playerHealth = playerState.getHealth();
+        int playerMaxHealth = playerState.getPlayerMaxHealth();
+        if (playerHealth <= 0) {
+            playerState.modifyHealth(playerMaxHealth);
+            playerState.updateTokens(-5);
         }
     }
 

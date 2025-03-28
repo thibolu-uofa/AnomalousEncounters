@@ -131,9 +131,20 @@ public class BattleView {
         sideBar.endAnimation();
         useSkill();
 
+        checkIfPlayerWinner();
+    }
+
+    private void checkIfPlayerWinner() {
         boolean isPlayerWinner = presenter.isPlayerWinner();
         if (isPlayerWinner) {
             view.endBattle(true);
+        }
+    }
+
+    public void checkIfPlayerLoser() {
+        boolean isPlayerLoser = presenter.isPlayerLoser();
+        if (isPlayerLoser) {
+            view.endBattle(false);
         }
     }
 
@@ -172,6 +183,10 @@ public class BattleView {
     public void useSkill(){
         String skillName = sideBar.getSelectedSkill();
         presenter.usePlayerSkill(skillName);
+    }
+
+    public void resetActionFlags() {
+        sideBar.resetActionFlags();
     }
 
     public void clearGrid() {

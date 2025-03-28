@@ -113,13 +113,14 @@ public class BattleSideBar {
                 }
                 break;
             case "End Turn":
-                resetActionFlags(); //Finish end turn later
+                presenter.startEnemyTurn();
                 Log.d("Button Processing", "END MY TURN");
                 break;
         }
     }
 
     public void resetActionFlags() {
+        battleView.checkIfPlayerLoser();
         hasAttacked = false;
         hasMoved = false;
         hasUsedItem = false;

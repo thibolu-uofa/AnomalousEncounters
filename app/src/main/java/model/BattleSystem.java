@@ -8,7 +8,6 @@ import android.content.Context;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,7 +32,8 @@ public class BattleSystem {
     private boolean hasPlayerAttacked;
     private boolean hasPlayerMoved;
 
-    public BattleSystem(PlayerState playerState, int enemyId, Context context) {
+    public BattleSystem(GamePresenter presenter, PlayerState playerState, int enemyId, Context context) {
+        this.presenter = presenter;
         this.playerState = playerState;
         this.context = context;
         populatePlayerSkills();
@@ -62,6 +62,15 @@ public class BattleSystem {
         isPlayerTurn = !isPlayerTurn;
         hasPlayerMoved = false;
         hasPlayerAttacked = false;
+    }
+
+    public void executeEnemyTurn() {
+        EnemyAI enemyAI = new EnemyAI(enemySkills, this);
+        enemyAI.executeEnemyTurn();
+    }
+
+    public void endEnemyTurn() {
+        presenter.endEnemyTurn();
     }
 
     public boolean didAtkHit(ArrayList<int[]> coords) {
@@ -106,6 +115,31 @@ public class BattleSystem {
         return skill.getAffectedTiles(enemyPosition);
     }
 
+    //TODO: TEST FUNCTION BEFORE USING
+    public void useSkill(String skillName) {
+        ArrayList<Skill> skillList = isPlayerTurn ? playerSkills : enemySkills;
+        Skill skill = getSkillByName(skillName, skillList);
+        if (skill == null) return; // Exit if skill not found
+
+        // Get affected tiles using
+        int[] originPosition = isPlayerTurn ? playerPosition : enemyPosition;
+        ArrayList<int[]> affectedTiles = skill.getAffectedTiles(originPosition);
+
+        // Check if the attack hits
+        if (didAtkHit(affectedTiles)) {
+            // Get skill damage
+            int damage = skill.getDamage();
+
+            // Apply damage using modifyHealth() (negative delta for damage)
+            if (isPlayerTurn) {
+                enemyState.modifyHealth(-damage);
+                hasPlayerAttacked = true;
+            } else {
+                playerState.modifyHealth(-damage);
+            }
+        }
+    }
+
     public void usePlayerSkill(String skillName) {
         Skill skill = getSkillByName(skillName, playerSkills);
         if (skill == null) return; // Exit if skill not found
@@ -124,10 +158,7 @@ public class BattleSystem {
         }
     }
 
-    private void useEnemeySkill() {
-        //get skill using getRandomEnemySkill
-        //then use skill (similar logic to player using skill)
-        Skill skill = getRandomEnemySkill();
+    public void useEnemySkill(Skill skill) {
         if (skill == null) {
             return;
         } // Exit if skill not found
@@ -188,7 +219,11 @@ public class BattleSystem {
     }
 
     public void updateEnemyPos(int[] position) {
+        if (position == null) {
+            return;
+        }
         enemyPosition = position;
+        presenter.visuallyUpdateEnemyPos(position);
     }
 
     public int[] getNewPlayerBoardPosition(String direction) {
@@ -212,7 +247,7 @@ public class BattleSystem {
                 break;
         }
         ArrayList<int[]> availableMoves = getAvailableMoveTilesForPlayer();
-        boolean isValidMove = isPlayerMoveValid(playerTempPosition, availableMoves);
+        boolean isValidMove = isMoveValid(playerTempPosition, availableMoves);
         if (isValidMove) {
             return playerTempPosition;
         }
@@ -224,10 +259,16 @@ public class BattleSystem {
         return getRepeatingPattern(playerPosition, 1, positionVectors, maxRows, maxCols);
     }
 
+    public ArrayList<int[]> getAvailableMoveTilesForEnemy() {
+        int[][] positionVectors = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}, {-1, 0}, {1, 0}, {0, 1}, {0, -1}};
+        return getRepeatingPattern(enemyPosition, 1, positionVectors, maxRows, maxCols);
+    }
+
     // make sure move is in available moves and not equal to enemy position
-    private boolean isPlayerMoveValid(int[] newPosition, ArrayList<int[]> availableMoves) {
+    public boolean isMoveValid(int[] newPosition, ArrayList<int[]> availableMoves) {
+        int[] position = isPlayerTurn ? enemyPosition : playerPosition;
         for (int[] move : availableMoves) {
-            if (Arrays.equals(newPosition, move) && !Arrays.equals(newPosition, enemyPosition)) {
+            if (Arrays.equals(newPosition, move) && !Arrays.equals(newPosition, position)) {
                 return true;
             }
         }
