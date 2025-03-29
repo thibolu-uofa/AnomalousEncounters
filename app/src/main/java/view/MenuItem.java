@@ -44,6 +44,10 @@ public class MenuItem {
         menuText.updateFontSize(fontSize);
     }
 
+    public void changeFontColor(int color) {
+        menuText.setColor(color);
+    }
+
     public void updateText(String text){
         menuText.updateText(text);
     }
@@ -79,6 +83,18 @@ public class MenuItem {
 
     public void setLineSpacingMultiplier(float lineSpacingMultiplier) {
         menuText.setLineSpacingMultiplier(lineSpacingMultiplier);
+    }
+
+    public int[] getMenuPositionBound() {
+        int leftX = x;
+        int rightX = x + width;
+        int topY = y + height;
+        int bottomY = y;
+        return new int[]{leftX, rightX, topY, bottomY};
+    }
+
+    public String getText() {
+        return menuText.getText();
     }
 }
 

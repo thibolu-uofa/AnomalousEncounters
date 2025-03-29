@@ -9,6 +9,8 @@
 
 package view;
 
+import static view.ViewConstants.CANVAS_HEIGHT;
+import static view.ViewConstants.CANVAS_WIDTH;
 import static view.ViewConstants.ENEMY_TILE_HIGHLIGHT_COLOR;
 
 import android.content.Context;
@@ -82,8 +84,6 @@ public class GameView  extends SurfaceView implements Runnable{
         playerSprite.setAnimation("idle");
 
         //TESTING
-//        displayBattle();
-//        endBattle(false);
     }
 
     /**
@@ -112,6 +112,8 @@ public class GameView  extends SurfaceView implements Runnable{
         // make sure our drawing surface is valid or we crash
         if (surfaceHolder.getSurface().isValid()) {
             canvas = surfaceHolder.lockCanvas(); // Lock the canvas ready to draw and make the drawing surface our canvas object
+            CANVAS_WIDTH = canvas.getWidth();
+            CANVAS_HEIGHT = canvas.getHeight();
 
             drawBackground();
 
@@ -199,6 +201,7 @@ public class GameView  extends SurfaceView implements Runnable{
                         shopMenu.checkForUserTouch(eventX, eventY, presenter);
                     }
                     if (hasInventoryBeenClosed(eventX, eventY) || hasShopBeenClosed(eventX, eventY)) {
+                        isMenuOpen = false;
                         break;
                     }
                     updatePlayerAnimation((int) eventX);

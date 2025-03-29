@@ -8,6 +8,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import com.example.anomalousencounters.R;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -53,6 +55,8 @@ public class ShopMenu {
         MenuItem closeButton = new MenuItem(x, y, 70, 60, "X", false, context);
         menuItemsList.put("close_button", closeButton);
 
+//        ConfirmPopUp confirmPopUp = new ConfirmPopUp(getContext().getString(R.string.purchaseConfirmationMsg, "shark",12), getContext());
+//        confirmPopUp.draw(canvas, paint);
     }
 
     public void updateMenuTexts(GamePresenter presenter) {
