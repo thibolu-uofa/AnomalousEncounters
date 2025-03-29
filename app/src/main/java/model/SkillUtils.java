@@ -1,6 +1,11 @@
 package model;
 
 public class SkillUtils {
+    private int skillBook1 = 50;
+   private int skillBook2 = 250;
+    private int skillBook3 = 1000;
+
+
     public enum Types {
         LIFE,
         DEATH,
@@ -25,13 +30,13 @@ public class SkillUtils {
         return 1;
     }
 
-    public static int[] getUpdatedLevelAndExperience(int level, int currentExperience, int experienceGiven) {
+    public static int[] getUpdatedLevelAndExperience(int level, int currentExperience, int experienceGain) {
         //this functions increases skill experience (use some math, can just increase experience by 10 for now),
         // then add the calculated experience to currentExperience, if greater than maxExperience (which you get from getMaxExperience)
         // find out the extra amount and setCurrent experience to the extra amount and increase skill level by one
         // return the updated currentExperience and updated level
         int maxExperience = getMaxExperience(level);
-        currentExperience += experienceGiven;
+        currentExperience += experienceGain;
         if (currentExperience >= maxExperience){
             currentExperience = currentExperience - maxExperience;
             level++;
@@ -41,12 +46,14 @@ public class SkillUtils {
 
     private int getExperienceGained(int tier, int phase, int usage) {
         //return amount of expereinced gained based on tier phase and skill usage
-        return -1;
+
+        return (usage + phase)*  tier;
     }
 
     private static int getMaxExperience(int level) {
-        //return max experience based on level, for example level times 100
-
-        return (2 ^ level) +  100;
+        // Return max experience based on level, for example, level times 100
+        double exp = Math.pow(2.25, level) + 100;
+        int maxExperience = (int) exp;
+        return maxExperience;
     }
 }
