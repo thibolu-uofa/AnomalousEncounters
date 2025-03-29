@@ -25,13 +25,13 @@ public class SkillUtils {
         return 1;
     }
 
-    public static int[] getUpdatedLevelAndExperience(int level, int currentExperience, int experienceGiven) {
+    public static int[] getUpdatedLevelAndExperience(int level, int currentExperience, int experienceGain) {
         //this functions increases skill experience (use some math, can just increase experience by 10 for now),
         // then add the calculated experience to currentExperience, if greater than maxExperience (which you get from getMaxExperience)
         // find out the extra amount and setCurrent experience to the extra amount and increase skill level by one
         // return the updated currentExperience and updated level
         int maxExperience = getMaxExperience(level);
-        currentExperience += experienceGiven;
+        currentExperience += experienceGain;
         if (currentExperience >= maxExperience){
             currentExperience = currentExperience - maxExperience;
             level++;
