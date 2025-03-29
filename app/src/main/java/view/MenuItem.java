@@ -76,6 +76,10 @@ public class MenuItem {
     public int getY() {
         return y;
     }
+
+    public void setLineSpacingMultiplier(float lineSpacingMultiplier) {
+        menuText.setLineSpacingMultiplier(lineSpacingMultiplier);
+    }
 }
 
 

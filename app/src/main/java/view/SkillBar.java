@@ -14,7 +14,7 @@ public class SkillBar extends BaseMenuBar {
     private final MenuText title;
     private final RadioBtnList radioBtnList;
     private final MenuText skillCooldowns;
-    private String selectedSkill;
+    private String selectedSkill = "";
 
     public SkillBar(int x, int y, int width, int height, ArrayList<String> skillArrayList, String skillCooldownsString, Context context) {
         super(x, y, width, context);
@@ -54,7 +54,13 @@ public class SkillBar extends BaseMenuBar {
         }
 
         String textBtnPressed = checkForUserTouchTextButtons(eventX, eventY, presenter);
-        if (!Objects.equals(textBtnPressed, "")) {return textBtnPressed;}
+        if (!Objects.equals(textBtnPressed, "")) {
+            //Prevents the user from confirming without selecting a skill
+            if (Objects.equals(textBtnPressed, "[Confirm]") && Objects.equals(selectedSkill, "")) {
+                return "";
+            }
+            return textBtnPressed;
+        }
 
         return "";
     }
@@ -68,6 +74,7 @@ public class SkillBar extends BaseMenuBar {
 
     public void resetCheckedBtn() {
         radioBtnList.resetCheckedBtn();
+        selectedSkill = "";
     }
 
     public String getSelectedSkill() {

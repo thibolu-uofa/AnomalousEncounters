@@ -321,8 +321,8 @@ public class GamePresenter extends AppCompatActivity {
         } else {
             Skill chosenEnemySkill = battleSystem.getChosenEnemySkill();
             useEnemySkill(chosenEnemySkill);
-            checkIfPlayerLoser();
             endEnemyTurn();
+            checkIfPlayerLoser();
         }
     }
 

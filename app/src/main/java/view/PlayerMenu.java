@@ -16,7 +16,6 @@ public class PlayerMenu {
     private Map<String, MenuItem> menuItemsList = new LinkedHashMap<>();
     private RadioBtnList skillRadioBtnList;
     private RadioBtnList itemRadioBtnList;
-    private boolean isOpen = false;
     String selectedItem;
     String selectedSkill;
 
@@ -43,6 +42,7 @@ public class PlayerMenu {
         x += skills.getWidth();
 
         MenuItem level = new MenuItem(x, y, 500, 100, "LV", true, context);
+        level.setLineSpacingMultiplier(1.2f);
         menuItemsList.put("skill_levels", level);
         x += level.getWidth() + margin;
 
@@ -54,6 +54,7 @@ public class PlayerMenu {
         x += items.getWidth();
 
         MenuItem amountOfItems = new MenuItem(x, y, 500, 100, "#", true, context);
+        amountOfItems.setLineSpacingMultiplier(1.2f);
         menuItemsList.put("item_amounts", amountOfItems);
         x += amountOfItems.getWidth() + margin;
 
@@ -85,25 +86,15 @@ public class PlayerMenu {
     }
 
     public void draw(Canvas canvas, Paint paint){
-        if (isOpen) {
-            canvas.drawColor(OVERLAY_DARK_COLOR);
+        canvas.drawColor(OVERLAY_DARK_COLOR);
 
-            // draws each menu element
-            for (MenuItem menuitem : menuItemsList.values()) {
-                menuitem.draw(canvas, paint);
-            }
-
-            skillRadioBtnList.draw(canvas, paint);
-            itemRadioBtnList.draw(canvas, paint);
+        // draws each menu element
+        for (MenuItem menuitem : menuItemsList.values()) {
+            menuitem.draw(canvas, paint);
         }
-    }
 
-    public void openMenu() {
-        isOpen = true;
-    }
-
-    public void closeMenu() {
-        isOpen = false;
+        skillRadioBtnList.draw(canvas, paint);
+        itemRadioBtnList.draw(canvas, paint);
     }
 
     /**
@@ -119,9 +110,5 @@ public class PlayerMenu {
         int width = Objects.requireNonNull(menuItemsList.get("close_button")).getWidth();
         int height = Objects.requireNonNull(menuItemsList.get("close_button")).getHeight();
         return presenter.isInHitbox((int) eventX, (int) eventY, x, x + width, y + height, y);
-    }
-
-    public boolean isOpen() {
-        return isOpen;
     }
 }

@@ -68,31 +68,31 @@ public class EncounterSystem {
 
         // get tier based on the current phase
         if (phase == 1) {
-            // Phase 1: 85% chance of Tier 1, 15% chance of Tier 2
+            // Phase 1: 85% chance of Tier 4, 15% chance of Tier 3
             if (randomProportion < 0.85) {
-                return 1;
+                return 4;
             } else {
-                return 2;
+                return 3;
             }
         }
         else if (phase == 2) {
-            // Phase 2: 10% chance of Tier 1, 80% chance of Tier 2, 10% chance of Tier 3
+            // Phase 2: 10% chance of Tier 4, 80% chance of Tier 3, 10% chance of Tier 2
             if (randomProportion < 0.10) {
-                return 1;
+                return 4;
             } else if (randomProportion < 0.90) { // 0.10 + 0.80 = 0.90
-                return 2;
-            } else {
                 return 3;
+            } else {
+                return 2;
             }
         }
         else if (phase == 3) {
-            // Phase 3: 5% chance of Tier 1, 25% chance of Tier 2, 70% chance of Tier 3
+            // Phase 3: 5% chance of Tier 4, 25% chance of Tier 3, 70% chance of Tier 2
             if (randomProportion < 0.05) {
-                return 1;
+                return 4;
             } else if (randomProportion < 0.30) { // 0.05 + 0.25 = 0.30
-                return 2;
-            } else {
                 return 3;
+            } else {
+                return 2;
             }
         }
         else {

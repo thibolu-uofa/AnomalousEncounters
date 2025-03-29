@@ -47,7 +47,7 @@ public class BattleSystem {
         maxCols = gridModel.getColumnCount();
 
         //positions for testing purposes
-        playerPosition = new int[]{3, 2};
+        playerPosition = new int[]{0, 0};
         enemyPosition = new int[]{5, 4};
 
         hasPlayerAttacked = false;

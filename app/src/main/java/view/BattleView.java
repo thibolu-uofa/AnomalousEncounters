@@ -36,6 +36,7 @@ public class BattleView {
     int currentTileColor = PLAYER_TILE_HIGHLIGHT_COLOR;
     private long lastFrameTime = 0;
     private int ticks = 6;
+    private volatile boolean isUpdatingTileHighlights = false;
 
     public BattleView(Context context, GamePresenter presenter, GameView view){
         this.presenter = presenter;
@@ -77,8 +78,6 @@ public class BattleView {
 
         if (isFlashingTiles) {
             drawFlashingTiles(canvas, paint);
-        } else {
-            drawTiles(canvas, paint);
         }
 
         drawTiles(canvas, paint);
@@ -90,8 +89,10 @@ public class BattleView {
     }
 
     private void drawTiles(Canvas canvas, Paint paint) {
-        for (MenuEmpty tileHighlight: tileHighlights) {
-            tileHighlight.draw(canvas, paint);
+        if (!isUpdatingTileHighlights) {
+            for (MenuEmpty tileHighlight: tileHighlights) {
+                tileHighlight.draw(canvas, paint);
+            }
         }
     }
 
@@ -188,7 +189,9 @@ public class BattleView {
     }
 
     public void clearGrid() {
+        isUpdatingTileHighlights = true;
         tileHighlights = new ArrayList<>();
+        isUpdatingTileHighlights = false;
     }
 
     public int getBoardWidth() {

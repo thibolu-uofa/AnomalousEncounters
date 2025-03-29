@@ -38,6 +38,7 @@ public class EnemyAI {
                 break;
             case MOVE:
                 battleSystem.updateEnemyPos(newPosition);
+                presenter.endEnemyTurn();
                 break;
         }
     }
@@ -89,12 +90,13 @@ public class EnemyAI {
     //FIND MOVE CLOSEST, WHILE BEING A POSITION TO USE SKILL
     //SOMETIMES MOVING FURTHER AWAY
     private void findStrategicMove() {
-        int minDistance = Integer.MAX_VALUE;
+        double minDistance = Integer.MAX_VALUE;
         ArrayList<int[]> availableNewPositions = battleSystem.getAvailableMoveTilesForEnemy();
         availableNewPositions.add(battleSystem.getEnemyPosition());
         for (int[] newPosition: availableNewPositions) {
             double distance = calculateDistance(newPosition, battleSystem.getPlayerPosition());
-            if (distance < minDistance && isPositionInLineWithSkill(newPosition)) {  //have an additional check that the position is in line with a skill
+            if (distance < minDistance && isPositionInLineWithSkill(newPosition) && battleSystem.isMoveValid(newPosition, availableNewPositions)) {
+                minDistance = distance;
                 this.newPosition = newPosition;
             }
         }
