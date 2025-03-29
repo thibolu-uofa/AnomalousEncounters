@@ -107,6 +107,12 @@ public class Skill {
     public ArrayList<int[]> getAffectedTiles(int[] origin_pos){
         return atkPattern.getAttackPattern(origin_pos, distance);
     }//
+
+    public ArrayList<int[]> getAffectedTilesForMaxDistance(int[] origin_pos){
+        int MAX_DISTANCE = 10;
+        return atkPattern.getAttackPattern(origin_pos, MAX_DISTANCE);
+    }
+
     public int getDamage(){
         return damage;
     }

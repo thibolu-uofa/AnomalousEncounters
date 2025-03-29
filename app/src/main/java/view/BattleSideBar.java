@@ -1,5 +1,7 @@
 package view;
 
+import static view.ViewConstants.PLAYER_TILE_HIGHLIGHT_COLOR;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -120,7 +122,6 @@ public class BattleSideBar {
     }
 
     public void resetActionFlags() {
-        battleView.checkIfPlayerLoser();
         hasAttacked = false;
         hasMoved = false;
         hasUsedItem = false;
@@ -158,8 +159,8 @@ public class BattleSideBar {
         switch(currentDisplay){
             case SKILL_BAR:
                 Log.d("User wants to use a skill", "Confirm");
+                battleView.setTileHighlightColor(PLAYER_TILE_HIGHLIGHT_COLOR);
                 battleView.flashTiles();
-                isAnimationPlaying = true;
                 hasAttacked = true;
                 actionBar.disableButton("[ATK]");
                 break;
@@ -206,6 +207,10 @@ public class BattleSideBar {
 
     public void changeDisplay(DisplayOptions displayOption){
         currentDisplay = displayOption;
+    }
+
+    public void startAnimation() {
+        isAnimationPlaying = true;
     }
 
     public void endAnimation() {

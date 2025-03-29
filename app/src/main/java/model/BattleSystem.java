@@ -21,6 +21,7 @@ public class BattleSystem {
     private final Context context;
 
     private EnemyState enemyState;
+    private EnemyAI enemyAI;
     private int[] enemyPosition = new int[2];
     private final PlayerState playerState;
     private int[] playerPosition = new int[2];
@@ -65,12 +66,8 @@ public class BattleSystem {
     }
 
     public void executeEnemyTurn() {
-        EnemyAI enemyAI = new EnemyAI(enemySkills, this);
+        enemyAI = new EnemyAI(enemySkills, this, presenter);
         enemyAI.executeEnemyTurn();
-    }
-
-    public void endEnemyTurn() {
-        presenter.endEnemyTurn();
     }
 
     public boolean didAtkHit(ArrayList<int[]> coords) {
@@ -108,10 +105,7 @@ public class BattleSystem {
         return skill.getAffectedTiles(playerPosition);
     }
 
-    public ArrayList<int[]> getAffectedTilesForEnemy(String skillName) {
-        // Get the skill from enemySkills
-        Skill skill = getSkillByName(skillName, enemySkills);
-        // Return the affected tiles using enemy position as the origin
+    public ArrayList<int[]> getAffectedTilesForEnemy(Skill skill) {
         return skill.getAffectedTiles(enemyPosition);
     }
 
@@ -367,5 +361,13 @@ public class BattleSystem {
 
     public int getEnemyId() {
         return enemyState.getId();
+    }
+
+    public boolean getIsPlayerTurn() {
+        return isPlayerTurn;
+    }
+
+    public Skill getChosenEnemySkill() {
+        return enemyAI.getChosenSkill();
     }
 }

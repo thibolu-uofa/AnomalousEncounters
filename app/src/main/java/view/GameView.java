@@ -9,6 +9,8 @@
 
 package view;
 
+import static view.ViewConstants.ENEMY_TILE_HIGHLIGHT_COLOR;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,6 +23,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.example.anomalousencounters.R;
+
+import java.util.ArrayList;
 
 import presenter.GamePresenter;
 
@@ -331,6 +335,15 @@ public class GameView  extends SurfaceView implements Runnable{
         battleView.resetActionFlags();
     }
 
+    public void animateEnemySkill(ArrayList<int[]> tileList) {
+        battleView.setTilesToHighlight(tileList);
+        battleView.setTileHighlightColor(ENEMY_TILE_HIGHLIGHT_COLOR);
+        battleView.flashTiles();
+    }
+
+    public String getChosenPlayerSkill() {
+        return battleView.getChosenPlayerSkill();
+    }
     /**
      * Function to shutdown our thread when the activity if paused or stopped
      * The implementation of this function comes from:

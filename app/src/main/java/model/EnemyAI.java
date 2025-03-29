@@ -2,20 +2,24 @@ package model;
 
 import java.util.ArrayList;
 
+import presenter.GamePresenter;
+
 public class EnemyAI {
-    BattleSystem battleSystem;
+    private GamePresenter presenter;
+    private BattleSystem battleSystem;
     private final ArrayList<Skill> enemySkills;
-    Skill chosenSkill;
-    int[] newPosition;
+    private Skill chosenSkill;
+    private int[] newPosition;
     public enum Action {
         ATTACK,
         MOVE_ATTACK,
         MOVE,
     }
 
-    public EnemyAI(ArrayList<Skill> enemySkills, BattleSystem battleSystem) {
+    public EnemyAI(ArrayList<Skill> enemySkills, BattleSystem battleSystem, GamePresenter presenter) {
         this.enemySkills = enemySkills;
         this.battleSystem = battleSystem;
+        this.presenter = presenter;
     }
 
     public void executeEnemyTurn() {
@@ -26,17 +30,16 @@ public class EnemyAI {
     private void executeAction(Action action) {
         switch (action) {
             case ATTACK:
-                battleSystem.useEnemySkill(chosenSkill);
+                presenter.enemyChoseSkill(chosenSkill);
                 break;
             case MOVE_ATTACK:
                 battleSystem.updateEnemyPos(newPosition);
-                battleSystem.useEnemySkill(chosenSkill);
+                presenter.enemyChoseSkill(chosenSkill);
                 break;
             case MOVE:
                 battleSystem.updateEnemyPos(newPosition);
                 break;
         }
-        battleSystem.endEnemyTurn();
     }
 
     private Action selectOptimalAction() {
@@ -52,7 +55,7 @@ public class EnemyAI {
         }
 
         // Worse Case: enemy just moves closer to the player
-        findMoveClosestToPlayer();
+        findStrategicMove();
         return Action.MOVE;
     }
 
@@ -84,15 +87,31 @@ public class EnemyAI {
     }
 
     //FIND MOVE CLOSEST, WHILE BEING A POSITION TO USE SKILL
-    private void findMoveClosestToPlayer() {
+    //SOMETIMES MOVING FURTHER AWAY
+    private void findStrategicMove() {
         int minDistance = Integer.MAX_VALUE;
         ArrayList<int[]> availableNewPositions = battleSystem.getAvailableMoveTilesForEnemy();
+        availableNewPositions.add(battleSystem.getEnemyPosition());
         for (int[] newPosition: availableNewPositions) {
             double distance = calculateDistance(newPosition, battleSystem.getPlayerPosition());
-            if (distance < minDistance) {
+            if (distance < minDistance && isPositionInLineWithSkill(newPosition)) {  //have an additional check that the position is in line with a skill
                 this.newPosition = newPosition;
             }
         }
+    }
+
+    private boolean isPositionInLineWithSkill(int[] newPosition) {
+        for (Skill skill: enemySkills) {
+            if (canSkillReachPlayerInFuture(skill, newPosition)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean canSkillReachPlayerInFuture(Skill skill, int[] enemyPosition) {
+        ArrayList<int[]> affectedTiles = skill.getAffectedTilesForMaxDistance(enemyPosition);
+        return battleSystem.didAtkHit(affectedTiles);
     }
 
     //Source: https://www.baeldung.com/java-distance-between-two-points
@@ -108,4 +127,7 @@ public class EnemyAI {
         return Math.hypot(ac, cb);
     }
 
+    public Skill getChosenSkill() {
+        return chosenSkill;
+    }
 }

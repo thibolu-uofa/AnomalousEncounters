@@ -32,7 +32,8 @@ public class BattleView {
     private int GRID_BORDER_WEIGHT = 5;
     boolean isFlashingTiles = false;
     private int timeInterval = 250; // animation speed in frames per milliseconds
-    int current_color = PLAYER_TILE_HIGHLIGHT_COLOR;
+    int tileHighlightColor = PLAYER_TILE_HIGHLIGHT_COLOR;
+    int currentTileColor = PLAYER_TILE_HIGHLIGHT_COLOR;
     private long lastFrameTime = 0;
     private int ticks = 6;
 
@@ -118,36 +119,29 @@ public class BattleView {
         }
     }
 
+    public void setTilesToHighlight(ArrayList<int[]> tileList) {
+        clearGrid();
+        for (int [] tile: tileList) {
+            int x = grid.getX() + tile[0];
+            int y = grid.getY() + tile[1];
+            MenuEmpty tileHighlight = new MenuEmpty(x, y, enemyIcon.getHeight(), enemyIcon.getWidth(), TRANSPARENT_COLOR);
+            tileHighlights.add(tileHighlight);
+        }
+    }
+
     public void flashTiles() {
         isFlashingTiles = true;
         lastFrameTime = 0;
         ticks = 5;
+        sideBar.startAnimation();
     }
 
     public void stopFlashingTiles(){
         isFlashingTiles = false;
-        current_color = PLAYER_TILE_HIGHLIGHT_COLOR;
         clearGrid();
         sideBar.endAnimation();
-        useSkill();
-
-        checkIfPlayerWinner();
+        presenter.skillHasBeenUsed();
     }
-
-    private void checkIfPlayerWinner() {
-        boolean isPlayerWinner = presenter.isPlayerWinner();
-        if (isPlayerWinner) {
-            view.endBattle(true);
-        }
-    }
-
-    public void checkIfPlayerLoser() {
-        boolean isPlayerLoser = presenter.isPlayerLoser();
-        if (isPlayerLoser) {
-            view.endBattle(false);
-        }
-    }
-
 
     public void drawFlashingTiles(Canvas canvas, Paint paint) {
         long currentTime = System.currentTimeMillis();
@@ -161,11 +155,11 @@ public class BattleView {
 
         if (deltaTime >= timeInterval) {
             // Toggle color
-            current_color = (current_color == PLAYER_TILE_HIGHLIGHT_COLOR) ? TRANSPARENT_COLOR : PLAYER_TILE_HIGHLIGHT_COLOR;
+            currentTileColor = (currentTileColor == tileHighlightColor) ? TRANSPARENT_COLOR : tileHighlightColor;
 
             // Update each tile's color
             for (MenuEmpty tileHighlight : tileHighlights) {
-                tileHighlight.setColor(current_color);
+                tileHighlight.setColor(currentTileColor);
                 tileHighlight.draw(canvas, paint);
             }
 
@@ -180,9 +174,13 @@ public class BattleView {
         }
     }
 
-    public void useSkill(){
-        String skillName = sideBar.getSelectedSkill();
-        presenter.usePlayerSkill(skillName);
+    public void setTileHighlightColor(int tileHighlightColor) {
+        this.tileHighlightColor = tileHighlightColor;
+        this.currentTileColor = tileHighlightColor;
+    }
+
+    public String getChosenPlayerSkill() {
+        return sideBar.getSelectedSkill();
     }
 
     public void resetActionFlags() {

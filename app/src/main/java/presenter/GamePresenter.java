@@ -27,6 +27,7 @@ import model.EncounterSystem;
 import model.EnemyState;
 import model.GameLogic;
 import model.PlayerState;
+import model.Skill;
 import view.GameView;
 
 public class GamePresenter extends AppCompatActivity {
@@ -242,11 +243,7 @@ public class GamePresenter extends AppCompatActivity {
 
     public void endEnemyTurn() {
         battleSystem.changeTurn();
-//        int[] enemyPosition = battleSystem.getEnemyPosition();
-//        int[] actualEnemyPosition = convertPositionToBoardDimensions(enemyPosition);
-//        view.updateEnemyGridPosition(actualEnemyPosition[0], actualEnemyPosition[1]);
         view.resetActionFlags();
-        //activate view side panel
     }
 
     public String getSkillCooldownsString() {
@@ -302,6 +299,10 @@ public class GamePresenter extends AppCompatActivity {
 
     public ArrayList<int[]> getAffectedTilesForPlayer(String skillName) {
         ArrayList<int[]> affectedTiles = battleSystem.getAffectedTilesForPlayer(skillName);
+        return covertAffectedTilesToRealPositions(affectedTiles);
+    }
+
+    public ArrayList<int[]> covertAffectedTilesToRealPositions(ArrayList<int[]> affectedTiles) {
         ArrayList<int[]> affectedTilesRealPositions = new ArrayList<>();
         for (int[] position: affectedTiles) {
             int[] realPosition = convertPositionToBoardDimensions(position);
@@ -310,8 +311,48 @@ public class GamePresenter extends AppCompatActivity {
         return affectedTilesRealPositions;
     }
 
+    public void skillHasBeenUsed() {
+        boolean isPlayerTurn = battleSystem.getIsPlayerTurn();
+        if (isPlayerTurn) {
+            String chosenPlayerSkill = view.getChosenPlayerSkill();
+            usePlayerSkill(chosenPlayerSkill);
+            checkIfPlayerWinner();
+
+        } else {
+            Skill chosenEnemySkill = battleSystem.getChosenEnemySkill();
+            useEnemySkill(chosenEnemySkill);
+            checkIfPlayerLoser();
+            endEnemyTurn();
+        }
+    }
+
     public void usePlayerSkill(String skillName) {
         battleSystem.usePlayerSkill(skillName);
+    }
+
+    public void enemyChoseSkill(Skill skill) {
+        // animate the enemy skill
+        ArrayList<int[]> affectedTiles = battleSystem.getAffectedTilesForEnemy(skill);
+        ArrayList<int[]> affectedTilesRealPositions = covertAffectedTilesToRealPositions(affectedTiles);
+        view.animateEnemySkill(affectedTilesRealPositions);
+    }
+
+    public void useEnemySkill(Skill skill) {
+        battleSystem.useEnemySkill(skill);
+    }
+
+    private void checkIfPlayerWinner() {
+        boolean isPlayerWinner = isPlayerWinner();
+        if (isPlayerWinner) {
+            view.endBattle(true);
+        }
+    }
+
+    public void checkIfPlayerLoser() {
+        boolean isPlayerLoser = isPlayerLoser();
+        if (isPlayerLoser) {
+            view.endBattle(false);
+        }
     }
 
     private String formatPlayerInfo(boolean includeTokens) {
@@ -491,4 +532,5 @@ public class GamePresenter extends AppCompatActivity {
         super.onPause();
         view.pause();
     }
+
 }
