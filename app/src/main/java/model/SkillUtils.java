@@ -41,7 +41,8 @@ public class SkillUtils {
 
     private int getExperienceGained(int tier, int phase, int usage) {
         //return amount of expereinced gained based on tier phase and skill usage
-        return -1;
+
+        return (usage + phase)*  tier;
     }
 
     private static int getMaxExperience(int level) {
