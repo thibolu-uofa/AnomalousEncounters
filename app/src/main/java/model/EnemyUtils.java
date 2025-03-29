@@ -2,7 +2,7 @@ package model;
 
 import java.util.Random;
 
-public class EnemyUtils {
+public class    EnemyUtils {
     public static int getEnemyMaxHealth(int tier) {
         Random rand = new Random();
         switch (tier) {

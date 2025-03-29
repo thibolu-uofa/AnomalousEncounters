@@ -1,6 +1,11 @@
 package model;
 
 public class SkillUtils {
+    private int skillBook1 = 50;
+   private int skillBook2 = 250;
+    private int skillBook3 = 1000;
+
+
     public enum Types {
         LIFE,
         DEATH,
