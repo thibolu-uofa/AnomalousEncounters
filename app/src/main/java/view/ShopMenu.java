@@ -1,14 +1,13 @@
 package view;
 
-import static view.ViewConstants.FONT_SIZE_EXTRA_SMALL;
+
+import static view.ViewConstants.CONFIRM_TEXT_COLOR;
 import static view.ViewConstants.FONT_SIZE_SMALL;
 import static view.ViewConstants.OVERLAY_DARK_COLOR;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-
-import com.example.anomalousencounters.R;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -17,43 +16,55 @@ import java.util.Objects;
 
 import presenter.GamePresenter;
 
-public class ShopMenu {
-    private Map<String, MenuItem> menuItemsList = new LinkedHashMap<>();
+public class ShopMenu extends BaseMenu{
     private MenuItem buyButton;
-    private RadioBtnList itemRadioBtnList;
+    private final RadioBtnList itemRadioBtnList;
     private String selectedItem;
 
     public ShopMenu(GamePresenter presenter, Context context){
+        super(presenter, context);
         int x = 250;
-        int y = 150;
-        int margin = 50;
-
-        MenuItem playerCard = new MenuItem(x, y, 200, 350, "Bobette", false, context);
-        menuItemsList.put("playerCard", playerCard);
-        x += playerCard.getWidth() + margin;
-
+        int Y = 150;
+        int MARGIN = 50;
         int MENU_HEADING_HEIGHT = 90;
         int MENU_HEIGHT = 600;
         int MENU_WIDTH = 750;
-        MenuItem items_heading = new MenuItem(x, y, MENU_HEADING_HEIGHT, MENU_WIDTH, "ITEMS", true, context);
-        MenuItem items = new MenuItem(x, y + MENU_HEADING_HEIGHT, MENU_HEIGHT, MENU_WIDTH, "", false, context);
+        int RADIO_X_PAD = 15;
+        int RADIO_Y_PAD = 20;
+        int BUTTON_Y_PAD = 50;
+
+        String ITEM_HEADING = "ITEMS";
+        String ITEM_NAME_FILLER = "[Item Name]";
+        String BUY_TEXT = "BUY";
+        String BLANK_TEXT = "";
+
+        createPlayerCard(new Rectangle(x, Y), context);
+
+        x += PLAYER_CARD_WIDTH + MARGIN;
+
+        MenuItem items_heading = new MenuItem(x, Y, MENU_HEADING_HEIGHT, MENU_WIDTH, ITEM_HEADING, true, context);
         menuItemsList.put("items_heading", items_heading);
+
+        MenuItem items = new MenuItem(x, Y + MENU_HEADING_HEIGHT, MENU_HEIGHT, MENU_WIDTH, BLANK_TEXT, false, context);
         menuItemsList.put("items", items);
 
         ArrayList<String> itemArrayList = presenter.getShopItemsArray();
-        itemRadioBtnList = new RadioBtnList(x + 15, y + MENU_HEADING_HEIGHT + 20, context, itemArrayList, MENU_WIDTH, MENU_HEIGHT);
+        Rectangle itemListRect = new Rectangle(x + RADIO_X_PAD, Y + MENU_HEADING_HEIGHT + RADIO_Y_PAD);
+        itemRadioBtnList = new RadioBtnList(itemListRect.x, itemListRect.y, context, itemArrayList, MENU_WIDTH, MENU_HEIGHT);
         x += items.getWidth();
 
-        MenuItem itemName = new MenuItem(x, y, MENU_HEADING_HEIGHT, MENU_WIDTH, "[Item Name]", true, context);
-        MenuItem itemInfo = new MenuItem(x, y + MENU_HEADING_HEIGHT, MENU_HEIGHT, MENU_WIDTH, "", false, context);
-        itemInfo.changeFontSize(FONT_SIZE_SMALL);
+        MenuItem itemName = new MenuItem(x, Y, MENU_HEADING_HEIGHT, MENU_WIDTH, ITEM_NAME_FILLER, true, context);
         menuItemsList.put("item_name", itemName);
+
+        MenuItem itemInfo = new MenuItem(x, Y + MENU_HEADING_HEIGHT, MENU_HEIGHT, MENU_WIDTH, BLANK_TEXT, false, context);
+        itemInfo.changeFontSize(FONT_SIZE_SMALL);
         menuItemsList.put("item_info", itemInfo);
 
-        x += itemInfo.getWidth() + margin;
-
-        MenuItem closeButton = new MenuItem(x, y, 70, 60, "X", false, context);
-        menuItemsList.put("close_button", closeButton);
+        int BUY_BTN_X = x + (MENU_WIDTH/2) - (PLAYER_CARD_WIDTH/2);
+        int BUY_BTN_Y = Y + MENU_HEADING_HEIGHT + MENU_HEIGHT + BUTTON_Y_PAD;
+        buyButton = new MenuItem(BUY_BTN_X, BUY_BTN_Y, MENU_HEADING_HEIGHT, PLAYER_CARD_WIDTH, BUY_TEXT,true, context);
+        buyButton.changeFontColor(CONFIRM_TEXT_COLOR);
+        menuItemsList.put("buy_btn", buyButton);
 
 //        ConfirmPopUp confirmPopUp = new ConfirmPopUp(getContext().getString(R.string.purchaseConfirmationMsg, "shark",12), getContext());
 //        confirmPopUp.draw(canvas, paint);
@@ -68,15 +79,12 @@ public class ShopMenu {
         Objects.requireNonNull(menuItemsList.get("item_info")).updateText(presenter.getItemShopInfo(selectedItem));
     }
 
-    public String checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
+    public void checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
         String radioBtnPressed = itemRadioBtnList.checkForBtnPress(eventX, eventY, presenter);
         if (!Objects.equals(radioBtnPressed, "")) {
             selectedItem = radioBtnPressed;
             updateItemInfo(presenter);
-            return radioBtnPressed;
         }
-
-        return "";
     }
 
     public boolean hasClosedMenu(float eventX, float eventY, GamePresenter presenter){

@@ -12,8 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 import presenter.GamePresenter;
 
-public class PlayerMenu {
-    private Map<String, MenuItem> menuItemsList = new LinkedHashMap<>();
+public class PlayerMenu extends BaseMenu{
     private RadioBtnList skillRadioBtnList;
     private RadioBtnList itemRadioBtnList;
     String selectedItem;
@@ -26,42 +25,51 @@ public class PlayerMenu {
      * @param context The application context required for menu item creation
      */
     public PlayerMenu(GamePresenter presenter, Context context){
+        super(presenter, context);
         int x = 100;
-        int y = 200;
-        int margin = 50;
+        int Y = 200;
+        int MARGIN = 50;
+        float LINE_SPACE_MULTIPLIER = 1.2f;
+        int MENU_HEIGHT = 500;
+        int MENU_WIDTH = 700;
+        int COL_WIDTH = 100;
+        int RADIO_X_PAD = 15;
+        int RADIO_Y_PAD = 90;
 
-        MenuItem playerCard = new MenuItem(x, y, 200, 350, "Bobette", false, context);
-        menuItemsList.put("playerCard", playerCard);
-        x += playerCard.getWidth() + margin;
+        String SKILL_HEADING = "SKILLS";
+        String LEVEL_HEADING = "LV";
+        String ITEM_HEADING = "ITEMS";
+        String ITEM_AMOUNT_HEADING = "#";
 
-        MenuItem skills = new MenuItem(x, y, 500, 600, "Skills", false, context);
+        createPlayerCard(new Rectangle(x, Y), context);
+        x += PLAYER_CARD_WIDTH + MARGIN;
+
+        MenuItem skills = new MenuItem(x, Y, MENU_HEIGHT, MENU_WIDTH, SKILL_HEADING, false, context);
         menuItemsList.put("skills", skills);
 
         ArrayList<String> skillArrayList = presenter.getSkillNamesArray();
-        skillRadioBtnList = new RadioBtnList(x + 15, y + 90, context, skillArrayList, 600, 500);
+        Rectangle skillListRect = new Rectangle(x + RADIO_X_PAD, Y + RADIO_Y_PAD);
+        skillRadioBtnList = new RadioBtnList(skillListRect.x, skillListRect.y, context, skillArrayList, MENU_WIDTH, MENU_HEIGHT);
         x += skills.getWidth();
 
-        MenuItem level = new MenuItem(x, y, 500, 100, "LV", true, context);
-        level.setLineSpacingMultiplier(1.2f);
+        MenuItem level = new MenuItem(x, Y, MENU_HEIGHT, COL_WIDTH, LEVEL_HEADING, true, context);
+        level.setLineSpacingMultiplier(LINE_SPACE_MULTIPLIER);
         menuItemsList.put("skill_levels", level);
-        x += level.getWidth() + margin;
+        x += level.getWidth() + MARGIN;
 
-        MenuItem items = new MenuItem(x, y, 500, 700, "Items", false, context);
+        MenuItem items = new MenuItem(x, Y, MENU_HEIGHT, MENU_WIDTH, ITEM_HEADING, false, context);
         menuItemsList.put("items", items);
 
         ArrayList<String> itemArrayList = presenter.getPlayerItemNamesArray();
-        itemRadioBtnList = new RadioBtnList(x + 15, y + 90, context, itemArrayList, 680, 500);
+        Rectangle itemListRect = new Rectangle(x + RADIO_X_PAD, Y + RADIO_Y_PAD);
+        itemRadioBtnList = new RadioBtnList(itemListRect.x, itemListRect.y, context, itemArrayList, MENU_WIDTH, MENU_HEIGHT);
         x += items.getWidth();
 
-        MenuItem amountOfItems = new MenuItem(x, y, 500, 100, "#", true, context);
-        amountOfItems.setLineSpacingMultiplier(1.2f);
+        MenuItem amountOfItems = new MenuItem(x, Y, MENU_HEIGHT, COL_WIDTH, ITEM_AMOUNT_HEADING, true, context);
+        amountOfItems.setLineSpacingMultiplier(LINE_SPACE_MULTIPLIER);
         menuItemsList.put("item_amounts", amountOfItems);
-        x += amountOfItems.getWidth() + margin;
 
-        MenuItem closeButton = new MenuItem(x, y, 70, 60, "X", false, context);
-        menuItemsList.put("close_button", closeButton);
-
-        MenuItem infoButton = new MenuItem(400, y, 500, 400, "INFO", true, context);
+        //MenuItem infoButton = new MenuItem(400, INITIAL_Y, 500, 400, "INFO", true, context);
         //menuItemsList.add(infoButton);
     }
 
