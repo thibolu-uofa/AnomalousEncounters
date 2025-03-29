@@ -3,22 +3,22 @@ package model;
 import java.util.ArrayList;
 
 public class PlayerState {
-    private int playerMaxHealth, playerCurrentHealth, currentPotionId, currentWeapon;
-    private String name;
+    private final int MAX_HEALTH;
+    private int playerCurrentHealth;
+    private final String name;
     private int tokens;
+    private int phase;
     private ArrayList<int[]> items = new ArrayList<>(); // Empty double integer array (first int is the item id, second is the number of items)
     private ArrayList<int[]>  skills = new ArrayList<>(); // Empty double integer array (first int is the skill id, second is the skill level)
-    private int[] currentWeaponList = new int[0]; // Empty integer array
+
 
     // Default Constructor
-    /**
-     * Default constructor initializes the player with no name and a default max health of 100.
-     */
     public PlayerState() {
         this.name = "Unknown";
-        this.playerMaxHealth = 100;
+        this.MAX_HEALTH = 100;
         this.playerCurrentHealth = 100; // Start with full health
-        this.tokens = 0;
+        this.tokens = 20;
+        this.phase = 1;
     }
 
     // Constructor with parameters
@@ -31,9 +31,10 @@ public class PlayerState {
      */
     public PlayerState(String name, int maxHealth) {
         this.name = name;
-        this.playerMaxHealth = maxHealth;
+        this.MAX_HEALTH = maxHealth;
         this.playerCurrentHealth = maxHealth; // Start with full health
         this.tokens = 0;
+        this.phase = 1;
     }
 
     // Update health
@@ -45,8 +46,8 @@ public class PlayerState {
      */
     private void updateHealth(int delta) {
         playerCurrentHealth += delta;
-        if (playerCurrentHealth > playerMaxHealth) {
-            playerCurrentHealth = playerMaxHealth;
+        if (playerCurrentHealth > MAX_HEALTH) {
+            playerCurrentHealth = MAX_HEALTH;
         } else if (playerCurrentHealth < 0) {
             playerCurrentHealth = 0;
         }
@@ -54,13 +55,8 @@ public class PlayerState {
     public void modifyHealth(int delta) {
         updateHealth(delta); // Calls the private method internally
     }
+
     // Add a skill to the skill list
-    /**
-     * Adds a skill to the player's skill list.
-     *
-     * @param id The skill ID to be added.
-     * @param level The level of the skill to be added.
-     */
     public void addSkill(int id, int level) {
         // if player already has skill then return
         for (int[] skill: skills) {
@@ -74,12 +70,6 @@ public class PlayerState {
     }
 
     // Add an item to the inventory
-    /**
-     * Adds an item to the player's inventory.
-     *
-     * @param id The item ID to be added.
-     * @param amount The amount of the item to add.
-     */
     public void addItem(int id, int amount) {
         //add check for if item is in items already, if so iterate item[1] by 1
         for (int[] item: items) {
@@ -94,13 +84,7 @@ public class PlayerState {
         items.add(item);
     }
 
-    // Remove an item from the inventory
-    /**
-     * Removes an item from the player's inventory.
-     * If the item is not found, the inventory remains unchanged.
-     *
-     * @param id The item ID to be removed.
-     */
+    // Remove an item from the inventory using item id
     public void removeItem(int id) {
         for (int[] item: items) {
             if (item[0] == id && item[1] == 1) {
@@ -169,25 +153,15 @@ public class PlayerState {
         return newArray;
     }
 
-    /**
-     * Retrieves the player's current health.
-     *
-     * @return The player's current health.
-     */
-    public int getHealth() {
 
+    public int getHealth() {
         return playerCurrentHealth;
     }
 
     public int getPlayerMaxHealth() {
-        return playerMaxHealth;
+        return MAX_HEALTH;
     }
 
-    /**
-     * Retrieves the player's current list of skill IDs.
-     *
-     * @return An array of skill IDs.
-     */
     public int[] getSkillList() {
         return getArrayFromIndexInDoubleArray(skills, 0);
     }
@@ -196,11 +170,6 @@ public class PlayerState {
         return getArrayFromIndexInDoubleArray(skills, 1);
     }
 
-    /**
-     * Retrieves the player's current list of item IDs.
-     *
-     * @return An array of item IDs.
-     */
     public int[] getItemList() {
         return getArrayFromIndexInDoubleArray(items, 0);
     }//
@@ -223,5 +192,13 @@ public class PlayerState {
 
     public String getName() {
         return name;
+    }
+
+    public void setPhase(int phase) {
+        this.phase = phase;
+    }
+
+    public int getPhase() {
+        return phase;
     }
 }

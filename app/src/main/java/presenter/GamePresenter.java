@@ -187,8 +187,10 @@ public class GamePresenter extends AppCompatActivity {
     public void hasPlayerEncounteredEnemy(int playerX) {
         if (encounterSystem.hasEncounteredEnemy(playerX)) {
             int enemyId = encounterSystem.getRandomEnemyId();
+            int phase = playerState.getPhase();
+            int enemyTier = encounterSystem.getEnemyTier(phase);
             Log.d("Enemy ID picked", "Enemy ID:" + enemyId);
-            setUpBattle(enemyId);
+            setUpBattle(enemyId, enemyTier);
         }
     }
 
@@ -200,8 +202,8 @@ public class GamePresenter extends AppCompatActivity {
         return name + "\nHP: " + currentHealth + "/" + maxHealth;
     }
 
-    public void setUpBattle(int enemyId) {
-        battleSystem = new BattleSystem(this, playerState, enemyId, this);
+    public void setUpBattle(int enemyId, int enemyTier) {
+        battleSystem = new BattleSystem(this, playerState, enemyId, enemyTier,this);
 
         // tell view that a battle has started
         view.displayBattle();

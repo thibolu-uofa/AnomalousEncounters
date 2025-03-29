@@ -1,28 +1,30 @@
 package model;
 
+import static model.SkillUtils.getSkillBaseDamage;
+
 import java.util.ArrayList;
 
 public class Skill {
     private final String name;
     private final int MAX_COOLDOWN;
     private int currentCooldown;
-    private final int length;
-    private final int baseDamage;
+    private final int distance;
+    private final int damage;
     private final AttackPattern atkPattern;
 
     private final AttackPattern.AttackType atkType;
 
     public Skill(){
         this.name = "Entity";
-        this.baseDamage = 10;
+        this.damage = 10;
         this.atkType = AttackPattern.AttackType.DIAGONAL;
-        this.length = 2;
+        this.distance = 2;
         this.atkPattern = new AttackPattern(atkType);
-        this.MAX_COOLDOWN = 1;
+        this.MAX_COOLDOWN = getMaxCooldown();
         this.currentCooldown = 0;
     }
 
-    public Skill(String name, String atkPattern, int level, int MAX_COOLDOWN) {
+    public Skill(String name, String atkPattern, int level, int tier) {
         this.name = name;
         switch (atkPattern.toUpperCase()) {
             case "DIAGONAL":
@@ -41,23 +43,41 @@ public class Skill {
                 this.atkType = AttackPattern.AttackType.STAIGHT;
         }
         this.atkPattern = new AttackPattern(atkType);
-        this.length = calculateSkillDistance(level);
-        this.baseDamage = calculateSkillBaseDamage(level);
-        this.MAX_COOLDOWN = MAX_COOLDOWN;
+        this.distance = calculateSkillDistance(level);
+        int baseDamage = getSkillBaseDamage(tier);
+        this.damage = calculateSkillDamage(level, baseDamage);
+        this.MAX_COOLDOWN = getMaxCooldown();
         this.currentCooldown = 0;
     }
 
-    private int calculateSkillDistance(int level) {
-        //return level for STAR and CONE and level + 1 for Diagonal and Straight
-        //maybe calculate distance based on level and type in a different way later?
-        return level;
+    private int getMaxCooldown() {
+        switch (atkType) {
+            case CONE:
+                return 1;
+            case STAR:
+                return 3;
+            default:
+                return 2;
+        }
     }
 
-    private int calculateSkillBaseDamage(int level) {
-        //come up with an equation to calculate skill base damage based off of level and atk type
-        //maybe also have a degree of randomness
-        //((skillDmg * level /tier from 1 to 4) + random number between 1 and 3 ^ 2) * enemy resistance
+    private int calculateSkillDistance(int level) {
+        //maybe calculate distance based on level and type in a different way later?
+        //currently the distance is only effective up to a certain level
+        switch (atkType) {
+            case CONE:
+                return Math.max(level, 2) + 1;
+            default:
+                return Math.max(level, 2);
+        }
+    }
 
+
+    // TODO: use equation to calculate skill damage
+    // NOTE: resistance should be multiplied in the getBaseDamage because player doesn't have type,
+    // so would be dependent on skill beings used
+    private int calculateSkillDamage(int level, int baseDamage) {
+        //[(skillDmg * level /(tier * 2)] + random number between 1 and 3 ^ 2) + baseDamage
         return level * 2;
     }
 
@@ -85,10 +105,10 @@ public class Skill {
     }
 
     public ArrayList<int[]> getAffectedTiles(int[] origin_pos){
-        return atkPattern.getAttackPattern(origin_pos, length);
+        return atkPattern.getAttackPattern(origin_pos, distance);
     }//
     public int getDamage(){
-        return baseDamage;
+        return damage;
     }
     public String getName() {
         return name;

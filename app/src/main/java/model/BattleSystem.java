@@ -1,5 +1,6 @@
 package model;
 
+import static model.EnemyUtils.getEnemyMaxHealth;
 import static model.Utils.getStringListOfDataProperty;
 import static model.Utils.getRepeatingPattern;
 import static model.Utils.getSingleDataProperty;
@@ -16,32 +17,31 @@ import java.util.Random;
 import presenter.GamePresenter;
 
 public class BattleSystem {
-    private GamePresenter presenter;
-    private Context context;
+    private final GamePresenter presenter;
+    private final Context context;
 
     private EnemyState enemyState;
     private int[] enemyPosition = new int[2];
     private final PlayerState playerState;
     private int[] playerPosition = new int[2];
-    private ArrayList<Skill> playerSkills = new ArrayList<>();
-    private ArrayList<Skill> enemySkills = new ArrayList<>();
+    private final ArrayList<Skill> playerSkills = new ArrayList<>();
+    private final ArrayList<Skill> enemySkills = new ArrayList<>();
     private boolean isPlayerTurn = true;
-    private GridModel gridModel;
     private final int maxRows;
     private final int maxCols;
     private boolean hasPlayerAttacked;
     private boolean hasPlayerMoved;
 
-    public BattleSystem(GamePresenter presenter, PlayerState playerState, int enemyId, Context context) {
+    public BattleSystem(GamePresenter presenter, PlayerState playerState, int enemyId, int enemyTier, Context context) {
         this.presenter = presenter;
         this.playerState = playerState;
         this.context = context;
         populatePlayerSkills();
-        populateEnemySkills(enemyId);//
+        populateEnemySkills(enemyId, enemyTier);//
 
-        createEnemy(enemyId);
+        createEnemy(enemyId, enemyTier);
 
-        gridModel = new GridModel();
+        GridModel gridModel = new GridModel();
         maxRows = gridModel.getRowCount();
         maxCols = gridModel.getColumnCount();
 
@@ -281,10 +281,12 @@ public class BattleSystem {
 
     private void populatePlayerSkills() {
         int[] skillIds = playerState.getSkillList();
-        populateSkills(skillIds, "playerSkills");
+        int phase = playerState.getPhase();
+        int tier = 5 - phase;
+        populateSkills(skillIds, "playerSkills", tier);
     }
 
-    private void populateEnemySkills(int enemyId) {
+    private void populateEnemySkills(int enemyId, int tier) {
         JSONArray skillIds = (JSONArray) getSingleDataProperty("enemies.json", "skills", enemyId, context);
         try {
             int length = skillIds.length();
@@ -292,14 +294,14 @@ public class BattleSystem {
             for (int i = 0; i < length; i++) {
                 skillArray[i] = skillIds.getInt(i);
             }
-            populateSkills(skillArray, "enemySkills");
+            populateSkills(skillArray, "enemySkills", tier);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
 
     //TO DO: add maxCooldown as an attribute in skills.json and retrieve all skills maxCooldown and pass that instead of 1
-    private void populateSkills(int[] ids, String skillList) {
+    private void populateSkills(int[] ids, String skillList, int tier) {
         ArrayList<String> skillNames = getStringListOfDataProperty("skills.json", "name", ids, context);
         ArrayList<String> skillAtkTypes = getStringListOfDataProperty("skills.json", "atkPattern", ids, context);
         int[] playerSkillLevels = playerState.getSkillLevels();
@@ -307,27 +309,31 @@ public class BattleSystem {
             Skill skill;
             switch (skillList) {
                 case "playerSkills":
-                    skill = new Skill(skillNames.get(i), skillAtkTypes.get(i), playerSkillLevels[i], 1);
+                    skill = new Skill(skillNames.get(i), skillAtkTypes.get(i), playerSkillLevels[i], tier);
                     playerSkills.add(skill);
                     break;
                 case "enemySkills":
                     int skillLevel = generateEnemySkillLevel();
-                    skill = new Skill(skillNames.get(i), skillAtkTypes.get(i), skillLevel, 1);
+                    skill = new Skill(skillNames.get(i), skillAtkTypes.get(i), skillLevel, tier);
                     enemySkills.add(skill);
                     break;
             }
         }
     }
 
-    // Make this method more sophisticated later (maybe generate skill levels according to player phase)
+    //TODO: calculate enemy skill level based on tier and some random proportions using fomula
+    private int calculateEnemySkillLevel(int tier) {
+        return -1;
+    }
+
     private int generateEnemySkillLevel() {
         Random rand = new Random();
         return rand.nextInt(3);
     }
 
-    private void createEnemy(int enemyId) {
+    private void createEnemy(int enemyId, int tier) {
         String name = (String) getSingleDataProperty("enemies.json", "name", enemyId, context);
-        int maxHealth = (int) getSingleDataProperty("enemies.json", "maxhealth", enemyId, context);
+        int maxHealth = getEnemyMaxHealth(tier);
         enemyState = new EnemyState(name, maxHealth, enemyId);
     }
 
