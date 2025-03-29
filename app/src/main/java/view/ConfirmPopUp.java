@@ -12,9 +12,9 @@ import java.util.Objects;
 import presenter.GamePresenter;
 
 public class ConfirmPopUp extends  PopUpBox{
-    String cancelText;
-    String confirmText;
-    boolean hasConfirmed;
+    private String cancelText;
+    private String confirmText;
+    private boolean hasConfirmed;
 
     public ConfirmPopUp(String message, Context context) {
         super(message, context);

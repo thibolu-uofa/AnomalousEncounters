@@ -8,6 +8,9 @@ import static view.ViewConstants.OVERLAY_DARK_COLOR;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
+
+import com.example.anomalousencounters.R;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -64,7 +67,6 @@ public class ShopMenu extends BaseMenu{
         int BUY_BTN_Y = Y + MENU_HEADING_HEIGHT + MENU_HEIGHT + BUTTON_Y_PAD;
         buyButton = new MenuItem(BUY_BTN_X, BUY_BTN_Y, MENU_HEADING_HEIGHT, PLAYER_CARD_WIDTH, BUY_TEXT,true, context);
         buyButton.changeFontColor(CONFIRM_TEXT_COLOR);
-        menuItemsList.put("buy_btn", buyButton);
 
 //        ConfirmPopUp confirmPopUp = new ConfirmPopUp(getContext().getString(R.string.purchaseConfirmationMsg, "shark",12), getContext());
 //        confirmPopUp.draw(canvas, paint);
@@ -80,10 +82,33 @@ public class ShopMenu extends BaseMenu{
     }
 
     public void checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
+        if (confirmPopUp != null) {
+            boolean userTouchedPopUp = confirmPopUp.didUserTouchButton(eventX, eventY, presenter);
+            if (userTouchedPopUp) {
+                boolean didUserConfirm = confirmPopUp.didUserConfirm();
+                if (didUserConfirm) {
+                    Log.d("Confirm" , "User Confirmed purchase");
+                } else {
+                    Log.d("Cancel" , "User Cancelled purchase");
+                }
+                confirmPopUp = null;
+            }
+            return;
+        }
+
         String radioBtnPressed = itemRadioBtnList.checkForBtnPress(eventX, eventY, presenter);
         if (!Objects.equals(radioBtnPressed, "")) {
             selectedItem = radioBtnPressed;
             updateItemInfo(presenter);
+        }
+
+        int[] textBounds = buyButton.getMenuPositionBound();
+        int leftX = textBounds[0], rightX = textBounds[1], topY = textBounds[2], bottomY = textBounds[3];
+        boolean hasBuyBtnBeenPressed = presenter.isInHitbox((int) eventX, (int) eventY, leftX, rightX, topY, bottomY);
+        if (hasBuyBtnBeenPressed && selectedItem != null) {
+            int price = presenter.getItemPriceByName(selectedItem);
+            confirmPopUp = new ConfirmPopUp(context.getString(R.string.purchaseConfirmationMsg, selectedItem, price), context);
+//            confirmPopUp.draw(canvas, paint);
         }
     }
 
@@ -97,13 +122,12 @@ public class ShopMenu extends BaseMenu{
 
 
     public void draw(Canvas canvas, Paint paint){
-        canvas.drawColor(OVERLAY_DARK_COLOR);
-
-        // draws each menu element
-        for (MenuItem menuitem : menuItemsList.values()) {
-            menuitem.draw(canvas, paint);
-        }
-
+        drawOverlay(canvas, paint);
+        drawMenuItems(canvas, paint);
         itemRadioBtnList.draw(canvas, paint);
+        buyButton.draw(canvas, paint);
+        if (confirmPopUp != null) {
+            confirmPopUp.draw(canvas, paint);
+        }
     }
 }

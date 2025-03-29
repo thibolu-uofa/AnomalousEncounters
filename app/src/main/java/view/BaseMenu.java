@@ -1,8 +1,11 @@
 package view;
 
 import static view.ViewConstants.CANVAS_WIDTH;
+import static view.ViewConstants.OVERLAY_DARK_COLOR;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 
 import java.util.LinkedHashMap;
@@ -11,11 +14,14 @@ import java.util.Map;
 import presenter.GamePresenter;
 
 public class BaseMenu {
+    protected Context context;
     protected Map<String, MenuItem> menuItemsList = new LinkedHashMap<>();
     protected int PLAYER_CARD_WIDTH = 350;
     protected int PLAYER_CARD_HEIGHT = 200;
+    protected ConfirmPopUp confirmPopUp;
 
     protected BaseMenu(GamePresenter presenter, Context context) {
+        this.context = context;
         createCloseBtn(context);
     }
 
@@ -32,6 +38,16 @@ public class BaseMenu {
         String text = "[Player Name]";
         MenuItem playerCard = new MenuItem(rect.x, rect.y, PLAYER_CARD_HEIGHT, PLAYER_CARD_WIDTH, text, false, context);
         menuItemsList.put("playerCard", playerCard);
+    }
+
+    protected void drawOverlay(Canvas canvas, Paint paint){
+        canvas.drawColor(OVERLAY_DARK_COLOR);
+    }
+
+    protected void drawMenuItems(Canvas canvas, Paint paint){
+        for (MenuItem menuitem : menuItemsList.values()) {
+            menuitem.draw(canvas, paint);
+        }
     }
 }
 

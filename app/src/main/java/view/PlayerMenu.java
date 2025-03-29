@@ -94,13 +94,8 @@ public class PlayerMenu extends BaseMenu{
     }
 
     public void draw(Canvas canvas, Paint paint){
-        canvas.drawColor(OVERLAY_DARK_COLOR);
-
-        // draws each menu element
-        for (MenuItem menuitem : menuItemsList.values()) {
-            menuitem.draw(canvas, paint);
-        }
-
+        drawOverlay(canvas, paint);
+        drawMenuItems(canvas, paint);
         skillRadioBtnList.draw(canvas, paint);
         itemRadioBtnList.draw(canvas, paint);
     }
