@@ -45,9 +45,9 @@ public class SkillUtils {
     }
 
     private static int getMaxExperience(int level) {
-        //return max experience based on level, for example level times 100
-
-        int exp = (2.25 ^ level) + 100;
-        return exp;
+        // Return max experience based on level, for example, level times 100
+        double exp = Math.pow(2.25, level) + 100;
+        int maxExperience = (int) exp;
+        return maxExperience;
     }
 }
