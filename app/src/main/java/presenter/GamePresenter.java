@@ -392,7 +392,8 @@ public class GamePresenter extends AppCompatActivity {
     }
 
     public String getSkillDescriptionByName(String name) {
-        return (String) getPropertyByName("skills.json", name, "description", this);
+        String description = (String) getPropertyByName("skills.json", name, "description", this);
+        return "Name: " + name + "\n" + "Description: " + description;
     }
 
     public String getSkillLevelsString() {
@@ -500,6 +501,11 @@ public class GamePresenter extends AppCompatActivity {
 
     public String getItemDescriptionByName(String name) {
         return (String) getPropertyByName("items.json", name, "description", this);
+    }
+
+    public String getItemInfoByName(String name) {
+        String description = (String) getPropertyByName("items.json", name, "description", this);;
+        return "Name: " + name + "\n" + "Description: " + description;
     }
 
 

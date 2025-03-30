@@ -16,8 +16,8 @@ public class ConfirmPopUp extends  PopUpBox{
     private String confirmText;
     private boolean hasConfirmed;
 
-    public ConfirmPopUp(String message, Context context) {
-        super(message, context);
+    public ConfirmPopUp(String message, Context context, boolean isTextCentred) {
+        super(message, context, isTextCentred);
 
         int cancelX = messageBox.getX();
         int buttonsY = messageBox.getY() + messageBox.getHeight();

@@ -7,6 +7,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import com.example.anomalousencounters.R;
+
 import java.util.ArrayList;
 import java.util.Objects;
 import presenter.GamePresenter;
@@ -134,18 +136,48 @@ public class PlayerMenu extends BaseMenu{
         Objects.requireNonNull(menuItemsList.get("item_amounts")).updateText("#\n" + presenter.getItemAmounts());
     }
 
-    public String checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
+    public void checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
+//        if (confirmPopUp != null) {
+//            boolean userTouchedPopUp = confirmPopUp.didUserTouchButton(eventX, eventY, presenter);
+//            if (userTouchedPopUp) {
+//                boolean didUserConfirm = confirmPopUp.didUserConfirm();
+//                if (didUserConfirm) {
+//                    presenter.buySingleItem(selectedItem);
+//                    String alertMsg = context.getString(R.string.successfulPurchase, selectedItem);
+//                    alertPopUp = new AlertPopUp(alertMsg, context);
+//                }
+//                confirmPopUp = null;
+//            }
+//            return;
+//        }
+
+        if (alertPopUp != null){
+            boolean userClosePopUp = alertPopUp.didUserClosePopUp(eventX, eventY, presenter);
+
+            if (userClosePopUp){
+                alertPopUp = null;
+            }
+            return;
+        }
         String itemBtnPressed = itemRadioBtnList.checkForBtnPress(eventX, eventY, presenter);
         String skillBtnPressed = skillRadioBtnList.checkForBtnPress(eventX, eventY, presenter);
         if (!Objects.equals(itemBtnPressed, "")) {
             selectedItem = itemBtnPressed;
-            return itemBtnPressed;
         } else if (!Objects.equals(skillBtnPressed, "")) {
             selectedSkill = skillBtnPressed;
-            return skillBtnPressed;
         }
 
-        return "";
+        boolean hasSkillInfoBeenPressed = hasBtnBeenPressed(skillInfo, (int) eventX, (int) eventY, presenter);
+        if (hasSkillInfoBeenPressed && selectedSkill != null) {
+            String alertMsg = presenter.getSkillDescriptionByName(selectedSkill);
+            alertPopUp = new AlertPopUp(alertMsg, context, false);
+        }
+
+        boolean hasItemInfoBeenPressed = hasBtnBeenPressed(itemInfo, (int) eventX, (int) eventY, presenter);
+        if (hasItemInfoBeenPressed && selectedItem != null) {
+            String alertMsg = presenter.getItemInfoByName(selectedItem);
+            alertPopUp = new AlertPopUp(alertMsg, context, false);
+        }
     }
 
     public void draw(Canvas canvas, Paint paint){
@@ -157,6 +189,7 @@ public class PlayerMenu extends BaseMenu{
         forgetSkill.draw(canvas, paint);
         itemInfo.draw(canvas, paint);
         sellItem.draw(canvas, paint);
+        drawPopUps(canvas, paint);
     }
 
     /**

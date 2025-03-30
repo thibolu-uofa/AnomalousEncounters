@@ -97,7 +97,7 @@ public class ShopMenu extends BaseMenu{
                 if (didUserConfirm) {
                     presenter.buySingleItem(selectedItem);
                     String alertMsg = context.getString(R.string.successfulPurchase, selectedItem);
-                    alertPopUp = new AlertPopUp(alertMsg, context);
+                    alertPopUp = new AlertPopUp(alertMsg, context, true);
                 }
                 confirmPopUp = null;
             }
@@ -120,18 +120,16 @@ public class ShopMenu extends BaseMenu{
             updateItemInfo(presenter);
         }
 
-        int[] textBounds = buyButton.getMenuPositionBound();
-        int leftX = textBounds[0], rightX = textBounds[1], topY = textBounds[2], bottomY = textBounds[3];
-        boolean hasBuyBtnBeenPressed = presenter.isInHitbox((int) eventX, (int) eventY, leftX, rightX, topY, bottomY);
+        boolean hasBuyBtnBeenPressed = hasBtnBeenPressed(buyButton, (int) eventX, (int) eventY, presenter);
         if (hasBuyBtnBeenPressed && selectedItem != null) {
             int price = presenter.getItemPriceByName(selectedItem);
             boolean canAfford = presenter.canPlayorAffordItem(selectedItem);
             if (canAfford){
                 String confirmMsg = context.getString(R.string.purchaseConfirmationMsg, selectedItem, price);
-                confirmPopUp = new ConfirmPopUp(confirmMsg, context);
+                confirmPopUp = new ConfirmPopUp(confirmMsg, context, true);
             } else {
                 String alertMsg = context.getString(R.string.notEnoughToken, price);
-                alertPopUp = new AlertPopUp(alertMsg, context);
+                alertPopUp = new AlertPopUp(alertMsg, context, true);
             }
 //            confirmPopUp.draw(canvas, paint);
         }
@@ -151,11 +149,6 @@ public class ShopMenu extends BaseMenu{
         drawMenuItems(canvas, paint);
         itemRadioBtnList.draw(canvas, paint);
         buyButton.draw(canvas, paint);
-        if (confirmPopUp != null) {
-            confirmPopUp.draw(canvas, paint);
-        }
-        if (alertPopUp != null){
-            alertPopUp.draw(canvas, paint);
-        }
+        drawPopUps(canvas, paint);
     }
 }

@@ -1,7 +1,10 @@
 package view;
 
+import static view.MenuText.calculateMinHeightRequired;
 import static view.ViewConstants.CANVAS_HEIGHT;
 import static view.ViewConstants.CANVAS_WIDTH;
+import static view.ViewConstants.DEFAULT_TEXT_COLOR;
+import static view.ViewConstants.FONT_SIZE_MEDIUM;
 import static view.ViewConstants.OVERLAY_DARK_COLOR;
 
 import android.content.Context;
@@ -15,16 +18,22 @@ import presenter.GamePresenter;
 
 abstract class PopUpBox {
     protected final MenuItem messageBox;
-
     protected ArrayList<MenuItem> buttons = new ArrayList<>();
 
-    protected PopUpBox(String message, Context context) {
+    protected PopUpBox(String message, Context context, boolean isTextCentred) {
         int centerX = CANVAS_WIDTH / 2;
         int WIDTH = 1000;
-        int HEIGHT = 250;
         int x = centerX - (WIDTH / 2);
         int y = (int) (CANVAS_HEIGHT * 0.15);
-        messageBox = new MenuItem(x, y, HEIGHT, WIDTH, message, true, context);
+
+        int HEIGHT = 250;
+        int PADDING = 90;
+        int minHeightRequired = calculateMinHeightRequired(message, FONT_SIZE_MEDIUM, WIDTH, isTextCentred, context);
+        if (minHeightRequired + PADDING > HEIGHT) {
+            HEIGHT = minHeightRequired + PADDING;
+        }
+
+        messageBox = new MenuItem(x, y, HEIGHT, WIDTH, message, isTextCentred, context);
     }
 
     protected boolean checkForUserTouchOnButton(MenuItem button, float eventX, float eventY, GamePresenter presenter) {

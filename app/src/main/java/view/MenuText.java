@@ -2,6 +2,7 @@ package view;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.text.Layout;
@@ -146,5 +147,26 @@ public class MenuText {
 
     public String getText() {
         return text;
+    }
+
+    public static int calculateMinHeightRequired(String text, int fontSize, int width, boolean isCentre, Context context) {
+        int HEADING_DIMENSION = 3;
+
+        TextPaint textPaint = new TextPaint();
+        textPaint.setAntiAlias(true);
+        textPaint.setTextSize(fontSize * HEADING_DIMENSION);
+        textPaint.setColor(Color.WHITE);
+        Typeface typeface = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            typeface = context.getResources().getFont(R.font.pixeltype);
+        }
+        textPaint.setTypeface(typeface);
+
+        Layout.Alignment textLayout = Layout.Alignment.ALIGN_NORMAL;
+        if (isCentre) {
+            textLayout = Layout.Alignment.ALIGN_CENTER;
+        }
+
+        return new StaticLayout(text, textPaint, width, textLayout, 1.0f, 0, false).getHeight();
     }
 }
