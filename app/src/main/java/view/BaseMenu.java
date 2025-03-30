@@ -16,9 +16,10 @@ import presenter.GamePresenter;
 public class BaseMenu {
     protected Context context;
     protected Map<String, MenuItem> menuItemsList = new LinkedHashMap<>();
-    protected int PLAYER_CARD_WIDTH = 350;
+    protected int PLAYER_CARD_WIDTH = 400;
     protected int PLAYER_CARD_HEIGHT = 200;
     protected ConfirmPopUp confirmPopUp;
+    protected AlertPopUp alertPopUp;
 
     protected BaseMenu(GamePresenter presenter, Context context) {
         this.context = context;

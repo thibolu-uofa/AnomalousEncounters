@@ -3,7 +3,7 @@
     "name": "Nxy",
     "health": 25,
     "maxHealth": 25,
-    "tokens": 30,
+    "tokens": 1000,
     "phase": 1,
     "items": [
       {"id": 3, "amount": 1},

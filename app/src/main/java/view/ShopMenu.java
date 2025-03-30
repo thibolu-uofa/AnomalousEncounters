@@ -87,14 +87,24 @@ public class ShopMenu extends BaseMenu{
             if (userTouchedPopUp) {
                 boolean didUserConfirm = confirmPopUp.didUserConfirm();
                 if (didUserConfirm) {
-                    Log.d("Confirm" , "User Confirmed purchase");
-                } else {
-                    Log.d("Cancel" , "User Cancelled purchase");
+                    presenter.buySingleItem(selectedItem);
+                    String alertMsg = context.getString(R.string.successfulPurchase, selectedItem);
+                    alertPopUp = new AlertPopUp(alertMsg, context);
                 }
                 confirmPopUp = null;
             }
             return;
         }
+
+        if (alertPopUp != null){
+            boolean userClosePopUp = alertPopUp.didUserClosePopUp(eventX, eventY, presenter);
+
+            if (userClosePopUp){
+                alertPopUp = null;
+            }
+            return;
+        }
+
 
         String radioBtnPressed = itemRadioBtnList.checkForBtnPress(eventX, eventY, presenter);
         if (!Objects.equals(radioBtnPressed, "")) {
@@ -107,7 +117,14 @@ public class ShopMenu extends BaseMenu{
         boolean hasBuyBtnBeenPressed = presenter.isInHitbox((int) eventX, (int) eventY, leftX, rightX, topY, bottomY);
         if (hasBuyBtnBeenPressed && selectedItem != null) {
             int price = presenter.getItemPriceByName(selectedItem);
-            confirmPopUp = new ConfirmPopUp(context.getString(R.string.purchaseConfirmationMsg, selectedItem, price), context);
+            boolean canAfford = presenter.canPlayorAffordItem(selectedItem);
+            if (canAfford){
+                String confirmMsg = context.getString(R.string.purchaseConfirmationMsg, selectedItem, price);
+                confirmPopUp = new ConfirmPopUp(confirmMsg, context);
+            } else {
+                String alertMsg = context.getString(R.string.notEnoughToken, price);
+                alertPopUp = new AlertPopUp(alertMsg, context);
+            }
 //            confirmPopUp.draw(canvas, paint);
         }
     }
@@ -128,6 +145,9 @@ public class ShopMenu extends BaseMenu{
         buyButton.draw(canvas, paint);
         if (confirmPopUp != null) {
             confirmPopUp.draw(canvas, paint);
+        }
+        if (alertPopUp != null){
+            alertPopUp.draw(canvas, paint);
         }
     }
 }
