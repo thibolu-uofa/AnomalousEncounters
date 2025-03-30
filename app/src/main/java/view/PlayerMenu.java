@@ -1,5 +1,8 @@
 package view;
 
+import static view.ViewConstants.CONFIRM_TEXT_COLOR;
+import static view.ViewConstants.FORGET_TEXT_COLOR;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -11,6 +14,10 @@ import presenter.GamePresenter;
 public class PlayerMenu extends BaseMenu{
     private RadioBtnList skillRadioBtnList;
     private RadioBtnList itemRadioBtnList;
+    private MenuItem skillInfo;
+    private MenuItem forgetSkill;
+    private MenuItem itemInfo;
+    private MenuItem sellItem;
     private String selectedItem;
     private String selectedSkill;
     private final int Y = 200;
@@ -20,6 +27,12 @@ public class PlayerMenu extends BaseMenu{
     private final int COL_WIDTH = 100;
     private final int RADIO_X_PAD = 15;
     private final int RADIO_Y_PAD = 90;
+    private final int BUTTON_WIDTH = 250;
+    private final int BUTTON_HEIGHT = 75;
+    private final int BUTTON_PADDING_Y = 40;
+    private final int BUTTONS_Y = Y + MENU_HEIGHT + BUTTON_PADDING_Y;
+    private final int BUTTON_X_PADDING = 60;
+    private final String INFO_TEXT = "INFO";
 
     /**
      * Creates a player menu interface with various menu items.
@@ -52,6 +65,9 @@ public class PlayerMenu extends BaseMenu{
 
         x += MENU_WIDTH;
         createLevelColumn(x);
+
+        int buttonStartingX = skills.getX();
+        createSkillButtons(buttonStartingX);
     }
 
     private void createLevelColumn(int x) {
@@ -60,6 +76,18 @@ public class PlayerMenu extends BaseMenu{
         MenuItem level = new MenuItem(x, Y, MENU_HEIGHT, COL_WIDTH, LEVEL_HEADING, true, context);
         level.setLineSpacingMultiplier(LINE_SPACE_MULTIPLIER);
         menuItemsList.put("skill_levels", level);
+    }
+
+    private void createSkillButtons(int startingX){
+        Rectangle infoRect = new Rectangle(startingX, BUTTONS_Y);
+
+        int forgetRectX = startingX + BUTTON_WIDTH + BUTTON_X_PADDING;
+        Rectangle forgetRect = new Rectangle(forgetRectX, BUTTONS_Y);
+
+        String FORGET_SKILL_TEXT = "FORGET";
+        skillInfo = new MenuItem(infoRect.x, infoRect.y, BUTTON_HEIGHT, BUTTON_WIDTH,INFO_TEXT, true, context );
+        forgetSkill = new MenuItem(forgetRect.x, forgetRect.y, BUTTON_HEIGHT, BUTTON_WIDTH, FORGET_SKILL_TEXT,true, context);
+        forgetSkill.changeFontColor(FORGET_TEXT_COLOR);
     }
 
     private void createItemMenu(int x) {
@@ -74,6 +102,9 @@ public class PlayerMenu extends BaseMenu{
 
         x += items.getWidth();
         createItemAmountColumn(x);
+
+        int startingButtonX = items.getX();
+        createItemButtons(startingButtonX);
     }
 
     private void createItemAmountColumn(int x) {
@@ -82,6 +113,19 @@ public class PlayerMenu extends BaseMenu{
         MenuItem amountOfItems = new MenuItem(x, Y, MENU_HEIGHT, COL_WIDTH, ITEM_AMOUNT_HEADING, true, context);
         amountOfItems.setLineSpacingMultiplier(LINE_SPACE_MULTIPLIER);
         menuItemsList.put("item_amounts", amountOfItems);
+    }
+
+    private void createItemButtons(int startingX){
+        Rectangle infoRect = new Rectangle(startingX, BUTTONS_Y);
+
+        int sellRectX = startingX + BUTTON_WIDTH + BUTTON_X_PADDING;
+        Rectangle sellRect = new Rectangle(sellRectX, BUTTONS_Y);
+
+        String SELL_ITEM_TEXT = "SELL";
+        itemInfo = new MenuItem(infoRect.x, infoRect.y, BUTTON_HEIGHT, BUTTON_WIDTH,INFO_TEXT, true, context );
+
+        sellItem = new MenuItem(sellRect.x, sellRect.y, BUTTON_HEIGHT, BUTTON_WIDTH, SELL_ITEM_TEXT,true, context);
+        sellItem.changeFontColor(CONFIRM_TEXT_COLOR);
     }
 
     public void updateMenuTexts(GamePresenter presenter) {
@@ -109,6 +153,10 @@ public class PlayerMenu extends BaseMenu{
         drawMenuItems(canvas, paint);
         skillRadioBtnList.draw(canvas, paint);
         itemRadioBtnList.draw(canvas, paint);
+        skillInfo.draw(canvas, paint);
+        forgetSkill.draw(canvas, paint);
+        itemInfo.draw(canvas, paint);
+        sellItem.draw(canvas, paint);
     }
 
     /**
