@@ -29,11 +29,11 @@ public class PlayerState {
      * @param name      The name of the player.
      * @param maxHealth The maximum health of the player.
      */
-    public PlayerState(String name, int maxHealth) {
+    public PlayerState(String name, int maxHealth, int tokens) {
         this.name = name;
         this.MAX_HEALTH = maxHealth;
         this.playerCurrentHealth = maxHealth; // Start with full health
-        this.tokens = 0;
+        this.tokens = tokens;
         this.phase = 1;
     }
 
@@ -100,6 +100,11 @@ public class PlayerState {
 
     public void removeSkill(int id) {
         items.removeIf(skill -> skill[0] == id);
+    }
+
+    public boolean canUpdateTokens(int delta) {
+        int newTokenAmount = tokens + delta;
+        return newTokenAmount >= 0;
     }
 
     public boolean updateTokens(int delta) {

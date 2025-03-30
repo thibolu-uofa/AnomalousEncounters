@@ -19,7 +19,7 @@ public class ExampleUnitTest {
 
     @Test
     public void playerStateGetMaxHealth_isCorrect() {
-        PlayerState playerState = new PlayerState("Nxy", 50);
+        PlayerState playerState = new PlayerState("Nxy", 50, 20);
         assertEquals(50, playerState.getPlayerMaxHealth());
     }
 }

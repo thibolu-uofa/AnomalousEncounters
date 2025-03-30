@@ -112,9 +112,9 @@ public class GamePresenter extends AppCompatActivity {
         int newPlayerIndex = 0;
         String name = (String) getSingleDataProperty("player_config.json", "name", newPlayerIndex, this);
         int maxHealth = (int) getSingleDataProperty("player_config.json", "maxHealth", newPlayerIndex, this);
+        int tokens = (int) getSingleDataProperty("player_config.json", "tokens", newPlayerIndex, this);
 
-        playerState = new PlayerState(name, maxHealth);
-
+        playerState = new PlayerState(name, maxHealth, tokens);
         loadPlayerItems(newPlayerIndex);
         loadPlayerSkills(newPlayerIndex);
     }
@@ -484,6 +484,18 @@ public class GamePresenter extends AppCompatActivity {
 
     public int getItemPriceByName(String name) {
         return (int) getPropertyByName("items.json", name, "price", this);
+    }
+
+    public boolean canPlayorAffordItem(String name) {
+        int price = getItemPriceByName(name);
+        return playerState.canUpdateTokens(-price);
+    }
+
+    public void buySingleItem(String name) {
+        int price = getItemPriceByName(name);
+        playerState.updateTokens(-price);
+        int id = (int) getPropertyByName("items.json", name, "id", this);
+        playerState.addItem(id, 1);
     }
 
     public String getItemDescriptionByName(String name) {
