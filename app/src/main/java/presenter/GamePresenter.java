@@ -376,11 +376,6 @@ public class GamePresenter extends AppCompatActivity {
         return formatPlayerInfo(false);
     }
 
-    public String getSkillNamesString() {
-        int[] skillIds = playerState.getSkillList();
-        return getDataProperty("skills.json", "name", skillIds, this);
-    }
-
     public ArrayList<String> getSkillNamesArray() {
         int[] skillIds = playerState.getSkillList();
         return getStringListOfDataProperty("skills.json", "name", skillIds, this);
@@ -464,11 +459,6 @@ public class GamePresenter extends AppCompatActivity {
         }
     }
 
-    public String getItemNames() {
-        int[] itemIds = playerState.getItemList();
-        return getDataProperty("items.json", "name", itemIds, this);
-    }
-
     public String getItemAmounts() {
         int[] itemAmounts = playerState.getItemAmountsList();
         StringBuilder itemAmountsString = new StringBuilder();
@@ -487,7 +477,7 @@ public class GamePresenter extends AppCompatActivity {
         return (int) getPropertyByName("items.json", name, "price", this);
     }
 
-    public boolean canPlayorAffordItem(String name) {
+    public boolean canPlayerAffordItem(String name) {
         int price = getItemPriceByName(name);
         return playerState.canUpdateTokens(-price);
     }
@@ -508,15 +498,9 @@ public class GamePresenter extends AppCompatActivity {
         return "Name: " + name + "\n" + "Description: " + description;
     }
 
-
     public ArrayList<String> getPlayerItemNamesArray() {
         int[] itemIds = playerState.getItemList();
         return getStringListOfDataProperty("items.json", "name", itemIds, this);
-    }
-
-    public ArrayList<String> getPlayerSkillNamesArray() {
-        int[] itemIds = playerState.getSkillList();
-        return getStringListOfDataProperty("skills.json", "name", itemIds, this);
     }
 
     public ArrayList<String> getShopItemsArray() {
@@ -535,6 +519,17 @@ public class GamePresenter extends AppCompatActivity {
         int price = getItemPriceByName(name);
         itemInfo.append('\n').append(description).append("\n\nPrice: ").append(price);
         return String.valueOf(itemInfo);
+    }
+
+    public void removePlayerSkill(String name) {
+        int id = (int) getPropertyByName("skills.json", name, "id", this);
+        playerState.removeSkill(id);
+    }
+
+    public void sellPlayerItem(String name, int price) {
+        int id = (int) getPropertyByName("items.json", name, "id", this);
+        playerState.removeItem(id);
+        playerState.updateTokens(price);
     }
 
     // This method executes when the user continues the game

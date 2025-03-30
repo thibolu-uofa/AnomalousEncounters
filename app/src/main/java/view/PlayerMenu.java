@@ -35,6 +35,8 @@ public class PlayerMenu extends BaseMenu{
     private final int BUTTONS_Y = Y + MENU_HEIGHT + BUTTON_PADDING_Y;
     private final int BUTTON_X_PADDING = 60;
     private final String INFO_TEXT = "INFO";
+    private String forgetSkillMsg;
+    private String sellItemMsg;
 
     /**
      * Creates a player menu interface with various menu items.
@@ -137,19 +139,39 @@ public class PlayerMenu extends BaseMenu{
     }
 
     public void checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
-//        if (confirmPopUp != null) {
-//            boolean userTouchedPopUp = confirmPopUp.didUserTouchButton(eventX, eventY, presenter);
-//            if (userTouchedPopUp) {
-//                boolean didUserConfirm = confirmPopUp.didUserConfirm();
-//                if (didUserConfirm) {
-//                    presenter.buySingleItem(selectedItem);
-//                    String alertMsg = context.getString(R.string.successfulPurchase, selectedItem);
-//                    alertPopUp = new AlertPopUp(alertMsg, context);
-//                }
-//                confirmPopUp = null;
-//            }
-//            return;
-//        }
+        if (confirmPopUp != null) {
+            boolean userTouchedPopUp = confirmPopUp.didUserTouchButton(eventX, eventY, presenter);
+            if (userTouchedPopUp) {
+                boolean didUserConfirm = confirmPopUp.didUserConfirm();
+                boolean isForgetSkill = Objects.equals(confirmPopUp.getMessage(), forgetSkillMsg);
+                boolean isSellItem = Objects.equals(confirmPopUp.getMessage(), sellItemMsg);
+
+                if (didUserConfirm && isForgetSkill) {
+                    presenter.removePlayerSkill(selectedSkill);
+
+                    String alertMsg = context.getString(R.string.successfullyForgotSkill, selectedSkill);
+                    alertPopUp = new AlertPopUp(alertMsg, context, true);
+
+                    ArrayList<String> skillArrayList = presenter.getSkillNamesArray();
+                    skillRadioBtnList.updateRadioBtnList(skillArrayList);
+                }
+
+                if (didUserConfirm && isSellItem) {
+                    double DISCOUNT_FACTOR = 0.8;
+                    int price = (int) (presenter.getItemPriceByName(selectedItem) * DISCOUNT_FACTOR);
+                    presenter.sellPlayerItem(selectedItem, price);
+
+                    String alertMsg = context.getString(R.string.successfullySoldItem, selectedItem, price);
+                    alertPopUp = new AlertPopUp(alertMsg, context, true);
+
+                    ArrayList<String> itemArrayList = presenter.getPlayerItemNamesArray();
+                    itemRadioBtnList.updateRadioBtnList(itemArrayList);
+                }
+
+                confirmPopUp = null;
+            }
+            return;
+        }
 
         if (alertPopUp != null){
             boolean userClosePopUp = alertPopUp.didUserClosePopUp(eventX, eventY, presenter);
@@ -173,10 +195,24 @@ public class PlayerMenu extends BaseMenu{
             alertPopUp = new AlertPopUp(alertMsg, context, false);
         }
 
+        boolean hasForgetSkillBeenPressed = hasBtnBeenPressed(forgetSkill, (int) eventX, (int) eventY, presenter);
+        if (hasForgetSkillBeenPressed && selectedSkill != null) {
+            forgetSkillMsg = context.getString(R.string.forgetSkillConfirmationMsg, selectedSkill);
+            confirmPopUp = new ConfirmPopUp(forgetSkillMsg, context, true);
+        }
+
         boolean hasItemInfoBeenPressed = hasBtnBeenPressed(itemInfo, (int) eventX, (int) eventY, presenter);
         if (hasItemInfoBeenPressed && selectedItem != null) {
             String alertMsg = presenter.getItemInfoByName(selectedItem);
             alertPopUp = new AlertPopUp(alertMsg, context, false);
+        }
+
+        boolean hasSellItemBeenPressed = hasBtnBeenPressed(sellItem, (int) eventX, (int) eventY, presenter);
+        if (hasSellItemBeenPressed && selectedItem != null) {
+            double DISCOUNT_FACTOR = 0.8;
+            int price = (int) (presenter.getItemPriceByName(selectedItem) * DISCOUNT_FACTOR);
+            sellItemMsg = context.getString(R.string.sellItemConfirmationMsg, selectedItem, price);
+            confirmPopUp = new ConfirmPopUp(sellItemMsg, context, true);
         }
     }
 

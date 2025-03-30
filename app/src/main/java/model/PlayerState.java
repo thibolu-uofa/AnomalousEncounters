@@ -99,7 +99,11 @@ public class PlayerState {
     }
 
     public void removeSkill(int id) {
-        items.removeIf(skill -> skill[0] == id);
+        for (int[] skill: skills) {
+            if (skill[0] == id) {
+                skills.remove(skill);
+            }
+        }
     }
 
     public boolean canUpdateTokens(int delta) {

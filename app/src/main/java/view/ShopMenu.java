@@ -123,7 +123,7 @@ public class ShopMenu extends BaseMenu{
         boolean hasBuyBtnBeenPressed = hasBtnBeenPressed(buyButton, (int) eventX, (int) eventY, presenter);
         if (hasBuyBtnBeenPressed && selectedItem != null) {
             int price = presenter.getItemPriceByName(selectedItem);
-            boolean canAfford = presenter.canPlayorAffordItem(selectedItem);
+            boolean canAfford = presenter.canPlayerAffordItem(selectedItem);
             if (canAfford){
                 String confirmMsg = context.getString(R.string.purchaseConfirmationMsg, selectedItem, price);
                 confirmPopUp = new ConfirmPopUp(confirmMsg, context, true);
@@ -131,7 +131,6 @@ public class ShopMenu extends BaseMenu{
                 String alertMsg = context.getString(R.string.notEnoughToken, price);
                 alertPopUp = new AlertPopUp(alertMsg, context, true);
             }
-//            confirmPopUp.draw(canvas, paint);
         }
     }
 

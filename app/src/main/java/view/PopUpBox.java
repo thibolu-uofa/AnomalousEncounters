@@ -19,8 +19,10 @@ import presenter.GamePresenter;
 abstract class PopUpBox {
     protected final MenuItem messageBox;
     protected ArrayList<MenuItem> buttons = new ArrayList<>();
+    private final String message;
 
     protected PopUpBox(String message, Context context, boolean isTextCentred) {
+        this.message = message;
         int centerX = CANVAS_WIDTH / 2;
         int WIDTH = 1000;
         int x = centerX - (WIDTH / 2);
@@ -48,5 +50,9 @@ abstract class PopUpBox {
         for(MenuItem button: buttons){
             button.draw(canvas, paint);
         }
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

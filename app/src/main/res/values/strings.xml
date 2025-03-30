@@ -1,9 +1,14 @@
 <resources>
     <string name="app_name">AnomalousEncounters</string>
-    <string name="notEnoughToken">You need %d tokens to complete this purchase.</string>
-    <string name="successfulPurchase">You have successfully purchased a %s</string>
-    <string name="purchaseConfirmationMsg">Are you sure you want to buy a [%s]? This will cost you %d tokens.</string>
     <string name="cancelAction">Cancel</string>
     <string name="confirmAction">Confirm</string>
     <string name="okMessage">OK</string>
+    <string name="notEnoughToken">You need %d tokens to complete this purchase.</string>
+    <string name="purchaseConfirmationMsg">Are you sure you want to buy a [%s]? This will cost you %d tokens.</string>
+    <string name="successfulPurchase">You have successfully purchased a %s</string>
+    <string name="forgetSkillConfirmationMsg">Are you sure you want to forget the skill [%s]? You will receive compensation.\nThis action cannot be revered.</string>
+    <string name="successfullyForgotSkill">The skill [%s] has been forgotten.</string>
+    <string name="sellItemConfirmationMsg">Are you sure you want to sell the item [%s]? This item is worth %d tokens. This action cannot be revered.</string>
+    <string name="successfullySoldItem">You have sold the item [%s] for %d tokens.</string>
+    <string name="skillLimitReached">Cannot gain new skill. Max amount of skills reached.</string>
 </resources>

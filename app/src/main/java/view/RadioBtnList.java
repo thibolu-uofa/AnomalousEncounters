@@ -10,14 +10,20 @@ import java.util.ArrayList;
 import presenter.GamePresenter;
 
 public class RadioBtnList {
-    private final ArrayList<RadioBtn> radioButtons = new ArrayList<>();
+    private final Context context;
+    private ArrayList<RadioBtn> radioButtons = new ArrayList<>();
     private RadioBtn checkedBtn;
     private final int height;
+    private final int x;
     private final int y;
+    private final int width;
 
     public RadioBtnList(int x, int y, Context context, ArrayList<String> stringArrayList, int width, int height) {
+        this.context = context;
         this.height = height;
+        this.x = x;
         this.y = y;
+        this.width = width;
         int numberOfBoxes = stringArrayList.size();
 
         int PADDING = 35;
@@ -67,6 +73,21 @@ public class RadioBtnList {
         for (RadioBtn radioBtn: radioButtons) {
             radioBtn.draw(canvas, paint);
         }
+    }
+
+    public void updateRadioBtnList(ArrayList<String> stringArrayList) {
+        radioButtons = new ArrayList<>();
+        int numberOfBoxes = stringArrayList.size();
+        int PADDING = 35;
+        int localY = y;
+
+        for (int i = 0; i < numberOfBoxes; i++) {
+            RadioBtn radioBtn = new RadioBtn(x, localY, stringArrayList.get(i), width, context);
+            radioButtons.add(radioBtn);
+            localY += PADDING + radioBtn.getHeight();
+        }
+
+        resetCheckedBtn();
     }
 
     public int getHeight() {
