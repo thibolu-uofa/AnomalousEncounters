@@ -3,47 +3,44 @@ package view;
 
 import static view.ViewConstants.CONFIRM_TEXT_COLOR;
 import static view.ViewConstants.FONT_SIZE_SMALL;
-import static view.ViewConstants.OVERLAY_DARK_COLOR;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
 
 import com.example.anomalousencounters.R;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import presenter.GamePresenter;
 
 public class ShopMenu extends BaseMenu{
     private MenuItem buyButton;
-    private final RadioBtnList itemRadioBtnList;
+    private RadioBtnList itemRadioBtnList;
     private String selectedItem;
+    private final int Y = 150;
+    private final int MENU_HEADING_HEIGHT = 90;
+    private final int MENU_HEIGHT = 600;
+    private final int MENU_WIDTH = 750;
+    private final String BLANK_TEXT = "";
 
     public ShopMenu(GamePresenter presenter, Context context){
         super(presenter, context);
         int x = 250;
-        int Y = 150;
         int MARGIN = 50;
-        int MENU_HEADING_HEIGHT = 90;
-        int MENU_HEIGHT = 600;
-        int MENU_WIDTH = 750;
-        int RADIO_X_PAD = 15;
-        int RADIO_Y_PAD = 20;
-        int BUTTON_Y_PAD = 50;
-
-        String ITEM_HEADING = "ITEMS";
-        String ITEM_NAME_FILLER = "[Item Name]";
-        String BUY_TEXT = "BUY";
-        String BLANK_TEXT = "";
 
         createPlayerCard(new Rectangle(x, Y), context);
-
         x += PLAYER_CARD_WIDTH + MARGIN;
+
+        createItemMenu(x);
+        x += MENU_WIDTH;
+
+        createItemInfoMenu(x);
+        createBuyButton(x);
+    }
+
+    private void createItemMenu(int x) {
+        String ITEM_HEADING = "ITEMS";
 
         MenuItem items_heading = new MenuItem(x, Y, MENU_HEADING_HEIGHT, MENU_WIDTH, ITEM_HEADING, true, context);
         menuItemsList.put("items_heading", items_heading);
@@ -51,10 +48,19 @@ public class ShopMenu extends BaseMenu{
         MenuItem items = new MenuItem(x, Y + MENU_HEADING_HEIGHT, MENU_HEIGHT, MENU_WIDTH, BLANK_TEXT, false, context);
         menuItemsList.put("items", items);
 
+        createItemList(x);
+    }
+
+    private void createItemList(int x) {
         ArrayList<String> itemArrayList = presenter.getShopItemsArray();
+        int RADIO_X_PAD = 15;
+        int RADIO_Y_PAD = 20;
         Rectangle itemListRect = new Rectangle(x + RADIO_X_PAD, Y + MENU_HEADING_HEIGHT + RADIO_Y_PAD);
         itemRadioBtnList = new RadioBtnList(itemListRect.x, itemListRect.y, context, itemArrayList, MENU_WIDTH, MENU_HEIGHT);
-        x += items.getWidth();
+    }
+
+    private void createItemInfoMenu(int x) {
+        String ITEM_NAME_FILLER = "[Item Name]";
 
         MenuItem itemName = new MenuItem(x, Y, MENU_HEADING_HEIGHT, MENU_WIDTH, ITEM_NAME_FILLER, true, context);
         menuItemsList.put("item_name", itemName);
@@ -62,14 +68,16 @@ public class ShopMenu extends BaseMenu{
         MenuItem itemInfo = new MenuItem(x, Y + MENU_HEADING_HEIGHT, MENU_HEIGHT, MENU_WIDTH, BLANK_TEXT, false, context);
         itemInfo.changeFontSize(FONT_SIZE_SMALL);
         menuItemsList.put("item_info", itemInfo);
+    }
 
+    private void createBuyButton(int x) {
+        String BUY_TEXT = "BUY";
         int BUY_BTN_X = x + (MENU_WIDTH/2) - (PLAYER_CARD_WIDTH/2);
+        int BUTTON_Y_PAD = 50;
         int BUY_BTN_Y = Y + MENU_HEADING_HEIGHT + MENU_HEIGHT + BUTTON_Y_PAD;
+
         buyButton = new MenuItem(BUY_BTN_X, BUY_BTN_Y, MENU_HEADING_HEIGHT, PLAYER_CARD_WIDTH, BUY_TEXT,true, context);
         buyButton.changeFontColor(CONFIRM_TEXT_COLOR);
-
-//        ConfirmPopUp confirmPopUp = new ConfirmPopUp(getContext().getString(R.string.purchaseConfirmationMsg, "shark",12), getContext());
-//        confirmPopUp.draw(canvas, paint);
     }
 
     public void updateMenuTexts(GamePresenter presenter) {

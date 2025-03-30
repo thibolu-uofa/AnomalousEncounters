@@ -15,7 +15,7 @@ import presenter.GamePresenter;
 
 public class BaseMenu {
     protected Context context;
-    protected  GamePresenter presenter;
+    protected GamePresenter presenter;
     protected Map<String, MenuItem> menuItemsList = new LinkedHashMap<>();
     protected int PLAYER_CARD_WIDTH = 400;
     protected int PLAYER_CARD_HEIGHT = 200;
