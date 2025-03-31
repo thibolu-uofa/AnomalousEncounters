@@ -8,8 +8,6 @@ import presenter.GamePresenter;
 
 public class EncounterSystem {
     private final ArrayList<int[]> startAndEndPoints = new ArrayList<>();
-    private final int ENCOUNTER_PROBABILITY = 4;
-    private int numberOfEnemies = 9;
     private int previousEnemyId = -1;
 
     public EncounterSystem() {
@@ -18,12 +16,14 @@ public class EncounterSystem {
         startAndEndPoints.add(new int[]{-2610, -2810});
     }
     public boolean hasEncounteredEnemy(int x) {
-        if (canEncounterEnemy(x)) {
-            Random rand = new Random();
-            int diceThrow = rand.nextInt(6) + 1;
-            return ENCOUNTER_PROBABILITY >= diceThrow;
+        if (!canEncounterEnemy(x)) {
+            return false;
         }
-        return false;
+
+        Random rand = new Random();
+        int diceThrow = rand.nextInt(6) + 1;
+        int ENCOUNTER_PROBABILITY = 4;
+        return ENCOUNTER_PROBABILITY >= diceThrow;
     }
 
     private boolean canEncounterEnemy(int x) {
@@ -37,6 +37,7 @@ public class EncounterSystem {
     }
 
     public int getRandomEnemyId() {
+        int numberOfEnemies = 9;
         Random rand = new Random();
         int enemyId = rand.nextInt(numberOfEnemies);
 
@@ -44,9 +45,8 @@ public class EncounterSystem {
             enemyId = rand.nextInt(numberOfEnemies);
         }
 
-        if (previousEnemyId == -1){
-            previousEnemyId = enemyId;
-        }
+        // Update previousEnemyId with the current value
+        previousEnemyId = enemyId;
 
         return enemyId;
     }
