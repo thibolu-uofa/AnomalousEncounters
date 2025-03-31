@@ -38,7 +38,7 @@ public class BattleSystem {
         this.playerState = playerState;
         this.context = context;
         populatePlayerSkills();
-        populateEnemySkills(enemyId, enemyTier);//
+        populateEnemySkills(enemyId, enemyTier);
 
         createEnemy(enemyId, enemyTier);
 
@@ -52,7 +52,6 @@ public class BattleSystem {
 
         hasPlayerAttacked = false;
         hasPlayerMoved = false;
-
     }
 
     public boolean canEndPlayerTurn() {
@@ -71,8 +70,6 @@ public class BattleSystem {
     }
 
     public boolean didAtkHit(ArrayList<int[]> coords) {
-        //if isPlayerTurn is true then, this function returns true if enemyPosition is equal to any coord in coords, false otherwise
-        //if isPlayerTurn is false then, this function returns true if playerPosition is equal to coord in coords, false otherwise
         int[] targetPosition = isPlayerTurn ? enemyPosition : playerPosition;
 
         // Check if targetPosition is in the list of affected coordinates
@@ -221,31 +218,40 @@ public class BattleSystem {
     }
 
     public int[] getNewPlayerBoardPosition(String direction) {
-        int[] playerTempPosition = new int[2];
-        switch (direction) {
-            case "up":
-                playerTempPosition[0] = playerPosition[0];
-                playerTempPosition[1] = playerPosition[1] - 1;
-                break;
-            case "down":
-                playerTempPosition[0] = playerPosition[0];
-                playerTempPosition[1] = playerPosition[1] + 1;
-                break;
-            case "right":
-                playerTempPosition[0] = playerPosition[0] + 1;
-                playerTempPosition[1] = playerPosition[1];
-                break;
-            case "left":
-                playerTempPosition[0] = playerPosition[0] - 1;
-                playerTempPosition[1] = playerPosition[1];
-                break;
-        }
-        ArrayList<int[]> availableMoves = getAvailableMoveTilesForPlayer();
-        boolean isValidMove = isMoveValid(playerTempPosition, availableMoves);
-        if (isValidMove) {
+        int[] playerTempPosition = calculatePositionForDirection(direction);
+
+        if (isValidPlayerMove(playerTempPosition)) {
             return playerTempPosition;
         }
+
         return playerPosition;
+    }
+
+    private int[] calculatePositionForDirection(String direction) {
+        int[] playerTempPosition = new int[] {playerPosition[0], playerPosition[1]};
+
+        // apply offset based on direction
+        switch (direction) {
+            case "up":
+                playerTempPosition[1]--;
+                break;
+            case "down":
+                playerTempPosition[1]++;
+                break;
+            case "right":
+                playerTempPosition[0]++;
+                break;
+            case "left":
+                playerTempPosition[0]--;
+                break;
+        }
+
+        return playerTempPosition;
+    }
+
+    private boolean isValidPlayerMove(int[] potentialPosition) {
+        ArrayList<int[]> availableMoves = getAvailableMoveTilesForPlayer();
+        return isMoveValid(potentialPosition, availableMoves);
     }
 
     private ArrayList<int[]> getAvailableMoveTilesForPlayer() {
@@ -315,7 +321,7 @@ public class BattleSystem {
         }
     }
 
-    //TODO: calculate enemy skill level based on tier and some random proportions using fomula
+    //TODO: calculate enemy skill level based on tier and some random proportions using formula
     private int calculateEnemySkillLevel(int tier) {
         return -1;
     }

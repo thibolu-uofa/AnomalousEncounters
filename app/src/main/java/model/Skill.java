@@ -26,28 +26,28 @@ public class Skill {
 
     public Skill(String name, String atkPattern, int level, int tier) {
         this.name = name;
-        switch (atkPattern.toUpperCase()) {
-            case "DIAGONAL":
-                this.atkType = AttackPattern.AttackType.DIAGONAL;
-                break;
-            case "STAIGHT":
-                this.atkType = AttackPattern.AttackType.STAIGHT;
-                break;
-            case "STAR":
-                this.atkType = AttackPattern.AttackType.STAR;
-                break;
-            case "CONE":
-                this.atkType = AttackPattern.AttackType.CONE;
-                break;
-            default:
-                this.atkType = AttackPattern.AttackType.STAIGHT;
-        }
+        this.atkType = determineAttackType(atkPattern);
         this.atkPattern = new AttackPattern(atkType);
         this.distance = calculateSkillDistance(level);
         int baseDamage = getSkillBaseDamage(tier);
         this.damage = calculateSkillDamage(level, baseDamage);
         this.MAX_COOLDOWN = getMaxCooldown();
         this.currentCooldown = 0;
+    }
+
+    private AttackPattern.AttackType determineAttackType(String atkPattern) {
+        switch (atkPattern.toUpperCase()) {
+            case "DIAGONAL":
+                return AttackPattern.AttackType.DIAGONAL;
+            case "STAIGHT":
+                return AttackPattern.AttackType.STAIGHT;
+            case "STAR":
+                return AttackPattern.AttackType.STAR;
+            case "CONE":
+                return AttackPattern.AttackType.CONE;
+            default:
+                return AttackPattern.AttackType.STAIGHT;
+        }
     }
 
     private int getMaxCooldown() {

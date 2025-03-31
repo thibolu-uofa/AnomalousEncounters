@@ -2,12 +2,11 @@ package model;
 
 public class EnemyState {
     private int id;
-    private int enemyMaxHealth, enemyCurrentHealth, currentAttackId;
-    private String name;
-    private int[] skills = new int[0]; // Empty integer array
-    private int[] items = new int[0]; // Empty integer array
-    private int[] itemDrops = new int[0]; // Items dropped upon defeat
-//
+    private final int enemyMaxHealth;
+    private int enemyCurrentHealth;
+    private final String name;
+    private final int[] skills = new int[0]; // Empty integer array
+
     // Default Constructor
     public EnemyState() {
         this.name = "Unknown";
@@ -36,71 +35,11 @@ public class EnemyState {
         updateHealth(delta); // Calls the private method internally
     }
 
-    // Add an ability to the ability list
-    private void addAbility(int id) {
-        skills = expandArray(skills, id);
-    }
-
-    // Add an item to the enemy's inventory
-    private void addItemDrops(int id) {
-        items = expandArray(items, id);
-    }
-
-    // Remove an item from the enemy's inventory
-    private void removeItem(int id) {
-        items = removeFromArray(items, id);
-    }
-
-    // Add an item to the enemy's drop list
-    public void addItemDrop(int id) {
-        itemDrops = expandArray(itemDrops, id);
-    }
-
-    // Utility method to expand an array by adding a new element
-    private int[] expandArray(int[] array, int newElement) {
-        int[] newArray = new int[array.length + 1];
-        System.arraycopy(array, 0, newArray, 0, array.length);
-        newArray[array.length] = newElement;
-        return newArray;
-    }
-
-    // Utility method to remove an element from an array
-    private int[] removeFromArray(int[] array, int element) {
-        int index = -1;
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] == element) {
-                index = i;
-                break;
-            }
-        }
-        if (index == -1) return array; // Element not found
-
-        int[] newArray = new int[array.length - 1];
-        for (int i = 0, j = 0; i < array.length; i++) {
-            if (i != index) {
-                newArray[j++] = array[i];
-            }
-        }
-        return newArray;
-    }
-
     // Getters (moved to the bottom)
 
     public int getHealth() {
 
         return enemyCurrentHealth;
-    }
-
-    public int[] getAbilityList() {
-
-        return skills;
-    }
-
-
-    // Get the list of items the enemy drops when defeated
-    public int[] getItemDrops() {
-
-        return itemDrops;
     }
 
     public int[] getSkillList() {

@@ -1,14 +1,16 @@
-package view;
+package view.battle;
 
 import static view.ViewConstants.DEFAULT_TEXT_COLOR;
 import static view.ViewConstants.FONT_SIZE_SMALL;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Objects;
 import presenter.GamePresenter;
+import view.RadioBtnList;
+import view.menu.MenuText;
 
 public class SkillBar extends BaseMenuBar {
     private final MenuText title;

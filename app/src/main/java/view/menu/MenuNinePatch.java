@@ -1,4 +1,4 @@
-package view;
+package view.menu;
 
 import static view.ViewConstants.FONT_SIZE_SMALL;
 import static view.ViewConstants.DEFAULT_TEXT_COLOR;

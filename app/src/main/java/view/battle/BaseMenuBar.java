@@ -1,12 +1,13 @@
-package view;
+package view.battle;
 
 import static view.ViewConstants.DEFAULT_TEXT_COLOR;
 import static view.ViewConstants.FONT_SIZE_MEDIUM;
-import static view.ViewConstants.FONT_SIZE_SMALL;
 import static view.ViewConstants.SECONDARY_TEXT_COLOR;
 
 import java.util.ArrayList;
 import presenter.GamePresenter;
+import view.menu.MenuText;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.Log;

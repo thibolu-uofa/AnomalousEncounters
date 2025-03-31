@@ -1,4 +1,4 @@
-package view;
+package view.battle;
 
 import static view.ViewConstants.BATTLE_BACKGROUND_COLOR;
 import static view.ViewConstants.PLAYER_TILE_HIGHLIGHT_COLOR;
@@ -17,16 +17,20 @@ import com.example.anomalousencounters.R;
 import java.util.ArrayList;
 
 import presenter.GamePresenter;
+import view.GameView;
+import view.Sprite;
+import view.menu.MenuEmpty;
+import view.menu.MenuNinePatch;
 
 public class BattleView {
-    private GamePresenter presenter;
+    private final GamePresenter presenter;
     private GameView view;
-    private Sprite grid;
-    private Sprite playerIcon;
-    private Sprite enemyIcon;
-    private MenuNinePatch playerInfo;
-    private MenuNinePatch enemyInfo;
-    private BattleSideBar sideBar;
+    private final Sprite grid;
+    private final Sprite playerIcon;
+    private final Sprite enemyIcon;
+    private final MenuNinePatch playerInfo;
+    private final MenuNinePatch enemyInfo;
+    private final BattleSideBar sideBar;
     private ArrayList<MenuEmpty> tileHighlights = new ArrayList<>();
     private final int MAX_CARD_WIDTH = 650;
     private int GRID_BORDER_WEIGHT = 5;
@@ -147,7 +151,7 @@ public class BattleView {
     public void drawFlashingTiles(Canvas canvas, Paint paint) {
         long currentTime = System.currentTimeMillis();
 
-        // If this is the first frame of flashing
+        // if this is the first frame of flashing
         if (lastFrameTime == 0) {
             lastFrameTime = currentTime;
         }
@@ -158,13 +162,13 @@ public class BattleView {
             // Toggle color
             currentTileColor = (currentTileColor == tileHighlightColor) ? TRANSPARENT_COLOR : tileHighlightColor;
 
-            // Update each tile's color
+            // update each tile's color
             for (MenuEmpty tileHighlight : tileHighlights) {
                 tileHighlight.setColor(currentTileColor);
                 tileHighlight.draw(canvas, paint);
             }
 
-            // Reset last frame time and decrement ticks
+            // reset last frame time and decrement ticks
             lastFrameTime = currentTime;
             ticks--;
         }

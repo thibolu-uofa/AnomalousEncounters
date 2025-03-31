@@ -1,15 +1,11 @@
 package view;
 
-import static view.ViewConstants.CANCEL_TEXT_COLOR;
-import static view.ViewConstants.CONFIRM_TEXT_COLOR;
-
 import android.content.Context;
 
 import com.example.anomalousencounters.R;
 
-import java.util.Objects;
-
 import presenter.GamePresenter;
+import view.menu.MenuItem;
 
 public class AlertPopUp extends PopUpBox{
     private final MenuItem okayBtn;

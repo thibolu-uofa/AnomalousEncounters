@@ -213,21 +213,18 @@ public class GamePresenter extends AppCompatActivity {
         Bitmap enemyImage = getEnemyImage(enemyId, this);
         view.setEnemyImage(enemyImage);
 
-        //tell view to draw player and enemy
-        int [] playerPosition = battleSystem.getPlayerPosition();
-        int [] enemyPosition = battleSystem.getEnemyPosition();
+        updatePlayerAndEnemyPositions();
+    }
+
+    private void updatePlayerAndEnemyPositions() {
+        int[] playerPosition = battleSystem.getPlayerPosition();
+        int[] enemyPosition = battleSystem.getEnemyPosition();
 
         int[] playerBoardPosition = convertPositionToBoardDimensions(playerPosition);
-        int playerBoardX = playerBoardPosition[0];
-        int playerBoardY = playerBoardPosition[1];
-
         int[] enemyBoardPosition = convertPositionToBoardDimensions(enemyPosition);
-        int enemyBoardX = enemyBoardPosition[0];
-        int enemyBoardY = enemyBoardPosition[1];
 
-        //tell view to draw player and enemy
-        view.updatePlayerGridPosition(playerBoardX, playerBoardY);
-        view.updateEnemyGridPosition(enemyBoardX, enemyBoardY);
+        view.updatePlayerGridPosition(playerBoardPosition[0], playerBoardPosition[1]);
+        view.updateEnemyGridPosition(enemyBoardPosition[0], enemyBoardPosition[1]);
     }
 
     public void visuallyUpdateEnemyPos(int[] position) {

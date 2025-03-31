@@ -10,6 +10,7 @@ import com.example.anomalousencounters.R;
 import java.util.Objects;
 
 import presenter.GamePresenter;
+import view.menu.MenuItem;
 
 public class ConfirmPopUp extends  PopUpBox{
     private String cancelText;

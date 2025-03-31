@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import presenter.GamePresenter;
 
 public class EnemyAI {
-    private GamePresenter presenter;
-    private BattleSystem battleSystem;
+    private final GamePresenter presenter;
+    private final BattleSystem battleSystem;
     private final ArrayList<Skill> enemySkills;
     private Skill chosenSkill;
     private int[] newPosition;

@@ -1,8 +1,6 @@
-package view;
+package view.menu;
 
-import static view.MenuText.calculateMinHeightRequired;
 import static view.ViewConstants.FONT_SIZE_MEDIUM;
-import static view.ViewConstants.FONT_SIZE_SMALL;
 import static view.ViewConstants.DEFAULT_MENU_BACKGROUND_COLOR;
 import static view.ViewConstants.DEFAULT_TEXT_COLOR;
 

@@ -7,7 +7,6 @@ import java.util.Random;
 import presenter.GamePresenter;
 
 public class EncounterSystem {
-    private GamePresenter presenter;
     private final ArrayList<int[]> startAndEndPoints = new ArrayList<>();
     private final int ENCOUNTER_PROBABILITY = 4;
     private int numberOfEnemies = 9;
@@ -66,38 +65,52 @@ public class EncounterSystem {
         Random random = new Random();
         float randomProportion = random.nextFloat(); // value between 0.0 and 1.0
 
-        // get tier based on the current phase
-        if (phase == 1) {
-            // Phase 1: 85% chance of Tier 4, 15% chance of Tier 3
-            if (randomProportion < 0.85) {
-                return 4;
-            } else {
-                return 3;
-            }
+        switch (phase) {
+            case 1:
+                return getPhaseOneTier(randomProportion);
+            case 2:
+                return getPhaseTwoTier(randomProportion);
+            case 3:
+                return getPhaseThreeTier(randomProportion);
+            default:
+                return getDefaultTier();
         }
-        else if (phase == 2) {
-            // Phase 2: 10% chance of Tier 4, 80% chance of Tier 3, 10% chance of Tier 2
-            if (randomProportion < 0.10) {
-                return 4;
-            } else if (randomProportion < 0.90) { // 0.10 + 0.80 = 0.90
-                return 3;
-            } else {
-                return 2;
-            }
+    }
+
+    private int getPhaseOneTier(float randomProportion) {
+        // Phase 1: 85% chance of Tier 4, 15% chance of Tier 3
+        if (randomProportion < 0.85) {
+            return 4;
+        } else {
+            return 3;
         }
-        else if (phase == 3) {
-            // Phase 3: 5% chance of Tier 4, 25% chance of Tier 3, 70% chance of Tier 2
-            if (randomProportion < 0.05) {
-                return 4;
-            } else if (randomProportion < 0.30) { // 0.05 + 0.25 = 0.30
-                return 3;
-            } else {
-                return 2;
-            }
+    }
+
+    private int getPhaseTwoTier(float randomProportion) {
+        // Phase 2: 10% chance of Tier 4, 80% chance of Tier 3, 10% chance of Tier 2
+        if (randomProportion < 0.10) {
+            return 4;
+        } else if (randomProportion < 0.90) { // 0.10 + 0.80 = 0.90
+            return 3;
+        } else {
+            return 2;
         }
-        else {
-            // equal chance of any tier
-            return random.nextInt(3) + 1;
+    }
+
+    private int getPhaseThreeTier(float randomProportion) {
+        // Phase 3: 5% chance of Tier 4, 25% chance of Tier 3, 70% chance of Tier 2
+        if (randomProportion < 0.05) {
+            return 4;
+        } else if (randomProportion < 0.30) { // 0.05 + 0.25 = 0.30
+            return 3;
+        } else {
+            return 2;
         }
+    }
+
+    private int getDefaultTier() {
+        // Equal chance of any tier
+        Random random = new Random();
+        return random.nextInt(3) + 1;
     }
 }

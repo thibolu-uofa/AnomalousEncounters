@@ -1,20 +1,19 @@
 package view;
 
-import static view.MenuText.calculateMinHeightRequired;
+import static view.menu.MenuText.calculateMinHeightRequired;
 import static view.ViewConstants.CANVAS_HEIGHT;
 import static view.ViewConstants.CANVAS_WIDTH;
-import static view.ViewConstants.DEFAULT_TEXT_COLOR;
 import static view.ViewConstants.FONT_SIZE_MEDIUM;
 import static view.ViewConstants.OVERLAY_DARK_COLOR;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
 
 import java.util.ArrayList;
 
 import presenter.GamePresenter;
+import view.menu.MenuItem;
 
 abstract class PopUpBox {
     protected final MenuItem messageBox;

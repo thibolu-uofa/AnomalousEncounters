@@ -12,8 +12,10 @@ import com.example.anomalousencounters.R;
 import java.util.ArrayList;
 import java.util.Objects;
 import presenter.GamePresenter;
+import view.menu.BaseMenu;
+import view.menu.MenuItem;
 
-public class PlayerMenu extends BaseMenu{
+public class PlayerMenu extends BaseMenu {
     private RadioBtnList skillRadioBtnList;
     private RadioBtnList itemRadioBtnList;
     private MenuItem skillInfo;
@@ -139,76 +141,119 @@ public class PlayerMenu extends BaseMenu{
     }
 
     public void checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
-        if (confirmPopUp != null) {
-            boolean userTouchedPopUp = confirmPopUp.didUserTouchButton(eventX, eventY, presenter);
-            if (userTouchedPopUp) {
-                boolean didUserConfirm = confirmPopUp.didUserConfirm();
-                boolean isForgetSkill = Objects.equals(confirmPopUp.getMessage(), forgetSkillMsg);
-                boolean isSellItem = Objects.equals(confirmPopUp.getMessage(), sellItemMsg);
-
-                if (didUserConfirm && isForgetSkill) {
-                    presenter.removePlayerSkill(selectedSkill);
-
-                    String alertMsg = context.getString(R.string.successfullyForgotSkill, selectedSkill);
-                    alertPopUp = new AlertPopUp(alertMsg, context, true);
-
-                    ArrayList<String> skillArrayList = presenter.getSkillNamesArray();
-                    skillRadioBtnList.updateRadioBtnList(skillArrayList);
-                }
-
-                if (didUserConfirm && isSellItem) {
-                    double DISCOUNT_FACTOR = 0.8;
-                    int price = (int) (presenter.getItemPriceByName(selectedItem) * DISCOUNT_FACTOR);
-                    presenter.sellPlayerItem(selectedItem, price);
-
-                    String alertMsg = context.getString(R.string.successfullySoldItem, selectedItem, price);
-                    alertPopUp = new AlertPopUp(alertMsg, context, true);
-
-                    ArrayList<String> itemArrayList = presenter.getPlayerItemNamesArray();
-                    itemRadioBtnList.updateRadioBtnList(itemArrayList);
-                }
-
-                confirmPopUp = null;
-            }
+        if (handlePopUps(eventX, eventY, presenter)) {
             return;
         }
 
-        if (alertPopUp != null){
-            boolean userClosePopUp = alertPopUp.didUserClosePopUp(eventX, eventY, presenter);
+        handleSelections(eventX, eventY, presenter);
+        handleButtonPresses(eventX, eventY, presenter);
+    }
 
-            if (userClosePopUp){
+    private boolean handlePopUps(float eventX, float eventY, GamePresenter presenter) {
+        if (confirmPopUp != null) {
+            handleConfirmPopUp(eventX, eventY, presenter);
+            return true;
+        }
+
+        if (alertPopUp != null) {
+            boolean userClosePopUp = alertPopUp.didUserClosePopUp(eventX, eventY, presenter);
+            if (userClosePopUp) {
                 alertPopUp = null;
             }
-            return;
+            return true;
         }
+
+        return false;
+    }
+
+    private void handleConfirmPopUp(float eventX, float eventY, GamePresenter presenter) {
+        boolean userTouchedPopUp = confirmPopUp.didUserTouchButton(eventX, eventY, presenter);
+        if (userTouchedPopUp) {
+            boolean didUserConfirm = confirmPopUp.didUserConfirm();
+            boolean isForgetSkill = Objects.equals(confirmPopUp.getMessage(), forgetSkillMsg);
+            boolean isSellItem = Objects.equals(confirmPopUp.getMessage(), sellItemMsg);
+
+            if (didUserConfirm && isForgetSkill) {
+                handleForgetSkillConfirmation(presenter);
+            }
+
+            if (didUserConfirm && isSellItem) {
+                handleSellItemConfirmation(presenter);
+            }
+
+            confirmPopUp = null;
+        }
+    }
+
+    private void handleForgetSkillConfirmation(GamePresenter presenter) {
+        presenter.removePlayerSkill(selectedSkill);
+
+        String alertMsg = context.getString(R.string.successfullyForgotSkill, selectedSkill);
+        alertPopUp = new AlertPopUp(alertMsg, context, true);
+
+        ArrayList<String> skillArrayList = presenter.getSkillNamesArray();
+        skillRadioBtnList.updateRadioBtnList(skillArrayList);
+    }
+
+    private void handleSellItemConfirmation(GamePresenter presenter) {
+        double DISCOUNT_FACTOR = 0.8;
+        int price = (int) (presenter.getItemPriceByName(selectedItem) * DISCOUNT_FACTOR);
+        presenter.sellPlayerItem(selectedItem, price);
+
+        String alertMsg = context.getString(R.string.successfullySoldItem, selectedItem, price);
+        alertPopUp = new AlertPopUp(alertMsg, context, true);
+
+        ArrayList<String> itemArrayList = presenter.getPlayerItemNamesArray();
+        itemRadioBtnList.updateRadioBtnList(itemArrayList);
+    }
+
+    private void handleSelections(float eventX, float eventY, GamePresenter presenter) {
         String itemBtnPressed = itemRadioBtnList.checkForBtnPress(eventX, eventY, presenter);
         String skillBtnPressed = skillRadioBtnList.checkForBtnPress(eventX, eventY, presenter);
+
         if (!Objects.equals(itemBtnPressed, "")) {
             selectedItem = itemBtnPressed;
         } else if (!Objects.equals(skillBtnPressed, "")) {
             selectedSkill = skillBtnPressed;
         }
+    }
+
+    private void handleButtonPresses(float eventX, float eventY, GamePresenter presenter) {
+        handleSkillButtons(eventX, eventY, presenter);
+        handleItemButtons(eventX, eventY, presenter);
+    }
+
+    private void handleSkillButtons(float eventX, float eventY, GamePresenter presenter) {
+        if (selectedSkill == null) {
+            return;
+        }
 
         boolean hasSkillInfoBeenPressed = hasBtnBeenPressed(skillInfo, (int) eventX, (int) eventY, presenter);
-        if (hasSkillInfoBeenPressed && selectedSkill != null) {
+        if (hasSkillInfoBeenPressed) {
             String alertMsg = presenter.getSkillDescriptionByName(selectedSkill);
             alertPopUp = new AlertPopUp(alertMsg, context, false);
         }
 
         boolean hasForgetSkillBeenPressed = hasBtnBeenPressed(forgetSkill, (int) eventX, (int) eventY, presenter);
-        if (hasForgetSkillBeenPressed && selectedSkill != null) {
+        if (hasForgetSkillBeenPressed) {
             forgetSkillMsg = context.getString(R.string.forgetSkillConfirmationMsg, selectedSkill);
             confirmPopUp = new ConfirmPopUp(forgetSkillMsg, context, true);
         }
+    }
+
+    private void handleItemButtons(float eventX, float eventY, GamePresenter presenter) {
+        if (selectedItem == null) {
+            return;
+        }
 
         boolean hasItemInfoBeenPressed = hasBtnBeenPressed(itemInfo, (int) eventX, (int) eventY, presenter);
-        if (hasItemInfoBeenPressed && selectedItem != null) {
+        if (hasItemInfoBeenPressed) {
             String alertMsg = presenter.getItemInfoByName(selectedItem);
             alertPopUp = new AlertPopUp(alertMsg, context, false);
         }
 
         boolean hasSellItemBeenPressed = hasBtnBeenPressed(sellItem, (int) eventX, (int) eventY, presenter);
-        if (hasSellItemBeenPressed && selectedItem != null) {
+        if (hasSellItemBeenPressed) {
             double DISCOUNT_FACTOR = 0.8;
             int price = (int) (presenter.getItemPriceByName(selectedItem) * DISCOUNT_FACTOR);
             sellItemMsg = context.getString(R.string.sellItemConfirmationMsg, selectedItem, price);

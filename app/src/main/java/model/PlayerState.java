@@ -8,8 +8,8 @@ public class PlayerState {
     private final String name;
     private int tokens;
     private int phase;
-    private ArrayList<int[]> items = new ArrayList<>(); // Empty double integer array (first int is the item id, second is the number of items)
-    private ArrayList<int[]>  skills = new ArrayList<>(); // Empty double integer array (first int is the skill id, second is the skill level)
+    private final ArrayList<int[]> items = new ArrayList<>(); // Empty double integer array (first int is the item id, second is the number of items)
+    private final ArrayList<int[]>  skills = new ArrayList<>(); // Empty double integer array (first int is the skill id, second is the skill level)
 
 
     // Default Constructor
@@ -111,13 +111,12 @@ public class PlayerState {
         return newTokenAmount >= 0;
     }
 
-    public boolean updateTokens(int delta) {
+    public void updateTokens(int delta) {
         int newTokenAmount = tokens + delta;
         if (newTokenAmount < 0) {
-            return false;
+            return;
         }
         tokens += delta;
-        return true;
     }
 
     // Utility method to expand an array by adding a new element

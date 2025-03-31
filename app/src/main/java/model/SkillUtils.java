@@ -2,9 +2,8 @@ package model;
 
 public class SkillUtils {
     private int skillBook1 = 50;
-   private int skillBook2 = 250;
+    private int skillBook2 = 250;
     private int skillBook3 = 1000;
-
 
     public enum Types {
         LIFE,
@@ -31,10 +30,6 @@ public class SkillUtils {
     }
 
     public static int[] getUpdatedLevelAndExperience(int level, int currentExperience, int experienceGain) {
-        //this functions increases skill experience (use some math, can just increase experience by 10 for now),
-        // then add the calculated experience to currentExperience, if greater than maxExperience (which you get from getMaxExperience)
-        // find out the extra amount and setCurrent experience to the extra amount and increase skill level by one
-        // return the updated currentExperience and updated level
         int maxExperience = getMaxExperience(level);
         currentExperience += experienceGain;
         if (currentExperience >= maxExperience){
@@ -55,5 +50,10 @@ public class SkillUtils {
         double exp = Math.pow(2.25, level) + 100;
         int maxExperience = (int) exp;
         return maxExperience;
+    }
+
+    public static int getSkillExpGainedForVolume(int volume) {
+        // return 50, 250, 1000 base on volume
+        return -1;
     }
 }

@@ -29,6 +29,8 @@ import com.example.anomalousencounters.R;
 import java.util.ArrayList;
 
 import presenter.GamePresenter;
+import view.battle.BattleView;
+import view.battle.EndBattleScreen;
 
 public class GameView  extends SurfaceView implements Runnable{
     private final GamePresenter presenter;

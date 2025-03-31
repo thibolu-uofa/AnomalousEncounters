@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import presenter.GamePresenter;
+import view.menu.BaseMenu;
+import view.menu.MenuItem;
 
-public class ShopMenu extends BaseMenu{
+public class ShopMenu extends BaseMenu {
     private MenuItem buyButton;
     private RadioBtnList itemRadioBtnList;
     private String selectedItem;
@@ -91,47 +93,70 @@ public class ShopMenu extends BaseMenu{
 
     public void checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
         if (confirmPopUp != null) {
-            boolean userTouchedPopUp = confirmPopUp.didUserTouchButton(eventX, eventY, presenter);
-            if (userTouchedPopUp) {
-                boolean didUserConfirm = confirmPopUp.didUserConfirm();
-                if (didUserConfirm) {
-                    presenter.buySingleItem(selectedItem);
-                    String alertMsg = context.getString(R.string.successfulPurchase, selectedItem);
-                    alertPopUp = new AlertPopUp(alertMsg, context, true);
-                }
-                confirmPopUp = null;
-            }
+            handleConfirmPopUp(eventX, eventY, presenter);
             return;
         }
 
-        if (alertPopUp != null){
-            boolean userClosePopUp = alertPopUp.didUserClosePopUp(eventX, eventY, presenter);
-
-            if (userClosePopUp){
-                alertPopUp = null;
-            }
+        if (alertPopUp != null) {
+            handleAlertPopUp(eventX, eventY, presenter);
             return;
         }
 
+        handleRadioBtnInteraction(eventX, eventY, presenter);
 
+        handleBuyButton((int) eventX, (int) eventY, presenter);
+    }
+
+    private void handleConfirmPopUp(float eventX, float eventY, GamePresenter presenter) {
+        boolean userTouchedPopUp = confirmPopUp.didUserTouchButton(eventX, eventY, presenter);
+        if (userTouchedPopUp) {
+            boolean didUserConfirm = confirmPopUp.didUserConfirm();
+            if (didUserConfirm) {
+                presenter.buySingleItem(selectedItem);
+                String alertMsg = context.getString(R.string.successfulPurchase, selectedItem);
+                alertPopUp = new AlertPopUp(alertMsg, context, true);
+            }
+            confirmPopUp = null;
+        }
+    }
+
+    private void handleAlertPopUp(float eventX, float eventY, GamePresenter presenter) {
+        boolean userClosePopUp = alertPopUp.didUserClosePopUp(eventX, eventY, presenter);
+
+        if (userClosePopUp){
+            alertPopUp = null;
+        }
+    }
+
+    private void handleRadioBtnInteraction(float eventX, float eventY, GamePresenter presenter) {
         String radioBtnPressed = itemRadioBtnList.checkForBtnPress(eventX, eventY, presenter);
         if (!Objects.equals(radioBtnPressed, "")) {
             selectedItem = radioBtnPressed;
             updateItemInfo(presenter);
         }
+    }
 
-        boolean hasBuyBtnBeenPressed = hasBtnBeenPressed(buyButton, (int) eventX, (int) eventY, presenter);
+    private void handleBuyButton(int eventX, int eventY, GamePresenter presenter) {
+        boolean hasBuyBtnBeenPressed = hasBtnBeenPressed(buyButton, eventX, eventY, presenter);
         if (hasBuyBtnBeenPressed && selectedItem != null) {
             int price = presenter.getItemPriceByName(selectedItem);
             boolean canAfford = presenter.canPlayerAffordItem(selectedItem);
-            if (canAfford){
-                String confirmMsg = context.getString(R.string.purchaseConfirmationMsg, selectedItem, price);
-                confirmPopUp = new ConfirmPopUp(confirmMsg, context, true);
+            if (canAfford) {
+                showPurchaseConfirmation(price);
             } else {
-                String alertMsg = context.getString(R.string.notEnoughToken, price);
-                alertPopUp = new AlertPopUp(alertMsg, context, true);
+                showPurchaseError(price);
             }
         }
+    }
+
+    private void showPurchaseConfirmation(int price) {
+        String confirmMsg = context.getString(R.string.purchaseConfirmationMsg, selectedItem, price);
+        confirmPopUp = new ConfirmPopUp(confirmMsg, context, true);
+    }
+
+    private void showPurchaseError(int price) {
+        String alertMsg = context.getString(R.string.notEnoughToken, price);
+        alertPopUp = new AlertPopUp(alertMsg, context, true);
     }
 
     public boolean hasClosedMenu(float eventX, float eventY, GamePresenter presenter){

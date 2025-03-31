@@ -1,4 +1,4 @@
-package view;
+package view.menu;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -8,7 +8,6 @@ import android.os.Build;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
-import android.util.Log;
 
 import com.example.anomalousencounters.R;
 

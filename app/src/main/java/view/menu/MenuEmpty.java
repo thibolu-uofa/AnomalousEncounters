@@ -1,4 +1,4 @@
-package view;
+package view.menu;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;

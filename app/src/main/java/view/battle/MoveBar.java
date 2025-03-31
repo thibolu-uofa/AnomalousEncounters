@@ -1,8 +1,4 @@
-package view;
-
-import static view.ViewConstants.DEFAULT_TEXT_COLOR;
-import static view.ViewConstants.FONT_SIZE_SMALL;
-import static view.ViewConstants.SECONDARY_TEXT_COLOR;
+package view.battle;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -17,17 +13,20 @@ import com.example.anomalousencounters.R;
 import java.util.ArrayList;
 
 import presenter.GamePresenter;
+import view.Sprite;
+import view.ToggleSprite;
+import view.menu.MenuText;
 
 public class MoveBar extends BaseMenuBar {
     private final ArrayList<ToggleSprite> movementArrows = new ArrayList<>();
     private ToggleSprite selectedArrow;
     private final Sprite squircle;
-    int LEFT_PADDING = 40;
+    private final int LEFT_PADDING = 40;
+    private final int centerOfSideBar = x + (width/2);
+    private final int PADDING = 35;
 
     public MoveBar(int x, int y, int width, Context context){
         super(x, y, width, context);
-        int centerOfSideBar = x + (width/2);
-        int PADDING = 35;
 
         Bitmap upArrowBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.up_arrow_blank);
         Bitmap upArrowBitmapSelected = BitmapFactory.decodeResource(context.getResources(), R.drawable.up_arrow_fill);

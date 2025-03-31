@@ -1,4 +1,4 @@
-package view;
+package view.menu;
 
 import static view.ViewConstants.CANVAS_WIDTH;
 import static view.ViewConstants.OVERLAY_DARK_COLOR;
@@ -11,6 +11,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import presenter.GamePresenter;
+import view.AlertPopUp;
+import view.ConfirmPopUp;
+import view.Rectangle;
 
 public class BaseMenu {
     protected Context context;

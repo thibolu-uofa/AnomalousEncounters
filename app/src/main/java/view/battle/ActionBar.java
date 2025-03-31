@@ -1,14 +1,14 @@
-package view;
+package view.battle;
 
 import static view.ViewConstants.DEFAULT_TEXT_COLOR;
 import static view.ViewConstants.DISABLED_TEXT_COLOR;
 import static view.ViewConstants.FONT_SIZE_LARGE;
-import static view.ViewConstants.SECONDARY_TEXT_COLOR;
 
 import android.content.Context;
 import android.graphics.Canvas;
 
 import presenter.GamePresenter;
+import view.menu.MenuText;
 
 public class ActionBar extends BaseMenuBar {
     int LEFT_PADDING = 90;

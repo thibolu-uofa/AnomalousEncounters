@@ -1,4 +1,4 @@
-package view;
+package view.battle;
 
 import static view.ViewConstants.PLAYER_TILE_HIGHLIGHT_COLOR;
 
@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import presenter.GamePresenter;
+import view.menu.MenuNinePatch;
 
 public class BattleSideBar {
     GamePresenter presenter;
@@ -66,29 +67,41 @@ public class BattleSideBar {
             return;
         }
 
-        boolean hasBeenPressed = presenter.isInHitbox((int) eventX, (int) eventY, x, x + WIDTH, y + HEIGHT, y);
-        if (!hasBeenPressed) {
+        boolean hasNotBeenPressed = !presenter.isInHitbox((int) eventX, (int) eventY, x, x + WIDTH, y + HEIGHT, y);
+        if (hasNotBeenPressed) {
             return;
         }
 
-        String selectedText;
         switch (currentDisplay) {
             case ACTION_BAR:
-                processActionBarTouch(actionBar.checkForUserTouch(eventX, eventY, presenter));
+                handleActionBarTouch(eventX, eventY, presenter);
                 break;
             case SKILL_BAR:
-                selectedText = skillBar.checkForUserTouch(eventX, eventY, presenter);
-                processSkillSelected(selectedText);
-                processConfirm(selectedText, currentDisplay);
-                processGoBack(selectedText, currentDisplay);
+                handleSkillBarTouch(eventX, eventY, presenter);
                 break;
             case MOVE_BAR:
-                selectedText = moveBar.checkForUserTouch(eventX, eventY, presenter);
-                processMoveSelected(selectedText);
-                processConfirm(selectedText, currentDisplay);
-                processGoBack(selectedText, currentDisplay);
+                handleMoveBarTouch(eventX, eventY, presenter);
                 break;
         }
+    }
+
+    private void handleActionBarTouch(float eventX, float eventY, GamePresenter presenter) {
+        String selectedText = actionBar.checkForUserTouch(eventX, eventY, presenter);
+        processActionBarTouch(selectedText);
+    }
+
+    private void handleSkillBarTouch(float eventX, float eventY, GamePresenter presenter) {
+        String selectedText = skillBar.checkForUserTouch(eventX, eventY, presenter);
+        processSkillSelected(selectedText);
+        processConfirm(selectedText, DisplayOptions.SKILL_BAR);
+        processGoBack(selectedText, DisplayOptions.SKILL_BAR);
+    }
+
+    private void handleMoveBarTouch(float eventX, float eventY, GamePresenter presenter) {
+        String selectedText = moveBar.checkForUserTouch(eventX, eventY, presenter);
+        processMoveSelected(selectedText);
+        processConfirm(selectedText, DisplayOptions.MOVE_BAR);
+        processGoBack(selectedText, DisplayOptions.MOVE_BAR);
     }
 
     private void processActionBarTouch(String selectedText) {
@@ -96,29 +109,44 @@ public class BattleSideBar {
             return;
         }
 
-        switch(selectedText){
+        switch (selectedText) {
             case "[ATK]":
-                if (!hasAttacked) {
-                    skillBar.resetCheckedBtn();
-                    changeDisplay(DisplayOptions.SKILL_BAR);
-                }
+                handleAttackAction();
                 break;
             case "[MOVE]":
-                if (!hasMoved) {
-                    moveBar.resetSelectedArrow();
-                    changeDisplay(DisplayOptions.MOVE_BAR);
-                }
+                handleMoveAction();
                 break;
             case "[USE]":
-                if (!hasUsedItem) {
-                    Log.d("Button Processing", "USE BTN");
-                }
+                handleUseItemAction();
                 break;
             case "End Turn":
-                presenter.startEnemyTurn();
-                Log.d("Button Processing", "END MY TURN");
+                handleEndTurnAction();
                 break;
         }
+    }
+
+    private void handleAttackAction() {
+        if (!hasAttacked) {
+            skillBar.resetCheckedBtn();
+            changeDisplay(DisplayOptions.SKILL_BAR);
+        }
+    }
+
+    private void handleMoveAction() {
+        if (!hasMoved) {
+            moveBar.resetSelectedArrow();
+            changeDisplay(DisplayOptions.MOVE_BAR);
+        }
+    }
+
+    private void handleUseItemAction() {
+        if (!hasUsedItem) {
+            Log.d("Button Processing", "USE BTN");
+        }
+    }
+
+    private void handleEndTurnAction() {
+        presenter.startEnemyTurn();
     }
 
     public void resetActionFlags() {
@@ -152,27 +180,35 @@ public class BattleSideBar {
 
     }
 
-    public void processConfirm(String selectedText, DisplayOptions currentDisplay){
+    private void processConfirm(String selectedText, DisplayOptions currentDisplay) {
         if (!Objects.equals(selectedText, "[Confirm]")) {
             return;
         }
-        switch(currentDisplay){
+
+        switch (currentDisplay) {
             case SKILL_BAR:
-                Log.d("User wants to use a skill", "Confirm");
-                battleView.setTileHighlightColor(PLAYER_TILE_HIGHLIGHT_COLOR);
-                battleView.flashTiles();
-                hasAttacked = true;
-                actionBar.disableButton("[ATK]");
+                handleSkillConfirmation();
                 break;
             case MOVE_BAR:
-                Log.d("User wants to move", "Move");
-                String movementDirection = moveBar.getSelectedArrowDirection();
-                presenter.movePlayer(movementDirection);
-                hasMoved = true;
-                actionBar.disableButton("[MOVE]");
+                handleMoveConfirmation();
                 break;
         }
+
         changeDisplay(DisplayOptions.ACTION_BAR);
+    }
+
+    private void handleSkillConfirmation() {
+        battleView.setTileHighlightColor(PLAYER_TILE_HIGHLIGHT_COLOR);
+        battleView.flashTiles();
+        hasAttacked = true;
+        actionBar.disableButton("[ATK]");
+    }
+
+    private void handleMoveConfirmation() {
+        String movementDirection = moveBar.getSelectedArrowDirection();
+        presenter.movePlayer(movementDirection);
+        hasMoved = true;
+        actionBar.disableButton("[MOVE]");
     }
 
     private void processGoBack(String selectedText, DisplayOptions currentDisplay) {
