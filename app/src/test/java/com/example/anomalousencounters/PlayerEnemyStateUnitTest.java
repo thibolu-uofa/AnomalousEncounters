@@ -12,7 +12,7 @@ import model.PlayerState;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public class ExampleUnitTest {
+public class PlayerEnemyStateUnitTest {
     @Test
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
@@ -55,10 +55,16 @@ public class ExampleUnitTest {
         player.addSkill(1, 2);
         assertArrayEquals(new int[]{1}, player.getSkillList());
         assertArrayEquals(new int[]{2}, player.getSkillLevels());
+    }
 
+    @Test
+    public void removeSkillIsCorrect() {
+        PlayerState player = new PlayerState();
+        player.addSkill(1, 2);
         player.removeSkill(1);
         assertArrayEquals(new int[]{}, player.getSkillList());
     }
+
     @Test
     public void updateTokensIsCorrect() {
         PlayerState player = new PlayerState();
@@ -89,25 +95,25 @@ public class ExampleUnitTest {
 
     @Test
     public void getNameIsCorrect() {
-        EnemyState enemy = new EnemyState("Goblin", 80, 1);
+        EnemyState enemy = new EnemyState("Goblin", 80, 1, 1);
         assertEquals("Goblin", enemy.getName());
     }
 
     @Test
     public void getEnemyMaxHealthIsCorrect() {
-        EnemyState enemy = new EnemyState("Orc", 120, 2);
+        EnemyState enemy = new EnemyState("Orc", 120, 2, 1);
         assertEquals(120, enemy.getEnemyMaxHealth());
     }
 
     @Test
     public void getEnemyCurrentHealthIsCorrect() {
-        EnemyState enemy = new EnemyState("Troll", 150, 3);
+        EnemyState enemy = new EnemyState("Troll", 150, 3, 1);
         assertEquals(150, enemy.getEnemyCurrentHealth());
     }
 
     @Test
     public void getIdIsCorrect() {
-        EnemyState enemy = new EnemyState("Dragon", 200, 99);
+        EnemyState enemy = new EnemyState("Dragon", 200, 99, 1);
         assertEquals(99, enemy.getId());
     }
 }

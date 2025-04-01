@@ -1,5 +1,8 @@
 package presenter;
 
+import static model.EnemyUtils.ESSENCE_NAME;
+import static model.EnemyUtils.SHARD_NAME;
+import static model.EnemyUtils.getEnemyDropsFromTier;
 import static model.Utils.getDataProperty;
 import static model.Utils.getEnemyImage;
 import static model.Utils.getPropertyByName;
@@ -349,6 +352,7 @@ public class GamePresenter extends AppCompatActivity {
         boolean isPlayerLoser = isPlayerLoser();
         if (isPlayerLoser) {
             view.endBattle(false);
+            playerLost();
         }
     }
 
@@ -397,63 +401,50 @@ public class GamePresenter extends AppCompatActivity {
         return String.valueOf(skillLevelsString);
     }
 
-    public String getEnemyDropsString() {
-        StringBuilder enemyDrops = new StringBuilder("Entity has been purified\n\nAnamolous Drops\n");
-        int enemyId = battleSystem.getEnemyId();
+    /**
+     * Gets the battle completion text and drop amounts.
+     * @return String array with [0] containing drop names and [1] containing drop amounts
+     */
+    public String[] getEndBattleTextAndDropAmounts() {
+        int tier = battleSystem.getEnemyTier();
+        int[] dropAmounts = getEnemyDropsFromTier(tier);
 
-        try {
-            JSONArray itemIds = (JSONArray) getSingleDataProperty("enemies.json", "item_drops", enemyId, this);
-            for (int i = 0; i < itemIds.length(); i++) {
-                int id = itemIds.getInt(i);
-                String itemName = (String) getSingleDataProperty("items.json", "name", id, this);
-                enemyDrops.append(itemName).append('\n');
-            }
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        StringBuilder dropNames = new StringBuilder("Entity has been purified\n\nAnomalous Drops\n");
+        StringBuilder dropAmountsString = new StringBuilder();
 
-        return String.valueOf(enemyDrops);
+        processDropItem(ESSENCE_NAME, dropAmounts[0], dropNames, dropAmountsString);
+        processDropItem(SHARD_NAME, dropAmounts[1], dropNames, dropAmountsString);
+
+        return new String[]{String.valueOf(dropNames), String.valueOf(dropAmountsString)};
     }
 
-    //TODO: Choose a proper way to generate the amount of items the enemy drops
-    public String getEnemyDropAmountsString() {
-        StringBuilder dropAmounts = new StringBuilder();
-        int length;
-        int enemyId = battleSystem.getEnemyId();
-        JSONArray itemIds = (JSONArray) getSingleDataProperty("enemies.json", "item_drops", enemyId, this);
-        ArrayList<Integer> itemAmounts = new ArrayList<>();
-        length = itemIds.length();
-
-        Random rand = new Random();
-        for (int i = 0; i < length; i++) {
-            int amount = rand.nextInt(4) + 1;
-            dropAmounts.append("\nx").append(amount);
-            itemAmounts.add(amount);
-        }
-        addEnemyDropsToPlayerInventory(itemIds, itemAmounts);
-        return String.valueOf(dropAmounts);
-    }
-
-    private void addEnemyDropsToPlayerInventory(JSONArray itemIds, ArrayList<Integer> itemAmounts) {
-        try {
-            for (int i = 0; i < itemIds.length(); i++) {
-                int id = (int) itemIds.get(i);
-                int amount = itemAmounts.get(i);
-                playerState.addItem(id, amount);
-            }
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
+    private void processDropItem(String itemName, int amount, StringBuilder dropNames, StringBuilder dropAmounts) {
+        if (amount > 0) {
+            addItemToPlayerInventory(itemName, amount);
+            dropNames.append(itemName).append('\n');
+            dropAmounts.append(amount);
         }
     }
 
-    //TODO: make tokens lost vary based on how strong the player (maxHealth, skillLevels)
-    public void playerLost() {
+    private void addItemToPlayerInventory(String itemName, int amount) {
+        int itemId = (int) getPropertyByName("items.json", itemName, "id", this);
+        playerState.addItem(itemId, amount);
+    }
+
+    //TODO: Call this function appropriately
+    private void playerLost() {
         int playerHealth = playerState.getHealth();
-        int playerMaxHealth = playerState.getPlayerMaxHealth();
         if (playerHealth <= 0) {
+            int playerMaxHealth = playerState.getPlayerMaxHealth();
             playerState.modifyHealth(playerMaxHealth);
-            playerState.updateTokens(-5);
+
+            int tokensLost = playerState.getTokensLostOnDeath();
+            playerState.updateTokens(-tokensLost);
         }
+    }
+
+    public int getTokensLost() {
+        return playerState.getTokensLostOnDeath();
     }
 
     public String getItemAmounts() {

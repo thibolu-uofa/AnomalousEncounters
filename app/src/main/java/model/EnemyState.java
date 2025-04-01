@@ -2,6 +2,7 @@ package model;
 
 public class EnemyState {
     private int id;
+    private int tier;
     private final int enemyMaxHealth;
     private int enemyCurrentHealth;
     private final String name;
@@ -15,11 +16,12 @@ public class EnemyState {
     }
 
     // Constructor with parameters
-    public EnemyState(String name, int maxHealth, int enemyId) {
+    public EnemyState(String name, int maxHealth, int enemyId, int tier) {
         this.name = name;
         this.enemyMaxHealth = maxHealth;
         this.enemyCurrentHealth = maxHealth; // Start with full health
         this.id = enemyId;
+        this.tier = tier;
     }
 
     // Update health
@@ -60,5 +62,9 @@ public class EnemyState {
 
     public int getId() {
         return id;
+    }
+
+    public int getTier() {
+        return tier;
     }
 }//

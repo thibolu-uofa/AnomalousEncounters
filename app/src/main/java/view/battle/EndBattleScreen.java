@@ -1,12 +1,15 @@
 package view.battle;
 
 import static view.ViewConstants.BATTLE_BACKGROUND_COLOR;
+import static view.ViewConstants.CANVAS_WIDTH;
 import static view.ViewConstants.DEFAULT_TEXT_COLOR;
 import static view.ViewConstants.FONT_SIZE_MEDIUM;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+
+import java.util.ArrayList;
 
 import presenter.GamePresenter;
 import view.menu.MenuItem;
@@ -27,46 +30,42 @@ public class EndBattleScreen {
         if (isPlayerWinner) {
             initializeWinBattleScreen(context, presenter);
         } else {
-            initializeLoseBattleScreen(context);
+            initializeLoseBattleScreen(context, presenter);
         }
     }
 
     private void initializeWinBattleScreen(Context context, GamePresenter presenter) {
-        String endBattleText = presenter.getEnemyDropsString();
-        String dropAmountsText = presenter.getEnemyDropAmountsString();
+        String[] endBattleTextAndDropAmounts = presenter.getEndBattleTextAndDropAmounts();
+        String endBattleText = endBattleTextAndDropAmounts[0];
+        String dropAmountsText = endBattleTextAndDropAmounts[1];
 
-        int x = 850, y = 200, width = 750, height = 450;
+        int width = 750, height = 380, x = CANVAS_WIDTH/2 - width/2, y = 200;
 
         endBattleMsg = new MenuItem(x, y, height, width, endBattleText, false, context);
         dropAmounts = new MenuText(dropAmountsText, FONT_SIZE_MEDIUM, DEFAULT_TEXT_COLOR, width, false, context, false);
-        dropAmounts.setXAndY(x + width - 85, y + 130);
+        dropAmounts.setXAndY(x + width - 75, y + 200);
 
         createContinueButton(context, x, y, width, height);
     }
 
-    private void initializeLoseBattleScreen(Context context) {
-        String endBattleText = "You absconded\nfrom the\n In-Between\n\nYou have\nbeen tainted";
+    //TODO: make endBattleText a string resource
+    private void initializeLoseBattleScreen(Context context, GamePresenter presenter) {
+        String tokensLost = String.valueOf(presenter.getTokensLost());
+        String endBattleText = "You absconded from the In-Between.\n\nYou have been charged a Death Tax of " + tokensLost + " tokens";
 
-        int x = 975, y = 200, width = 500, height = 380;
+        int width = 750, height = 350, x = CANVAS_WIDTH/2 - width/2, y = 200;
+        float lineSpacing = 1.1f;
 
         endBattleMsg = new MenuItem(x, y, height, width, endBattleText, false, context);
+        endBattleMsg.setLineSpacingMultiplier(lineSpacing);
         createContinueButton(context, x, y, width, height);
     }
 
     private void createContinueButton(Context context, int x, int y, int width, int height) {
         String continueButtonText = "Press Onwards";
-
-        int buttonWidth, buttonX, buttonHeight;
-
-        if (isPlayerWinner) {
-            buttonWidth = width/2;
-            buttonX = x + (width/4);
-            buttonHeight = height/3;
-        } else {
-            buttonWidth = (int) (width * 0.7);
-            buttonX = (int) (x + (width * 0.3)/2);
-            buttonHeight = height/3 + 15;
-        }
+        int buttonWidth = 375;
+        int buttonX = x + (width/2) - (buttonWidth/2);
+        int buttonHeight = 150;
 
         continueButton = new MenuItem(buttonX, y + height + 75, buttonHeight, buttonWidth, continueButtonText, true, context);
     }

@@ -3,6 +3,7 @@ package model;
 import static model.SkillUtils.getSkillBaseDamage;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Skill {
     private final String name;
@@ -30,7 +31,7 @@ public class Skill {
         this.atkPattern = new AttackPattern(atkType);
         this.distance = calculateSkillDistance(level);
         int baseDamage = getSkillBaseDamage(tier);
-        this.damage = calculateSkillDamage(level, baseDamage);
+        this.damage = calculateSkillDamage(level, tier, baseDamage);
         this.MAX_COOLDOWN = getMaxCooldown();
         this.currentCooldown = 0;
     }
@@ -73,12 +74,13 @@ public class Skill {
     }
 
 
-    // TODO: use equation to calculate skill damage
     // NOTE: resistance should be multiplied in the getBaseDamage because player doesn't have type,
     // so would be dependent on skill beings used
-    private int calculateSkillDamage(int level, int baseDamage) {
+    private int calculateSkillDamage(int level, int tier,int baseDamage) {
         //[(skillDmg * level /(tier * 2)] + random number between 1 and 3 ^ 2) + baseDamage
-        return level * 2;
+        Random random = new Random();
+        int randomFactor = random.nextInt(10) + 1;
+        return ((baseDamage * level)/(tier * 2)) + randomFactor;
     }
 
     public boolean canUseSkill() {

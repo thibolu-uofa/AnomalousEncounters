@@ -2,61 +2,67 @@
   {
     "name": "Book of Skills: Volume I",
     "id": 0,
-    "price": 20,
+    "price": 50,
     "description": "A worn-leather bound book that introduces the basics of skill usage. Grants a small experience boost to any skill."
   },
   {
     "name": "Book of Skills: Volume II",
     "id": 1,
-    "price": 50,
+    "price": 200,
     "description": "A curated manuscript of skill techniques. Grants a moderate experience boost to any skill."
   },
   {
     "name": "Book of Skills: Volume III",
     "id": 2,
-    "price": 100,
+    "price": 750,
     "description": "A rare book detailing advanced descriptions of different paths to skill mastery. Grants a significant experience boost to any skill."
   },
   {
     "name": "Life Skill Stone",
     "id": 3,
-    "price": 50,
+    "price": 25,
     "description": "A radiant stone infused with vital energy. Grants the user a random Life-type skill."
   },
   {
     "name": "Death Skill Stone",
     "id": 4,
-    "price": 50,
+    "price": 25,
     "description": "A smooth stone that absorbs the surrounding light and emits an unsettling coolness. Grants the user a random Death-type skill."
   },
   {
     "name": "Null Skill Stone",
     "id": 5,
-    "price": 50,
+    "price": 25,
     "description": "A dull stone that defies classification. Grants the user a random Nothingness-type skill."
   },
   {
-    "name": "Health Potion",
+    "name": "Health Rune I",
     "id": 6,
     "price": 25,
-    "description": "A flask of red liquid. Restores a portion of the user's health upon use."
+    "description": "A single-use run engraved on a token. Restores 20% of the user's health upon use."
+  },
+  {
+    "name": "Health Rune II",
+    "id": 7,
+    "price": 25,
+    "description": "A single-use rune engraved on a token. Restores 50% of the user's health upon use."
   },
   {
     "name": "Anomalous Essence",
-    "id": 7,
-    "price": 10,
+    "id": 8,
+    "price": 3,
     "description": "A concentrated mass of unstable energy extracted from an Anomalous Entity"
   },
   {
     "name": "Anomalous Shard",
-    "id": 8,
-    "price": 50,
+    "id": 9,
+    "price": 13,
     "description": "A fractured piece of crystallized energy source, when unobserved, the structure appears to shift."
   },
   {
     "name": "Anomalous Crystal",
-    "id": 9,
-    "price": 100,
+    "id": 10,
+    "price": 68,
     "description": "A fully formed crystal of unknown anomalous energy, can be heard emitting a low-frequency sound wave in certain areas."
   }
 ]

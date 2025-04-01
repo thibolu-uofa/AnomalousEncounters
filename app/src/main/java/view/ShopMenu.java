@@ -3,6 +3,8 @@ package view;
 
 import static view.ViewConstants.CONFIRM_TEXT_COLOR;
 import static view.ViewConstants.FONT_SIZE_SMALL;
+import static view.ViewConstants.SCREEN_WIDTH;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -28,8 +30,9 @@ public class ShopMenu extends BaseMenu {
 
     public ShopMenu(GamePresenter presenter, Context context){
         super(presenter, context);
-        int x = 250;
         int MARGIN = 50;
+        int totalWidth = PLAYER_CARD_WIDTH + MARGIN + MENU_WIDTH + MARGIN + MENU_WIDTH;
+        int x = SCREEN_WIDTH/2 - totalWidth/2;
 
         createPlayerCard(new Rectangle(x, Y), context);
         x += PLAYER_CARD_WIDTH + MARGIN;
@@ -92,6 +95,10 @@ public class ShopMenu extends BaseMenu {
     }
 
     public void checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
+        if (isClosed) {
+            return;
+        }
+
         if (confirmPopUp != null) {
             handleConfirmPopUp(eventX, eventY, presenter);
             return;
@@ -169,6 +176,10 @@ public class ShopMenu extends BaseMenu {
 
 
     public void draw(Canvas canvas, Paint paint){
+        if (isClosed) {
+            return;
+        }
+
         drawOverlay(canvas, paint);
         drawMenuItems(canvas, paint);
         itemRadioBtnList.draw(canvas, paint);

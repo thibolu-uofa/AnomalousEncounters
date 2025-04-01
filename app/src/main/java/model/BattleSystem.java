@@ -334,7 +334,7 @@ public class BattleSystem {
     private void createEnemy(int enemyId, int tier) {
         String name = (String) getSingleDataProperty("enemies.json", "name", enemyId, context);
         int maxHealth = getEnemyMaxHealth(tier);
-        enemyState = new EnemyState(name, maxHealth, enemyId);
+        enemyState = new EnemyState(name, maxHealth, enemyId, tier);
     }
 
     public ArrayList<Integer> getPlayerSkillCooldowns() {
@@ -367,6 +367,10 @@ public class BattleSystem {
 
     public int getEnemyId() {
         return enemyState.getId();
+    }
+
+    public int getEnemyTier() {
+        return enemyState.getTier();
     }
 
     public boolean getIsPlayerTurn() {

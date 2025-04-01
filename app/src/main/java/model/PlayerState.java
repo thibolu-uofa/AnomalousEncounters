@@ -71,6 +71,10 @@ public class PlayerState {
 
     // Add an item to the inventory
     public void addItem(int id, int amount) {
+        if (amount <= 0) {
+            return;
+        }
+
         //add check for if item is in items already, if so iterate item[1] by 1
         for (int[] item: items) {
             if (item[0] == id) {
@@ -161,6 +165,18 @@ public class PlayerState {
         return newArray;
     }
 
+    public int getTotalSkillLevel() {
+        int totalSkillLevel = 0;
+        for (int[] skill: skills) {
+            totalSkillLevel += skill[1];
+        }
+        return totalSkillLevel;
+    }
+
+    // tokens you lose on death (maxHealth/25) * totalSkillLevel
+    public int getTokensLostOnDeath() {
+        return (MAX_HEALTH/25) * getTotalSkillLevel();
+    }
 
     public int getHealth() {
         return playerCurrentHealth;

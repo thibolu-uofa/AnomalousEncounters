@@ -10,14 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import model.EncounterSystem;
-import model.PlayerState;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public class EncounterSystemTest {
+public class EncounterSystemUnitTest {
     @Test
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);

@@ -2,6 +2,7 @@ package view;
 
 import static view.ViewConstants.CONFIRM_TEXT_COLOR;
 import static view.ViewConstants.FORGET_TEXT_COLOR;
+import static view.ViewConstants.SCREEN_WIDTH;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -48,8 +49,9 @@ public class PlayerMenu extends BaseMenu {
      */
     public PlayerMenu(GamePresenter presenter, Context context){
         super(presenter, context);
-        int x = 100;
         int MARGIN = 50;
+        int totalWidth = PLAYER_CARD_WIDTH + MARGIN + MENU_WIDTH + COL_WIDTH + MARGIN + MENU_WIDTH + COL_WIDTH;
+        int x = SCREEN_WIDTH/2 - totalWidth/2;
 
         createPlayerCard(new Rectangle(x, Y), context);
         x += PLAYER_CARD_WIDTH + MARGIN;
@@ -141,6 +143,10 @@ public class PlayerMenu extends BaseMenu {
     }
 
     public void checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
+        if (isClosed) {
+            return;
+        }
+
         if (handlePopUps(eventX, eventY, presenter)) {
             return;
         }
@@ -262,6 +268,10 @@ public class PlayerMenu extends BaseMenu {
     }
 
     public void draw(Canvas canvas, Paint paint){
+        if (isClosed) {
+            return;
+        }
+
         drawOverlay(canvas, paint);
         drawMenuItems(canvas, paint);
         skillRadioBtnList.draw(canvas, paint);

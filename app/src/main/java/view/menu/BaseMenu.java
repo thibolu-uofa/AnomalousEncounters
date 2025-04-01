@@ -23,6 +23,7 @@ public class BaseMenu {
     protected int PLAYER_CARD_HEIGHT = 200;
     protected ConfirmPopUp confirmPopUp;
     protected AlertPopUp alertPopUp;
+    protected boolean isClosed = true;
 
     protected BaseMenu(GamePresenter presenter, Context context) {
         this.context = context;
@@ -68,6 +69,18 @@ public class BaseMenu {
         if (alertPopUp != null){
             alertPopUp.draw(canvas, paint);
         }
+    }
+
+    public void openMenu() {
+        isClosed = false;
+    }
+
+    public void closeMenu() {
+        isClosed = true;
+    }
+
+    public boolean isMenuClosed() {
+        return isClosed;
     }
 }
 

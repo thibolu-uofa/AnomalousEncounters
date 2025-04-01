@@ -21,6 +21,6 @@ public class ViewConstants {
     public static final int FONT_SIZE_EXTRA_SMALL = 20;
     public static int CANVAS_WIDTH;
     public static int CANVAS_HEIGHT;
-
-
+    public static int SCREEN_WIDTH;
+    public static int SCREEN_HEIGHT;
 }

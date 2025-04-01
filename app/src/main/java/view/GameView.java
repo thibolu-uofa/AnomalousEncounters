@@ -9,8 +9,10 @@
 
 package view;
 
-import static view.ViewConstants.CANVAS_HEIGHT;
+import static view.ViewConstants.SCREEN_WIDTH;
+import static view.ViewConstants.SCREEN_HEIGHT;
 import static view.ViewConstants.CANVAS_WIDTH;
+import static view.ViewConstants.CANVAS_HEIGHT;
 import static view.ViewConstants.ENEMY_TILE_HIGHLIGHT_COLOR;
 
 import android.content.Context;
@@ -19,6 +21,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -60,21 +63,28 @@ public class GameView  extends SurfaceView implements Runnable{
         surfaceHolder = getHolder();
         paint = new Paint();
 
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        SCREEN_WIDTH = displayMetrics.widthPixels;
+        SCREEN_HEIGHT = displayMetrics.heightPixels;
+
         Bitmap settingsIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.settings_icon);
-        settingsIcon = new Sprite(settingsIconBitmap, 2235, 50);
+        int iconsX = SCREEN_WIDTH - settingsIconBitmap.getWidth() - 25;
+        settingsIcon = new Sprite(settingsIconBitmap, iconsX, 70);
 
         Bitmap indexIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.book_icon);
-        indexIcon = new Sprite(indexIconBitmap, 2235, settingsIcon.getY() + settingsIconBitmap.getHeight() + 20);
+        indexIcon = new Sprite(indexIconBitmap, iconsX, settingsIcon.getY() + settingsIconBitmap.getHeight() + 20);
 
         Bitmap shopIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.shop_icon);
-        shopIcon = new Sprite(shopIconBitmap, 2235, indexIcon.getY() + indexIconBitmap.getHeight() + 20);
+        shopIcon = new Sprite(shopIconBitmap, iconsX, indexIcon.getY() + indexIconBitmap.getHeight() + 20);
 
         Bitmap inventoryBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.quick_inventory);
-        inventory = new Sprite(inventoryBitmap, 950, 840);
+        int inventoryX = SCREEN_WIDTH/2 - inventoryBitmap.getWidth()/2;
+        inventory = new Sprite(inventoryBitmap, inventoryX, 840);
 
         Bitmap healthBarBaseBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.healthbar_base);
         Bitmap healthBarHealthBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.healthbar_health);
-        healthBar = new HealthBar(healthBarBaseBitmap, healthBarHealthBitmap, 790, 50);
+        int healthBarX = SCREEN_WIDTH/2 - healthBarHealthBitmap.getWidth()/2;
+        healthBar = new HealthBar(healthBarBaseBitmap, healthBarHealthBitmap, healthBarX, 50);
 
         Bitmap skyBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.game_sky);
         Bitmap groundBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.game_map);
@@ -82,10 +92,12 @@ public class GameView  extends SurfaceView implements Runnable{
         backgroundImage.setDirection(0);
 
         Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.player_sprite_sheet_v2);
-        playerSprite = new PlayerSprite(playerBitmap, 1100, 448);
+        int playerX = SCREEN_WIDTH/2 - playerBitmap.getWidth()/12;
+        playerSprite = new PlayerSprite(playerBitmap, playerX, 448);
         playerSprite.setAnimation("idle");
 
-        //TESTING
+        playerMenu = new PlayerMenu(presenter, getContext());
+        shopMenu = new ShopMenu(presenter, getContext());
     }
 
     /**
@@ -165,12 +177,12 @@ public class GameView  extends SurfaceView implements Runnable{
         playerSprite.update(currentTime, canPlayerMove);
         playerSprite.draw(canvas);
 
-        if (playerMenu != null) {
+        if (!playerMenu.isMenuClosed()) {
             playerMenu.updateMenuTexts(presenter);
             playerMenu.draw(canvas, paint);
         }
 
-        if (shopMenu != null) {
+        if (!shopMenu.isMenuClosed()) {
             shopMenu.updateMenuTexts(presenter);
             shopMenu.draw(canvas, paint);
         }
@@ -196,10 +208,10 @@ public class GameView  extends SurfaceView implements Runnable{
                 if (isOnOverworld) {
                     checkIfInventoryOpened(eventX, eventY);
                     checkIfShopOpened(eventX, eventY);
-                    if (playerMenu != null) {
+                    if (!playerMenu.isMenuClosed()) {
                         playerMenu.checkForUserTouch(eventX, eventY, presenter);
                     }
-                    if (shopMenu != null) {
+                    if (!shopMenu.isMenuClosed()) {
                         shopMenu.checkForUserTouch(eventX, eventY, presenter);
                     }
                     if (hasInventoryBeenClosed(eventX, eventY) || hasShopBeenClosed(eventX, eventY)) {
@@ -237,6 +249,7 @@ public class GameView  extends SurfaceView implements Runnable{
         if (inventory.hasBeenTouched(eventX, eventY, presenter, 3)) {
             isMenuOpen = true;
             playerMenu = new PlayerMenu(presenter, getContext());
+            playerMenu.openMenu();
             canPlayerMove = false;
         }
     }
@@ -248,16 +261,18 @@ public class GameView  extends SurfaceView implements Runnable{
         if (shopIcon.hasBeenTouched(eventX, eventY, presenter, 1)) {
             isMenuOpen = true;
             shopMenu = new ShopMenu(presenter, getContext());
+            shopMenu.openMenu();
             canPlayerMove = false;
         }
     }
 
     private boolean hasInventoryBeenClosed(float eventX, float eventY) {
-        if (playerMenu == null) {
+        if (playerMenu.isMenuClosed()) {
             return false;
         }
+
         if (playerMenu.hasClosedMenu(eventX, eventY, presenter)) {
-            playerMenu = null;
+            playerMenu.closeMenu();
             canPlayerMove = true;
             return true;
         }
@@ -265,11 +280,11 @@ public class GameView  extends SurfaceView implements Runnable{
     }
 
     private boolean hasShopBeenClosed(float eventX, float eventY) {
-        if (shopMenu == null) {
+        if (shopMenu.isMenuClosed()) {
             return false;
         }
         if (shopMenu.hasClosedMenu(eventX, eventY, presenter)) {
-            shopMenu = null;
+            shopMenu.closeMenu();
             canPlayerMove = true;
             return true;
         }
