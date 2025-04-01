@@ -1,8 +1,10 @@
 package view;
 
 import static view.ViewConstants.CONFIRM_TEXT_COLOR;
+import static view.ViewConstants.FONT_SIZE_MEDIUM;
 import static view.ViewConstants.FORGET_TEXT_COLOR;
 import static view.ViewConstants.SCREEN_WIDTH;
+import static view.menu.MenuText.calculateMinHeightRequired;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -12,6 +14,8 @@ import com.example.anomalousencounters.R;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
 import presenter.GamePresenter;
 import view.menu.BaseMenu;
 import view.menu.MenuItem;
@@ -25,17 +29,17 @@ public class PlayerMenu extends BaseMenu {
     private MenuItem sellItem;
     private String selectedItem;
     private String selectedSkill;
-    private final int Y = 200;
+    private final int Y = 150;
     private final float LINE_SPACE_MULTIPLIER = 1.2f;
     private final int MENU_HEIGHT = 500;
-    private final int MENU_WIDTH = 700;
+    private final int SKILL_MENU_WIDTH = 630;
+    private final int ITEM_MENU_WIDTH = 700;
     private final int COL_WIDTH = 100;
     private final int RADIO_X_PAD = 15;
     private final int RADIO_Y_PAD = 90;
     private final int BUTTON_WIDTH = 250;
     private final int BUTTON_HEIGHT = 75;
     private final int BUTTON_PADDING_Y = 40;
-    private final int BUTTONS_Y = Y + MENU_HEIGHT + BUTTON_PADDING_Y;
     private final int BUTTON_X_PADDING = 60;
     private final String INFO_TEXT = "INFO";
     private String forgetSkillMsg;
@@ -50,28 +54,28 @@ public class PlayerMenu extends BaseMenu {
     public PlayerMenu(GamePresenter presenter, Context context){
         super(presenter, context);
         int MARGIN = 50;
-        int totalWidth = PLAYER_CARD_WIDTH + MARGIN + MENU_WIDTH + COL_WIDTH + MARGIN + MENU_WIDTH + COL_WIDTH;
+        int totalWidth = PLAYER_CARD_WIDTH + MARGIN + SKILL_MENU_WIDTH + COL_WIDTH + MARGIN + ITEM_MENU_WIDTH + COL_WIDTH;
         int x = SCREEN_WIDTH/2 - totalWidth/2;
 
         createPlayerCard(new Rectangle(x, Y), context);
         x += PLAYER_CARD_WIDTH + MARGIN;
 
         createSkillMenu(x);
-        x += MENU_WIDTH + COL_WIDTH + MARGIN;
+        x += SKILL_MENU_WIDTH + COL_WIDTH + MARGIN;
 
         createItemMenu(x);
     }
 
     private void createSkillMenu(int x) {
         String SKILL_HEADING = "SKILLS";
-        MenuItem skills = new MenuItem(x, Y, MENU_HEIGHT, MENU_WIDTH, SKILL_HEADING, false, context);
+        MenuItem skills = new MenuItem(x, Y, MENU_HEIGHT, SKILL_MENU_WIDTH, SKILL_HEADING, false, context);
         menuItemsList.put("skills", skills);
 
         ArrayList<String> skillArrayList = presenter.getSkillNamesArray();
         Rectangle skillListRect = new Rectangle(x + RADIO_X_PAD, Y + RADIO_Y_PAD);
-        skillRadioBtnList = new RadioBtnList(skillListRect.x, skillListRect.y, context, skillArrayList, MENU_WIDTH, MENU_HEIGHT);
+        skillRadioBtnList = new RadioBtnList(skillListRect.x, skillListRect.y, context, skillArrayList, SKILL_MENU_WIDTH, MENU_HEIGHT);
 
-        x += MENU_WIDTH;
+        x += SKILL_MENU_WIDTH;
         createLevelColumn(x);
 
         int buttonStartingX = skills.getX();
@@ -87,6 +91,7 @@ public class PlayerMenu extends BaseMenu {
     }
 
     private void createSkillButtons(int startingX){
+        int BUTTONS_Y = Y + MENU_HEIGHT + BUTTON_PADDING_Y;
         Rectangle infoRect = new Rectangle(startingX, BUTTONS_Y);
 
         int forgetRectX = startingX + BUTTON_WIDTH + BUTTON_X_PADDING;
@@ -100,30 +105,38 @@ public class PlayerMenu extends BaseMenu {
 
     private void createItemMenu(int x) {
         String ITEM_HEADING = "ITEMS";
+        ArrayList<String> itemArrayList = presenter.getPlayerItemNamesArray();
+        String itemListString = String.join("\n", itemArrayList);
 
-        MenuItem items = new MenuItem(x, Y, MENU_HEIGHT, MENU_WIDTH, ITEM_HEADING, false, context);
+        int ITEMS_HEIGHT = MENU_HEIGHT;
+        int PADDING = 120;
+        int minHeightRequired = calculateMinHeightRequired(ITEM_HEADING + '\n' + itemListString, FONT_SIZE_MEDIUM, ITEM_MENU_WIDTH, false, context);
+        if (minHeightRequired > ITEMS_HEIGHT) {
+            ITEMS_HEIGHT = minHeightRequired + PADDING;
+        }
+        MenuItem items = new MenuItem(x, Y, ITEMS_HEIGHT, ITEM_MENU_WIDTH, ITEM_HEADING, false, context);
         menuItemsList.put("items", items);
 
-        ArrayList<String> itemArrayList = presenter.getPlayerItemNamesArray();
         Rectangle itemListRect = new Rectangle(x + RADIO_X_PAD, Y + RADIO_Y_PAD);
-        itemRadioBtnList = new RadioBtnList(itemListRect.x, itemListRect.y, context, itemArrayList, MENU_WIDTH, MENU_HEIGHT);
+        itemRadioBtnList = new RadioBtnList(itemListRect.x, itemListRect.y, context, itemArrayList, ITEM_MENU_WIDTH, ITEMS_HEIGHT);
 
         x += items.getWidth();
-        createItemAmountColumn(x);
+        createItemAmountColumn(x, ITEMS_HEIGHT);
 
         int startingButtonX = items.getX();
-        createItemButtons(startingButtonX);
+        createItemButtons(startingButtonX, ITEMS_HEIGHT);
     }
 
-    private void createItemAmountColumn(int x) {
+    private void createItemAmountColumn(int x, int height) {
         String ITEM_AMOUNT_HEADING = "#";
 
-        MenuItem amountOfItems = new MenuItem(x, Y, MENU_HEIGHT, COL_WIDTH, ITEM_AMOUNT_HEADING, true, context);
+        MenuItem amountOfItems = new MenuItem(x, Y, height, COL_WIDTH, ITEM_AMOUNT_HEADING, true, context);
         amountOfItems.setLineSpacingMultiplier(LINE_SPACE_MULTIPLIER);
         menuItemsList.put("item_amounts", amountOfItems);
     }
 
-    private void createItemButtons(int startingX){
+    private void createItemButtons(int startingX, int height){
+        int BUTTONS_Y = Y + height + BUTTON_PADDING_Y;
         Rectangle infoRect = new Rectangle(startingX, BUTTONS_Y);
 
         int sellRectX = startingX + BUTTON_WIDTH + BUTTON_X_PADDING;

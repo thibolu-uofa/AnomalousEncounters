@@ -30,6 +30,8 @@ public class BattleSystem {
     private boolean isPlayerTurn = true;
     private final int maxRows;
     private final int maxCols;
+    private final ArrayList<int[]> PLAYER_START_POSITIONS = new ArrayList<>();
+    private final ArrayList<int[]> ENEMY_START_POSITIONS = new ArrayList<>();
     private boolean hasPlayerAttacked;
     private boolean hasPlayerMoved;
 
@@ -46,12 +48,24 @@ public class BattleSystem {
         maxRows = gridModel.getRowCount();
         maxCols = gridModel.getColumnCount();
 
-        //positions for testing purposes
-        playerPosition = new int[]{0, 0};
-        enemyPosition = new int[]{5, 4};
+        initializePlayerAndEnemyStartingPositions();
 
         hasPlayerAttacked = false;
         hasPlayerMoved = false;
+    }
+
+    private void initializePlayerAndEnemyStartingPositions() {
+        for (int i = 1; i < maxRows - 1; i++) {
+            PLAYER_START_POSITIONS.add(new int[]{1, i});
+            ENEMY_START_POSITIONS.add(new int[]{6, i});
+        }
+
+        Random rand = new Random();
+        int randPlayerIndex = rand.nextInt(PLAYER_START_POSITIONS.size());
+        playerPosition = PLAYER_START_POSITIONS.get(randPlayerIndex);
+
+        int randEnemyIndex = rand.nextInt(ENEMY_START_POSITIONS.size());
+        enemyPosition = ENEMY_START_POSITIONS.get(randEnemyIndex);
     }
 
     public boolean canEndPlayerTurn() {

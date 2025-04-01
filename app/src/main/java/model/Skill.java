@@ -76,7 +76,7 @@ public class Skill {
 
     // NOTE: resistance should be multiplied in the getBaseDamage because player doesn't have type,
     // so would be dependent on skill beings used
-    private int calculateSkillDamage(int level, int tier,int baseDamage) {
+    private int calculateSkillDamage(int level, int tier, int baseDamage) {
         //[(skillDmg * level /(tier * 2)] + random number between 1 and 3 ^ 2) + baseDamage
         Random random = new Random();
         int randomFactor = random.nextInt(10) + 1;

@@ -112,7 +112,8 @@ public class PlayerState {
 
     public boolean canUpdateTokens(int delta) {
         int newTokenAmount = tokens + delta;
-        return newTokenAmount >= 0;
+        int MAX_TOKEN_AMOUNT = 9999;
+        return newTokenAmount >= 0 && newTokenAmount < MAX_TOKEN_AMOUNT;
     }
 
     public void updateTokens(int delta) {

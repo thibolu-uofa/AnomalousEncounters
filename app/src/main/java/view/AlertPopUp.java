@@ -7,7 +7,7 @@ import com.example.anomalousencounters.R;
 import presenter.GamePresenter;
 import view.menu.MenuItem;
 
-public class AlertPopUp extends PopUpBox{
+public class AlertPopUp extends BasePopUp {
     private final MenuItem okayBtn;
 
 

@@ -12,7 +12,7 @@ import java.util.Objects;
 import presenter.GamePresenter;
 import view.menu.MenuItem;
 
-public class ConfirmPopUp extends  PopUpBox{
+public class ConfirmPopUp extends BasePopUp {
     private String cancelText;
     private String confirmText;
     private boolean hasConfirmed;

@@ -15,12 +15,12 @@ import java.util.ArrayList;
 import presenter.GamePresenter;
 import view.menu.MenuItem;
 
-abstract class PopUpBox {
+abstract class BasePopUp {
     protected final MenuItem messageBox;
     protected ArrayList<MenuItem> buttons = new ArrayList<>();
     private final String message;
 
-    protected PopUpBox(String message, Context context, boolean isTextCentred) {
+    protected BasePopUp(String message, Context context, boolean isTextCentred) {
         this.message = message;
         int centerX = CANVAS_WIDTH / 2;
         int WIDTH = 1000;
