@@ -358,6 +358,11 @@ public class GamePresenter extends AppCompatActivity {
         }
     }
 
+    public void chargeBattleFleeFee(){
+        int fee = 5;
+        playerState.updateTokens(-fee);
+    }
+
     private String formatPlayerInfo(boolean includeTokens) {
         StringBuilder sb = new StringBuilder();
         String name = playerState.getName();
@@ -516,6 +521,10 @@ public class GamePresenter extends AppCompatActivity {
         int id = (int) getPropertyByName("items.json", name, "id", this);
         playerState.removeItem(id);
         playerState.updateTokens(price);
+    }
+
+    public int getNumberOfEnemies() {
+        return encounterSystem.getNumberOfEnemies();
     }
 
     // This method executes when the user continues the game

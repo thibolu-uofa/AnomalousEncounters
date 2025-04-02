@@ -17,11 +17,14 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import presenter.GamePresenter;
+import view.AlertPopUp;
+import view.ConfirmPopUp;
 import view.menu.MenuNinePatch;
 
 public class BattleSideBar {
     GamePresenter presenter;
     BattleView battleView;
+    private ConfirmPopUp confirmPopUp;
     private final MenuNinePatch menuNinePatch;
     private final SkillBar skillBar;
     private final ActionBar actionBar;
@@ -36,12 +39,10 @@ public class BattleSideBar {
         ACTION_BAR,
         SKILL_BAR,
         MOVE_BAR,
-        ITEM_BAR
     }
     private DisplayOptions currentDisplay;
     private boolean hasAttacked = false;
     private boolean hasMoved = false;
-    private boolean hasUsedItem = false;
     private boolean isAnimationPlaying = false;
 
     public BattleSideBar(int x, int y, Context context, GamePresenter presenter, BattleView battleView) {
@@ -67,6 +68,11 @@ public class BattleSideBar {
             return;
         }
 
+        if (confirmPopUp != null) {
+            handleConfirmPopUp(eventX, eventY, presenter);
+            return;
+        }
+
         boolean hasNotBeenPressed = !presenter.isInHitbox((int) eventX, (int) eventY, x, x + WIDTH, y + HEIGHT, y);
         if (hasNotBeenPressed) {
             return;
@@ -82,6 +88,17 @@ public class BattleSideBar {
             case MOVE_BAR:
                 handleMoveBarTouch(eventX, eventY, presenter);
                 break;
+        }
+    }
+
+    private void handleConfirmPopUp(float eventX, float eventY, GamePresenter presenter) {
+        boolean userTouchedPopUp = confirmPopUp.didUserTouchButton(eventX, eventY, presenter);
+        if (userTouchedPopUp) {
+            boolean didUserConfirm = confirmPopUp.didUserConfirm();
+            if (didUserConfirm) {
+                battleView.fleeBattle();
+            }
+            confirmPopUp = null;
         }
     }
 
@@ -116,14 +133,15 @@ public class BattleSideBar {
             case "[MOVE]":
                 handleMoveAction();
                 break;
-            case "[USE]":
-                handleUseItemAction();
-                break;
             case "End Turn":
                 handleEndTurnAction();
                 break;
+            case "Withdraw":
+                handleWithdrawAction();
+                break;
         }
     }
+
 
     private void handleAttackAction() {
         if (!hasAttacked) {
@@ -141,21 +159,19 @@ public class BattleSideBar {
         }
     }
 
-    private void handleUseItemAction() {
-        if (!hasUsedItem) {
-            Log.d("Button Processing", "USE BTN");
-        }
-    }
-
     private void handleEndTurnAction() {
         presenter.endPlayerTurn(skillBar.getSelectedSkill());
         presenter.startEnemyTurn();
     }
 
+    private void handleWithdrawAction() {
+        String confirmMsg = presenter.getString(R.string.withdrawMessage);
+        confirmPopUp = new ConfirmPopUp(confirmMsg, presenter, true);
+    }
+
     public void resetActionFlags() {
         hasAttacked = false;
         hasMoved = false;
-        hasUsedItem = false;
         actionBar.resetButtons();
     }
 
@@ -246,6 +262,10 @@ public class BattleSideBar {
                 break;
             case MOVE_BAR:
                 moveBar.draw(canvas, paint);
+        }
+
+        if (confirmPopUp != null) {
+            confirmPopUp.draw(canvas, paint);
         }
     }
 

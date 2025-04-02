@@ -22,11 +22,11 @@ public class ActionBar extends BaseMenuBar {
         MenuText move = new MenuText("[MOVE]", FONT_SIZE_LARGE, DEFAULT_TEXT_COLOR, width, false, context, true);
         textButtons.add(move);
 
-        MenuText use = new MenuText("[USE]", FONT_SIZE_LARGE, DEFAULT_TEXT_COLOR, width, false, context, true);
-        textButtons.add(use);
-
         MenuText endTurn = new MenuText("End Turn", FONT_SIZE_LARGE, DEFAULT_TEXT_COLOR, width, false, context, true);
         textButtons.add(endTurn);
+
+        MenuText fleeBattle = new MenuText("Withdraw", FONT_SIZE_LARGE, DEFAULT_TEXT_COLOR, width, false, context, true);
+        textButtons.add(fleeBattle);
 
         setTextPositions();
     }
@@ -39,8 +39,12 @@ public class ActionBar extends BaseMenuBar {
             text_y += PADDING + button.getHeight();
         }
 
-        int END_TURN_Y = 550;
-        textButtons.get(textButtons.size() - 1).setXAndY(x + LEFT_PADDING, y + END_TURN_Y);
+        int END_TURN_Y = 450;
+        textButtons.get(textButtons.size() - 2).setXAndY(x + LEFT_PADDING, y + END_TURN_Y);
+
+        int END_TURN_HEIGHT = textButtons.get(textButtons.size() - 2).getHeight();
+        int FLEE_BATTLE_Y = END_TURN_Y + END_TURN_HEIGHT + PADDING;
+        textButtons.get(textButtons.size() - 1).setXAndY(x + LEFT_PADDING, y + FLEE_BATTLE_Y);
     }
 
     public String checkForUserTouch(float eventX, float eventY, GamePresenter presenter){
@@ -58,9 +62,6 @@ public class ActionBar extends BaseMenuBar {
                 break;
             case "[MOVE]":
                 textButtons.get(1).setColor(DISABLED_TEXT_COLOR);
-                break;
-            case "[USE]":
-                textButtons.get(2).setColor(DISABLED_TEXT_COLOR);
                 break;
         }
     }

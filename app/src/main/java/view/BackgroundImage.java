@@ -15,8 +15,10 @@ public class BackgroundImage {
     private int skyX2;
     private int y;
     private int direction = 0;
+    private int playerX;
 
-    BackgroundImage(Bitmap skyBitmap, Bitmap groundBitmap, int x, int y) {
+    BackgroundImage(Bitmap skyBitmap, Bitmap groundBitmap, int y, int playerX) {
+        this.playerX = playerX;
         this.skyBitmap = skyBitmap;
         this.skyX1 = 0;
         this.skyX2 = skyBitmap.getWidth();
@@ -147,6 +149,14 @@ public class BackgroundImage {
     }
 
     public int getX() {
+        int groundWidth = groundBitmap.getWidth();
+
+        if (playerX >= groundX1 && playerX < groundX1 + groundWidth) {
+            return groundX1;
+        } else if (playerX >= groundX2 && playerX < groundX2 + groundWidth) {
+            return groundX2;
+        }
+
         return groundX1;
     }
 }
