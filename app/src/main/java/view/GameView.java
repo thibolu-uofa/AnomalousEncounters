@@ -79,21 +79,27 @@ public class GameView  extends SurfaceView implements Runnable{
 
         Bitmap inventoryBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.quick_inventory);
         int inventoryX = SCREEN_WIDTH/2 - inventoryBitmap.getWidth()/2;
-        inventory = new Sprite(inventoryBitmap, inventoryX, 840);
+        int inventoryY = (int) (SCREEN_HEIGHT*0.75);
+        inventory = new Sprite(inventoryBitmap, inventoryX, inventoryY);
 
         Bitmap healthBarBaseBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.healthbar_base);
         Bitmap healthBarHealthBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.healthbar_health);
         int healthBarX = SCREEN_WIDTH/2 - healthBarHealthBitmap.getWidth()/2;
         healthBar = new HealthBar(healthBarBaseBitmap, healthBarHealthBitmap, healthBarX, 50);
 
+
         Bitmap skyBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.game_sky);
         Bitmap groundBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.game_map);
-        backgroundImage = new BackgroundImage(skyBitmap, groundBitmap, -224, 448);
-        backgroundImage.setDirection(0);
+        int backgroundY = -(SCREEN_HEIGHT/5);
 
         Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.player_sprite_sheet_v2);
         int playerX = SCREEN_WIDTH/2 - playerBitmap.getWidth()/12;
-        playerSprite = new PlayerSprite(playerBitmap, playerX, 448);
+        int playerY = (int) (backgroundY + (groundBitmap.getHeight() * 0.65) - ((double) playerBitmap.getHeight()/4)) + 5;
+
+        backgroundImage = new BackgroundImage(skyBitmap, groundBitmap, backgroundY, playerX);
+        backgroundImage.setDirection(0);
+
+        playerSprite = new PlayerSprite(playerBitmap, playerX, playerY);
         playerSprite.setAnimation("idle");
 
         playerMenu = new PlayerMenu(presenter, getContext());
