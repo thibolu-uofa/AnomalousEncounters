@@ -358,6 +358,11 @@ public class GamePresenter extends AppCompatActivity {
         }
     }
 
+    public void chargeBattleFleeFee(){
+        int fee = 5;
+        playerState.updateTokens(-fee);
+    }
+
     private String formatPlayerInfo(boolean includeTokens) {
         StringBuilder sb = new StringBuilder();
         String name = playerState.getName();

@@ -11,4 +11,5 @@
     <string name="sellItemConfirmationMsg">Are you sure you want to sell the item [%s]? This item is worth %d tokens. This action cannot be revered.</string>
     <string name="successfullySoldItem">You have sold the item [%s] for %d tokens.</string>
     <string name="skillLimitReached">Cannot gain new skill. Max amount of skills reached.</string>
+    <string name="withdrawMessage">Do you wish to withdraw from battle?\nYou will be charged a fee of 5 tokens.</string>
 </resources>

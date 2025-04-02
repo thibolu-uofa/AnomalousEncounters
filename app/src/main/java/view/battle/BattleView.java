@@ -191,6 +191,10 @@ public class BattleView {
         this.currentTileColor = tileHighlightColor;
     }
 
+    public void fleeBattle(){
+        view.fleeFromBattle();
+    }
+
     public String getChosenPlayerSkill() {
         return sideBar.getSelectedSkill();
     }

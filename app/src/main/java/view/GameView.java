@@ -320,17 +320,26 @@ public class GameView  extends SurfaceView implements Runnable{
         canPlayerMove = false;
     }
 
+    public void fleeFromBattle(){
+        presenter.chargeBattleFleeFee();
+        handleEndBattle();
+    }
+
     public void endBattle(boolean isPlayerWinner){
         displayEndBattleInfo(isPlayerWinner);
     }
 
     public void displayEndBattleInfo(boolean isPlayerWinner){
         endBattleScreen = new EndBattleScreen(isPlayerWinner, this.getContext(), presenter);
-        battleView = null;
     }
 
     public void closeEndBattleInfo() {
         endBattleScreen = null;
+        handleEndBattle();
+    }
+
+    private void handleEndBattle(){
+        battleView = null;
         //prevents player from immediately encountering another enemy
         int stopGap = 5000;
         lastEnemyEncounterCheck = System.currentTimeMillis() + stopGap;
