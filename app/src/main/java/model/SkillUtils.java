@@ -2,6 +2,9 @@ package model;
 
 import java.util.ArrayList;
 
+import java.util.List;
+import java.util.Map;
+
 public class SkillUtils {
     private int skillBook1 = 50;
     private int skillBook2 = 250;
@@ -46,7 +49,7 @@ public class SkillUtils {
     private int getExperienceGained(int tier, int phase, int usage) {
         //return amount of experienced gained based on tier phase and skill usage
 
-        return (usage + phase)*  tier;
+        return (usage + phase) * tier;
     }
 
     private static int getMaxExperience(int level) {
@@ -58,7 +61,12 @@ public class SkillUtils {
 
     public static int getSkillExpGainedForVolume(int volume) {
         // return 50, 250, 1000 base on volume
-        return -1;
+        if (volume == 1){
+            return 50;
+        } else if (volume == 2) {
+            return 250;
+        }
+        return 1000;
     }
 
     /*
@@ -112,4 +120,17 @@ public class SkillUtils {
             playerState.addItem(item[0], item[1]);
         }
     }
-}
+
+
+
+        private static Map<Types, List<Integer>> skillData; // Assume this is initialized elsewhere
+
+        public static void setSkillData(Map<Types, List<Integer>> data) {
+            skillData = data; // Load JSON into this structure
+        }
+
+        public static List<Integer> getSkillsByType(Types type) {
+            return skillData.getOrDefault(type, List.of()); // Return list or empty list if type not found
+        }
+    }
+
