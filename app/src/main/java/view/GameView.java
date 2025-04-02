@@ -88,7 +88,7 @@ public class GameView  extends SurfaceView implements Runnable{
 
         Bitmap skyBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.game_sky);
         Bitmap groundBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.game_map);
-        backgroundImage = new BackgroundImage(skyBitmap, groundBitmap, 0, -224);
+        backgroundImage = new BackgroundImage(skyBitmap, groundBitmap, -224, 448);
         backgroundImage.setDirection(0);
 
         Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.player_sprite_sheet_v2);
@@ -204,6 +204,8 @@ public class GameView  extends SurfaceView implements Runnable{
             case MotionEvent.ACTION_DOWN:
                 float eventX = motionEvent.getX();
                 float eventY = motionEvent.getY();
+
+                Log.d("Get Player/Background Position", "The Background X1 Position" + backgroundImage.getX());
 
                 if (isOnOverworld) {
                     checkIfInventoryOpened(eventX, eventY);

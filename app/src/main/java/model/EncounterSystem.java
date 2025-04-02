@@ -11,9 +11,12 @@ public class EncounterSystem {
     private int previousEnemyId = -1;
 
     public EncounterSystem() {
-        startAndEndPoints.add(new int[]{-927, -1172});
-        startAndEndPoints.add(new int[]{-1826, -2003});
-        startAndEndPoints.add(new int[]{-2610, -2810});
+        startAndEndPoints.add(new int[]{-927, -1172}); //Type 0
+        startAndEndPoints.add(new int[]{-1826, -2003}); //Type 1
+        startAndEndPoints.add(new int[]{-2610, -2810}); //Type 2
+        startAndEndPoints.add(new int[]{-3095, -3369}); //Type 0
+        startAndEndPoints.add(new int[]{-6060, -6308}); //Type 0
+        startAndEndPoints.add(new int[]{-7003, -7107}); //Type 1
     }
     public boolean hasEncounteredEnemy(int x) {
         if (!canEncounterEnemy(x)) {
