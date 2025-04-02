@@ -48,6 +48,7 @@ public class GameView  extends SurfaceView implements Runnable{
     private final BackgroundImage backgroundImage;
     private PlayerMenu playerMenu;
     private ShopMenu shopMenu;
+    private IndexMenu indexMenu;
     private BattleView battleView;
     private EndBattleScreen endBattleScreen;
     int backgroundDirection;
@@ -104,6 +105,7 @@ public class GameView  extends SurfaceView implements Runnable{
 
         playerMenu = new PlayerMenu(presenter, getContext());
         shopMenu = new ShopMenu(presenter, getContext());
+        indexMenu = new IndexMenu(presenter, getContext());
     }
 
     /**
@@ -193,8 +195,9 @@ public class GameView  extends SurfaceView implements Runnable{
             shopMenu.draw(canvas, paint);
         }
 
-        IndexMenu indexMenu = new IndexMenu(presenter, getContext());
-        indexMenu.draw(canvas, paint);
+        if (!indexMenu.isMenuClosed()) {
+            indexMenu.draw(canvas, paint);
+        }
     }
 
 
@@ -219,13 +222,17 @@ public class GameView  extends SurfaceView implements Runnable{
                 if (isOnOverworld) {
                     checkIfInventoryOpened(eventX, eventY);
                     checkIfShopOpened(eventX, eventY);
+                    checkIfIndexOpened(eventX, eventY);
                     if (!playerMenu.isMenuClosed()) {
                         playerMenu.checkForUserTouch(eventX, eventY, presenter);
                     }
                     if (!shopMenu.isMenuClosed()) {
                         shopMenu.checkForUserTouch(eventX, eventY, presenter);
                     }
-                    if (hasInventoryBeenClosed(eventX, eventY) || hasShopBeenClosed(eventX, eventY)) {
+                    if (!indexMenu.isMenuClosed()) {
+                        indexMenu.checkForUserTouch(eventX, eventY, presenter);
+                    }
+                    if (hasInventoryBeenClosed(eventX, eventY) || hasShopBeenClosed(eventX, eventY) || hasIndexBeenClosed(eventX, eventY)) {
                         isMenuOpen = false;
                         break;
                     }
@@ -277,6 +284,18 @@ public class GameView  extends SurfaceView implements Runnable{
         }
     }
 
+    private void checkIfIndexOpened(float eventX, float eventY) {
+        if(isMenuOpen){
+            return;
+        }
+        if (indexIcon.hasBeenTouched(eventX, eventY, presenter, 1)) {
+            isMenuOpen = true;
+            indexMenu = new IndexMenu(presenter, getContext());
+            indexMenu.openMenu();
+            canPlayerMove = false;
+        }
+    }
+
     private boolean hasInventoryBeenClosed(float eventX, float eventY) {
         if (playerMenu.isMenuClosed()) {
             return false;
@@ -296,6 +315,18 @@ public class GameView  extends SurfaceView implements Runnable{
         }
         if (shopMenu.hasClosedMenu(eventX, eventY, presenter)) {
             shopMenu.closeMenu();
+            canPlayerMove = true;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean hasIndexBeenClosed(float eventX, float eventY) {
+        if (indexMenu.isMenuClosed()) {
+            return false;
+        }
+        if (indexMenu.hasClosedMenu(eventX, eventY, presenter)) {
+            indexMenu.closeMenu();
             canPlayerMove = true;
             return true;
         }

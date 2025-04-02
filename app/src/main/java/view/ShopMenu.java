@@ -166,15 +166,6 @@ public class ShopMenu extends BaseMenu {
         alertPopUp = new AlertPopUp(alertMsg, context, true);
     }
 
-    public boolean hasClosedMenu(float eventX, float eventY, GamePresenter presenter){
-        int x = Objects.requireNonNull(menuItemsList.get("close_button")).getX();
-        int y = Objects.requireNonNull(menuItemsList.get("close_button")).getY();
-        int width = Objects.requireNonNull(menuItemsList.get("close_button")).getWidth();
-        int height = Objects.requireNonNull(menuItemsList.get("close_button")).getHeight();
-        return presenter.isInHitbox((int) eventX, (int) eventY, x, x + width, y + height, y);
-    }
-
-
     public void draw(Canvas canvas, Paint paint){
         if (isClosed) {
             return;

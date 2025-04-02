@@ -60,12 +60,12 @@ public class GamePresenter extends AppCompatActivity {
     private void setUpNewGame() {
         makeNewPlayer();
 
+        gameLogic = new GameLogic();
+        encounterSystem = new EncounterSystem();
+
         // Initialize gameView and set it as the view
         view = new GameView(this, this);
         setContentView(view);
-
-        gameLogic = new GameLogic();
-        encounterSystem = new EncounterSystem();
     }
 
     // https://gamecodeschool.com/android/playing-sound-fx-demo/
@@ -382,6 +382,16 @@ public class GamePresenter extends AppCompatActivity {
 
     public String getPlayerNameAndHealth() {
         return formatPlayerInfo(false);
+    }
+
+    public String getEnityNameAndType(int id) {
+        StringBuilder sb = new StringBuilder();
+        String name = (String) getSingleDataProperty("enemies.json", "name", id, this);
+        String type = (String) getSingleDataProperty("enemies.json", "type", id, this);
+
+        sb.append(name).append("\nType: ").append(type);
+
+        return sb.toString();
     }
 
     public ArrayList<String> getSkillNamesArray() {

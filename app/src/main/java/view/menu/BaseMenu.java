@@ -11,6 +11,7 @@ import android.graphics.Paint;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import presenter.GamePresenter;
 import view.AlertPopUp;
@@ -83,6 +84,21 @@ public class BaseMenu {
 
     public boolean isMenuClosed() {
         return isClosed;
+    }
+
+    /**
+     * Checks if the user has tapped the close button of the menu.
+     * @param eventX The x-coordinate of the touch event
+     * @param eventY The y-coordinate of the touch event
+     * @param presenter The GamePresenter instance used to check hitbox collision
+     * @return true if the touch event is within the close button's hitbox, false otherwise
+     */
+    public boolean hasClosedMenu(float eventX, float eventY, GamePresenter presenter){
+        int x = Objects.requireNonNull(menuItemsList.get("close_button")).getX();
+        int y = Objects.requireNonNull(menuItemsList.get("close_button")).getY();
+        int width = Objects.requireNonNull(menuItemsList.get("close_button")).getWidth();
+        int height = Objects.requireNonNull(menuItemsList.get("close_button")).getHeight();
+        return presenter.isInHitbox((int) eventX, (int) eventY, x, x + width, y + height, y);
     }
 }
 
