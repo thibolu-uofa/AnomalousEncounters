@@ -9,6 +9,7 @@ import presenter.GamePresenter;
 public class EncounterSystem {
     private final ArrayList<int[]> startAndEndPoints = new ArrayList<>();
     private int previousEnemyId = -1;
+    int numberOfEnemies = 9;
 
     public EncounterSystem() {
         startAndEndPoints.add(new int[]{-927, -1172}); //Type 0
@@ -40,7 +41,6 @@ public class EncounterSystem {
     }
 
     public int getRandomEnemyId() {
-        int numberOfEnemies = 9;
         Random rand = new Random();
         int enemyId = rand.nextInt(numberOfEnemies);
 
@@ -115,5 +115,9 @@ public class EncounterSystem {
         // Equal chance of any tier
         Random random = new Random();
         return random.nextInt(3) + 1;
+    }
+
+    public int getNumberOfEnemies() {
+        return numberOfEnemies;
     }
 }

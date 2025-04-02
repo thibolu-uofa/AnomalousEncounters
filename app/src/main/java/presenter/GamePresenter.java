@@ -523,6 +523,10 @@ public class GamePresenter extends AppCompatActivity {
         playerState.updateTokens(price);
     }
 
+    public int getNumberOfEnemies() {
+        return encounterSystem.getNumberOfEnemies();
+    }
+
     // This method executes when the user continues the game
     @Override
     protected void onResume() {

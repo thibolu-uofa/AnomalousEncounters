@@ -192,6 +192,9 @@ public class GameView  extends SurfaceView implements Runnable{
             shopMenu.updateMenuTexts(presenter);
             shopMenu.draw(canvas, paint);
         }
+
+        IndexMenu indexMenu = new IndexMenu(presenter, getContext());
+        indexMenu.draw(canvas, paint);
     }
 
 
