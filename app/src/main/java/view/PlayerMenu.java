@@ -14,7 +14,6 @@ import com.example.anomalousencounters.R;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import presenter.GamePresenter;
 import view.menu.BaseMenu;
@@ -210,8 +209,8 @@ public class PlayerMenu extends BaseMenu {
         String alertMsg = context.getString(R.string.successfullyForgotSkill, selectedSkill);
         alertPopUp = new AlertPopUp(alertMsg, context, true);
 
-        ArrayList<String> skillArrayList = presenter.getSkillNamesArray();
-        skillRadioBtnList.updateRadioBtnList(skillArrayList);
+        updateSkillListVisuals();
+        updateItemListVisuals();
     }
 
     private void handleSellItemConfirmation(GamePresenter presenter) {
@@ -222,13 +221,12 @@ public class PlayerMenu extends BaseMenu {
         String alertMsg = context.getString(R.string.successfullySoldItem, selectedItem, price);
         alertPopUp = new AlertPopUp(alertMsg, context, true);
 
-        ArrayList<String> itemArrayList = presenter.getPlayerItemNamesArray();
-        itemRadioBtnList.updateRadioBtnList(itemArrayList);
+        updateItemListVisuals();
     }
 
     private void handleSelections(float eventX, float eventY, GamePresenter presenter) {
-        String itemBtnPressed = itemRadioBtnList.checkForBtnPress(eventX, eventY, presenter);
-        String skillBtnPressed = skillRadioBtnList.checkForBtnPress(eventX, eventY, presenter);
+        String itemBtnPressed = itemRadioBtnList.checkForBtnPressAndCheckBtn(eventX, eventY, presenter);
+        String skillBtnPressed = skillRadioBtnList.checkForBtnPressAndCheckBtn(eventX, eventY, presenter);
 
         if (!Objects.equals(itemBtnPressed, "")) {
             selectedItem = itemBtnPressed;
@@ -278,6 +276,16 @@ public class PlayerMenu extends BaseMenu {
             sellItemMsg = context.getString(R.string.sellItemConfirmationMsg, selectedItem, price);
             confirmPopUp = new ConfirmPopUp(sellItemMsg, context, true);
         }
+    }
+
+    private void updateSkillListVisuals() {
+        ArrayList<String> skillArrayList = presenter.getSkillNamesArray();
+        skillRadioBtnList.updateRadioBtnList(skillArrayList);
+    }
+
+    private void updateItemListVisuals() {
+        ArrayList<String> itemArrayList = presenter.getPlayerItemNamesArray();
+        itemRadioBtnList.updateRadioBtnList(itemArrayList);
     }
 
     public void draw(Canvas canvas, Paint paint){

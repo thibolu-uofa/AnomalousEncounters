@@ -40,14 +40,18 @@ public class Skill {
         switch (atkPattern.toUpperCase()) {
             case "DIAGONAL":
                 return AttackPattern.AttackType.DIAGONAL;
-            case "STAIGHT":
-                return AttackPattern.AttackType.STAIGHT;
+            case "STRAIGHT":
+                return AttackPattern.AttackType.STRAIGHT;
             case "STAR":
                 return AttackPattern.AttackType.STAR;
             case "CONE":
                 return AttackPattern.AttackType.CONE;
+            case "HOURGLASS":
+                return AttackPattern.AttackType.HOURGLASS;
+            case "BUTTERFLY":
+                return AttackPattern.AttackType.BUTTERFLY;
             default:
-                return AttackPattern.AttackType.STAIGHT;
+                return AttackPattern.AttackType.STRAIGHT;
         }
     }
 
@@ -84,7 +88,7 @@ public class Skill {
     }
 
     public boolean canUseSkill() {
-        //if skill cooldown is greater than 0 returns false
+        //skill van only been used when cooldown is 0
         if (currentCooldown != 0){
             return false;
         }

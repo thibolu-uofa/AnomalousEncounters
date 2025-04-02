@@ -24,8 +24,8 @@
     "name": "Roar of Gaia",
     "id": 3,
     "type": "Life",
-    "atkPattern": "Cone",
-    "description": "A primal bellow from the earth's core.\nAttack Type: Cone"
+    "atkPattern": "Butterfly",
+    "description": "A primal bellow from the earth's core.\nAttack Type: Butterfly"
   },
   {
     "name": "Dying Light",
@@ -52,8 +52,8 @@
     "name": "Cerberus' Bite",
     "id": 7,
     "type": "Death",
-    "atkPattern": "Cone",
-    "description": "A ferocious bite from the guardian of the underworld.\nAttack Type: Cone"
+    "atkPattern": "Butterfly",
+    "description": "A ferocious bite from the guardian of the underworld.\nAttack Type: Butterfly"
   },
   {
     "name": "Erasure",
@@ -80,7 +80,7 @@
     "name": "Nihil River",
     "id": 11,
     "type": "Nothingness",
-    "atkPattern": "Cone",
-    "description": "A tide of empty darkness washing over the battlefield.\nAttack Type: Cone"
+    "atkPattern": "Hourglass",
+    "description": "A tide of empty darkness washing over the battlefield.\nAttack Type: Hourglass"
   }
 ]

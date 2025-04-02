@@ -3,7 +3,6 @@ package view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -36,15 +35,24 @@ public class RadioBtnList {
         }
     }
 
-    public String checkForBtnPress(float eventX, float eventY, GamePresenter presenter) {
+    public String checkForBtnPressAndCheckBtn(float eventX, float eventY, GamePresenter presenter) {
         for (RadioBtn radioBtn: radioButtons) {
-            radioBtn.checkForBtnPress(eventX, eventY, presenter);
+            radioBtn.checkForBtnPressAndCheckBtn(eventX, eventY, presenter);
         }
 
         for (RadioBtn radioBtn: radioButtons) {
             if (radioBtn.getIsChecked()  && radioBtn != checkedBtn) {
                 setCheckedBtn(radioBtn);
-                Log.d("Clicked radio button", radioBtn.getText());
+                return radioBtn.getText();
+            }
+        }
+        return "";
+    }
+
+    public String getPressedButton(float eventX, float eventY, GamePresenter presenter) {
+        for (RadioBtn radioBtn: radioButtons) {
+            boolean hasBeenPressed = radioBtn.checkForBtnPress(eventX, eventY, presenter);
+            if (hasBeenPressed) {
                 return radioBtn.getText();
             }
         }

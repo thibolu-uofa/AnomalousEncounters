@@ -145,9 +145,15 @@ public class BattleSystem {
         }
     }
 
+    public boolean canUsePlayerSkill(String skillName) {
+        Skill skill = getSkillByName(skillName, playerSkills);
+        return skill.canUseSkill();
+    }
+
     public void usePlayerSkill(String skillName) {
         Skill skill = getSkillByName(skillName, playerSkills);
         if (skill == null) return; // Exit if skill not found
+        if (!skill.canUseSkill()) return;
 
         // Get affected tiles using player's position
         ArrayList<int[]> affectedTiles = skill.getAffectedTiles(playerPosition);
@@ -160,6 +166,18 @@ public class BattleSystem {
             // Apply damage to enemyState using modifyHealth() (negative delta for damage)
             enemyState.modifyHealth(-damage);
             hasPlayerAttacked = true;
+        }
+    }
+
+    public void activatePlayerSkillCooldown(String skillName) {
+        Skill skill = getSkillByName(skillName, playerSkills);
+        if (skill == null) return; // Exit if skill not found
+        skill.activateSkillCooldown();
+    }
+
+    public void updatePlayerSkillCooldowns() {
+        for (Skill skill: playerSkills) {
+            skill.updateSkillCooldown();
         }
     }
 

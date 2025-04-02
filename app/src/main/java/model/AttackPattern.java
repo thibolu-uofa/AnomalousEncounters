@@ -6,9 +6,11 @@ import java.util.ArrayList;
 public class AttackPattern {
     public enum AttackType {
         DIAGONAL,
-        STAIGHT,
+        STRAIGHT,
         STAR,
-        CONE
+        CONE,
+        HOURGLASS,
+        BUTTERFLY,
     }
 
     private final AttackType attackType;
@@ -23,12 +25,16 @@ public class AttackPattern {
         switch (attackType) {
             case DIAGONAL:
                 return getDiagonalPattern(origin_pos, distance);
-            case STAIGHT:
+            case STRAIGHT:
                 return getStraightPattern(origin_pos, distance);
             case STAR:
                 return getStarPattern(origin_pos, distance);
             case CONE:
                 return getConePattern(origin_pos, distance);
+            case HOURGLASS:
+                return getHourglassPattern(origin_pos, distance);
+            case BUTTERFLY:
+                return getButterflyPattern(origin_pos, distance);
             default:
                 return new ArrayList<int[]>();
         }
@@ -54,4 +60,13 @@ public class AttackPattern {
         return getRepeatingPattern(origin_pos, distance, positionVectors, maxRows, maxCols);
     }
 
+    private ArrayList<int[]> getHourglassPattern(int[] origin_pos, int distance) {
+        int[][] positionVectors = {{-1, 1}, {1, -1}, {0, 1}, {0, -1}, {1, 1}, {-1, -1}};
+        return getRepeatingPattern(origin_pos, distance, positionVectors, maxRows, maxCols);
+    }
+
+    private ArrayList<int[]> getButterflyPattern(int[] origin_pos, int distance) {
+        int[][] positionVectors = {{-1, 0}, {1, 0}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
+        return getRepeatingPattern(origin_pos, distance, positionVectors, maxRows, maxCols);
+    }
 }

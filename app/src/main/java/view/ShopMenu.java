@@ -136,7 +136,7 @@ public class ShopMenu extends BaseMenu {
     }
 
     private void handleRadioBtnInteraction(float eventX, float eventY, GamePresenter presenter) {
-        String radioBtnPressed = itemRadioBtnList.checkForBtnPress(eventX, eventY, presenter);
+        String radioBtnPressed = itemRadioBtnList.checkForBtnPressAndCheckBtn(eventX, eventY, presenter);
         if (!Objects.equals(radioBtnPressed, "")) {
             selectedItem = radioBtnPressed;
             updateItemInfo(presenter);

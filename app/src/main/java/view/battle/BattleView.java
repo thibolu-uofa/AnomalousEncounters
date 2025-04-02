@@ -15,6 +15,8 @@ import android.graphics.drawable.NinePatchDrawable;
 import com.example.anomalousencounters.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import presenter.GamePresenter;
 import view.GameView;
@@ -31,7 +33,7 @@ public class BattleView {
     private final MenuNinePatch playerInfo;
     private final MenuNinePatch enemyInfo;
     private final BattleSideBar sideBar;
-    private ArrayList<MenuEmpty> tileHighlights = new ArrayList<>();
+    private final List<MenuEmpty> tileHighlights = Collections.synchronizedList(new ArrayList<>());
     private final int MAX_CARD_WIDTH = 650;
     private int GRID_BORDER_WEIGHT = 5;
     boolean isFlashingTiles = false;
@@ -40,7 +42,6 @@ public class BattleView {
     int currentTileColor = PLAYER_TILE_HIGHLIGHT_COLOR;
     private long lastFrameTime = 0;
     private int ticks = 6;
-    private volatile boolean isUpdatingTileHighlights = false;
 
     public BattleView(Context context, GamePresenter presenter, GameView view){
         this.presenter = presenter;
@@ -93,7 +94,7 @@ public class BattleView {
     }
 
     private void drawTiles(Canvas canvas, Paint paint) {
-        if (!isUpdatingTileHighlights) {
+        synchronized (tileHighlights) {
             for (MenuEmpty tileHighlight: tileHighlights) {
                 tileHighlight.draw(canvas, paint);
             }
@@ -116,21 +117,25 @@ public class BattleView {
 
     public void highlightTiles(ArrayList<int[]> tileList) {
         clearGrid();
-        for (int [] tile: tileList) {
-            int x = grid.getX() + tile[0];
-            int y = grid.getY() + tile[1];
-            MenuEmpty tileHighlight = new MenuEmpty(x, y, enemyIcon.getHeight(), enemyIcon.getWidth(), PLAYER_TILE_HIGHLIGHT_COLOR);
-            tileHighlights.add(tileHighlight);
+        synchronized (tileHighlights) {
+            for (int[] tile : tileList) {
+                int x = grid.getX() + tile[0];
+                int y = grid.getY() + tile[1];
+                MenuEmpty tileHighlight = new MenuEmpty(x, y, enemyIcon.getHeight(), enemyIcon.getWidth(), PLAYER_TILE_HIGHLIGHT_COLOR);
+                tileHighlights.add(tileHighlight);
+            }
         }
     }
 
     public void setTilesToHighlight(ArrayList<int[]> tileList) {
         clearGrid();
-        for (int [] tile: tileList) {
-            int x = grid.getX() + tile[0];
-            int y = grid.getY() + tile[1];
-            MenuEmpty tileHighlight = new MenuEmpty(x, y, enemyIcon.getHeight(), enemyIcon.getWidth(), TRANSPARENT_COLOR);
-            tileHighlights.add(tileHighlight);
+        synchronized (tileHighlights) {
+            for (int[] tile : tileList) {
+                int x = grid.getX() + tile[0];
+                int y = grid.getY() + tile[1];
+                MenuEmpty tileHighlight = new MenuEmpty(x, y, enemyIcon.getHeight(), enemyIcon.getWidth(), TRANSPARENT_COLOR);
+                tileHighlights.add(tileHighlight);
+            }
         }
     }
 
@@ -163,9 +168,11 @@ public class BattleView {
             currentTileColor = (currentTileColor == tileHighlightColor) ? TRANSPARENT_COLOR : tileHighlightColor;
 
             // update each tile's color
-            for (MenuEmpty tileHighlight : tileHighlights) {
-                tileHighlight.setColor(currentTileColor);
-                tileHighlight.draw(canvas, paint);
+            synchronized (tileHighlights) {
+                for (MenuEmpty tileHighlight : tileHighlights) {
+                    tileHighlight.setColor(currentTileColor);
+                    tileHighlight.draw(canvas, paint);
+                }
             }
 
             // reset last frame time and decrement ticks
@@ -193,9 +200,9 @@ public class BattleView {
     }
 
     public void clearGrid() {
-        isUpdatingTileHighlights = true;
-        tileHighlights = new ArrayList<>();
-        isUpdatingTileHighlights = false;
+        synchronized (tileHighlights) {
+            tileHighlights.clear();
+        }
     }
 
     public int getBoardWidth() {

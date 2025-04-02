@@ -1,10 +1,14 @@
 package model;
 
+import java.util.ArrayList;
+
 public class SkillUtils {
     private int skillBook1 = 50;
     private int skillBook2 = 250;
     private int skillBook3 = 1000;
-
+    public final static int SKILL_EXP_VOL_1_ID = 0;
+    public final static int SKILL_EXP_VOL_2_ID = 1;
+    public final static int SKILL_EXP_VOL_3_ID = 2;
     public enum Types {
         LIFE,
         DEATH,
@@ -55,5 +59,57 @@ public class SkillUtils {
     public static int getSkillExpGainedForVolume(int volume) {
         // return 50, 250, 1000 base on volume
         return -1;
+    }
+
+    /*
+        Forget Level 1 Skill, get 20 tokens
+        Forget Level 2 Skill, get 1 Book of Skill I
+        Forget Level 3 Skill, get 2 Book of Skill I
+        Forget Level 4 Skill, get 3 Book of Skill I
+        Forget Level 5 Skill, get 1 Book of Skill II
+        Forget Level 6 Skill, get 1 Book of Skill II and 1 Book of Skill I
+        LV 7, get 2 Book of Skill II
+        LV8, get 3 Book of Skill II
+        LV9, get 1 Book of Skill II and get 1 Book of Skill III
+        LV10, get 2 Book of Skill III
+     */
+    public static void getSkillCompensation(int level, PlayerState playerState) {
+        ArrayList<int[]> compensationItemIds = new ArrayList<>();
+        int LV_1_TOKEN_COMPENSATION = 20;
+
+        switch (level) {
+            case 1:
+                playerState.updateTokens(LV_1_TOKEN_COMPENSATION);
+                break;
+            case 2:
+                compensationItemIds.add(new int[]{SKILL_EXP_VOL_1_ID, 1});
+                break;
+            case 3:
+                compensationItemIds.add(new int[]{SKILL_EXP_VOL_1_ID, 2});
+                break;
+            case 4:
+                compensationItemIds.add(new int[]{SKILL_EXP_VOL_1_ID, 3});
+                break;
+            case 5:
+                compensationItemIds.add(new int[]{SKILL_EXP_VOL_2_ID, 1});
+                break;
+            case 6:
+                compensationItemIds.add(new int[]{SKILL_EXP_VOL_1_ID, 1});
+                compensationItemIds.add(new int[]{SKILL_EXP_VOL_2_ID, 1});
+                break;
+            case 7:
+                compensationItemIds.add(new int[]{SKILL_EXP_VOL_2_ID, 2});
+            case 8:
+                compensationItemIds.add(new int[]{SKILL_EXP_VOL_2_ID, 3});
+            case 9:
+                compensationItemIds.add(new int[]{SKILL_EXP_VOL_2_ID, 1});
+                compensationItemIds.add(new int[]{SKILL_EXP_VOL_3_ID, 1});
+            case 10:
+                compensationItemIds.add(new int[]{SKILL_EXP_VOL_3_ID, 2});
+        }
+
+        for (int[] item: compensationItemIds) {
+            playerState.addItem(item[0], item[1]);
+        }
     }
 }

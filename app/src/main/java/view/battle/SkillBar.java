@@ -49,10 +49,19 @@ public class SkillBar extends BaseMenuBar {
     }
 
     public String checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
-        String radioBtnPressed = radioBtnList.checkForBtnPress(eventX, eventY, presenter);
+        String radioBtnPressed = radioBtnList.getPressedButton(eventX, eventY, presenter);
         if (!Objects.equals(radioBtnPressed, "")) {
-            selectedSkill = radioBtnPressed;
-            return radioBtnPressed;
+            // prevent user from selecting a skill on cooldown
+            boolean canPlayerUseSkill = presenter.canPlayerUseSkill(radioBtnPressed);
+
+            if (canPlayerUseSkill) {
+                radioBtnList.checkForBtnPressAndCheckBtn(eventX, eventY, presenter);
+                selectedSkill = radioBtnPressed;
+                return radioBtnPressed;
+            }
+
+            resetCheckedBtn();
+            return "invalid_skill";
         }
 
         String textBtnPressed = checkForUserTouchTextButtons(eventX, eventY, presenter);
@@ -65,6 +74,10 @@ public class SkillBar extends BaseMenuBar {
         }
 
         return "";
+    }
+
+    public void updateSkillCooldowns(String skillCooldownsString) {
+        skillCooldowns.updateText(skillCooldownsString);
     }
 
     public void draw(Canvas canvas, Paint paint) {

@@ -3,12 +3,14 @@ package presenter;
 import static model.EnemyUtils.ESSENCE_NAME;
 import static model.EnemyUtils.SHARD_NAME;
 import static model.EnemyUtils.getEnemyDropsFromTier;
+import static model.SkillUtils.getSkillCompensation;
 import static model.Utils.getDataProperty;
 import static model.Utils.getEnemyImage;
 import static model.Utils.getPropertyByName;
 import static model.Utils.getSingleDataProperty;
 import static model.Utils.getStringListOfDataProperty;
 
+import android.content.pm.ActivityInfo;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -23,7 +25,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.Objects;
 
 import model.BattleSystem;
 import model.EncounterSystem;
@@ -46,25 +48,24 @@ public class GamePresenter extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // set orientation to landscape
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        setUpNewGame();
+
+        // FOR TESTING PURPOSES
+        // playSound("sample_sound.wav");
+    }
+
+    private void setUpNewGame() {
         makeNewPlayer();
+
         // Initialize gameView and set it as the view
         view = new GameView(this, this);
         setContentView(view);
 
         gameLogic = new GameLogic();
         encounterSystem = new EncounterSystem();
-
-        //FOR TESTING PURPOSES
-//        playSound("sample_sound.wav");
-
-        getPlayerItemNamesArray();
-        Log.d("Item description", getItemDescription(0));
-        Log.d("Item description", getItemDescriptionByName("Anomalous Essence"));
-        Log.d("Item price", String.valueOf(getItemPriceByName("Anomalous Essence")));
-        Log.d("Item Shop Info", getItemShopInfo("Death Skill Stone"));
-        Log.d("Skill description", getSkillDescription(5));
-        Log.d("Skill description", getSkillDescriptionByName("Dying Light"));
-        Log.d("Enemy description", getEnemyDescription(5));
     }
 
     // https://gamecodeschool.com/android/playing-sound-fx-demo/
@@ -109,7 +110,6 @@ public class GamePresenter extends AppCompatActivity {
             soundPool = null;
         }
     }
-
 
     private void makeNewPlayer() {
         int newPlayerIndex = 0;
@@ -235,8 +235,14 @@ public class GamePresenter extends AppCompatActivity {
         view.updateEnemyGridPosition(position[0], position[1]);
     }
 
+    public void endPlayerTurn(String selectedSkill) {
+        battleSystem.updatePlayerSkillCooldowns();
+        if (!Objects.equals(selectedSkill, "")) {
+            battleSystem.activatePlayerSkillCooldown(selectedSkill);
+        }
+    }
+
     public void startEnemyTurn() {
-        //make sure view side panel is disabled
         battleSystem.changeTurn();
         battleSystem.executeEnemyTurn();
     }
@@ -244,6 +250,10 @@ public class GamePresenter extends AppCompatActivity {
     public void endEnemyTurn() {
         battleSystem.changeTurn();
         view.resetActionFlags();
+    }
+
+    public boolean canPlayerUseSkill(String name) {
+        return battleSystem.canUsePlayerSkill(name);
     }
 
     public String getSkillCooldownsString() {
@@ -315,19 +325,15 @@ public class GamePresenter extends AppCompatActivity {
         boolean isPlayerTurn = battleSystem.getIsPlayerTurn();
         if (isPlayerTurn) {
             String chosenPlayerSkill = view.getChosenPlayerSkill();
-            usePlayerSkill(chosenPlayerSkill);
+            battleSystem.usePlayerSkill(chosenPlayerSkill);
             checkIfPlayerWinner();
 
         } else {
             Skill chosenEnemySkill = battleSystem.getChosenEnemySkill();
-            useEnemySkill(chosenEnemySkill);
+            battleSystem.useEnemySkill(chosenEnemySkill);
             endEnemyTurn();
             checkIfPlayerLoser();
         }
-    }
-
-    public void usePlayerSkill(String skillName) {
-        battleSystem.usePlayerSkill(skillName);
     }
 
     public void enemyChoseSkill(Skill skill) {
@@ -335,10 +341,6 @@ public class GamePresenter extends AppCompatActivity {
         ArrayList<int[]> affectedTiles = battleSystem.getAffectedTilesForEnemy(skill);
         ArrayList<int[]> affectedTilesRealPositions = covertAffectedTilesToRealPositions(affectedTiles);
         view.animateEnemySkill(affectedTilesRealPositions);
-    }
-
-    public void useEnemySkill(Skill skill) {
-        battleSystem.useEnemySkill(skill);
     }
 
     private void checkIfPlayerWinner() {
@@ -380,11 +382,6 @@ public class GamePresenter extends AppCompatActivity {
     public ArrayList<String> getSkillNamesArray() {
         int[] skillIds = playerState.getSkillList();
         return getStringListOfDataProperty("skills.json", "name", skillIds, this);
-    }
-
-    public String getSkillDescription(int skillId) {
-        int[] skillIds = {skillId};
-        return getDataProperty("skills.json", "description", skillIds, this);
     }
 
     public String getSkillDescriptionByName(String name) {
@@ -456,11 +453,6 @@ public class GamePresenter extends AppCompatActivity {
         return String.valueOf(itemAmountsString);
     }
 
-    public String getItemDescription(int itemId) {
-        int[] itemIds = {itemId};
-        return getDataProperty("items.json", "description", itemIds, this);
-    }
-
     public int getItemPriceByName(String name) {
         return (int) getPropertyByName("items.json", name, "price", this);
     }
@@ -482,7 +474,7 @@ public class GamePresenter extends AppCompatActivity {
     }
 
     public String getItemInfoByName(String name) {
-        String description = (String) getPropertyByName("items.json", name, "description", this);;
+        String description = (String) getPropertyByName("items.json", name, "description", this);
         return "Name: " + name + "\n" + "Description: " + description;
     }
 
@@ -511,7 +503,13 @@ public class GamePresenter extends AppCompatActivity {
 
     public void removePlayerSkill(String name) {
         int id = (int) getPropertyByName("skills.json", name, "id", this);
+        int level = playerState.getLevelOfSkill(id);
         playerState.removeSkill(id);
+        givePlayerCompensationForForgettingSkill(level);
+    }
+
+    private void givePlayerCompensationForForgettingSkill(int level) {
+        getSkillCompensation(level, playerState);
     }
 
     public void sellPlayerItem(String name, int price) {

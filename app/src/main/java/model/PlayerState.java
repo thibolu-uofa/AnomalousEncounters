@@ -1,6 +1,8 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class PlayerState {
     private final int MAX_HEALTH;
@@ -8,8 +10,8 @@ public class PlayerState {
     private final String name;
     private int tokens;
     private int phase;
-    private final ArrayList<int[]> items = new ArrayList<>(); // Empty double integer array (first int is the item id, second is the number of items)
-    private final ArrayList<int[]>  skills = new ArrayList<>(); // Empty double integer array (first int is the skill id, second is the skill level)
+    private final List<int[]> items = Collections.synchronizedList(new ArrayList<>()); // Synchronized list for items
+    private final List<int[]> skills = Collections.synchronizedList(new ArrayList<>()); // Synchronized list for skills
 
 
     // Default Constructor
@@ -58,15 +60,17 @@ public class PlayerState {
 
     // Add a skill to the skill list
     public void addSkill(int id, int level) {
-        // if player already has skill then return
-        for (int[] skill: skills) {
-            if (skill[0] == id) {
-                return;
+        synchronized(skills) {
+            // if player already has skill then return
+            for (int[] skill : skills) {
+                if (skill[0] == id) {
+                    return;
+                }
             }
-        }
 
-        int [] skill = {id, level};
-        skills.add(skill);
+            int[] skill = {id, level};
+            skills.add(skill);
+        }
     }
 
     // Add an item to the inventory
@@ -75,37 +79,53 @@ public class PlayerState {
             return;
         }
 
-        //add check for if item is in items already, if so iterate item[1] by 1
-        for (int[] item: items) {
-            if (item[0] == id) {
-                item[1] += 1;
-                return;
+        synchronized(items) {
+            //add check for if item is in items already, if so iterate item[1] by 1
+            for (int[] item : items) {
+                if (item[0] == id) {
+                    item[1] += amount;
+                    return;
+                }
             }
-        }
 
-        // means item not in inventory so add it as a new item
-        int [] item = {id, amount};
-        items.add(item);
+            // means item not in inventory so add it as a new item
+            int[] item = {id, amount};
+            items.add(item);
+        }
     }
 
     // Remove an item from the inventory using item id
     public void removeItem(int id) {
-        for (int[] item: items) {
-            if (item[0] == id && item[1] == 1) {
-                items.remove(item);
-                return;
-            }
-
-            if (item[0] == id) {
-                item[1] -= 1;
+        synchronized(items) {
+            for (int i = 0; i < items.size(); i++) {
+                int[] item = items.get(i);
+                if (hasFoundItemToRemoveById(items, id, item, i)) {
+                    return;
+                }
             }
         }
     }
 
+    private boolean hasFoundItemToRemoveById(List<int[]> itemList, int id, int[] item, int i) {
+        if (item[0] == id) {
+            if (item[1] == 1) {
+                itemList.remove(i);
+            } else {
+                item[1] -= 1;
+            }
+            return true;
+        }
+        return false;
+    }
+
     public void removeSkill(int id) {
-        for (int[] skill: skills) {
-            if (skill[0] == id) {
-                skills.remove(skill);
+        synchronized(skills) {
+            for (int i = 0; i < skills.size(); i++) {
+                int[] skill = skills.get(i);
+                if (skill[0] == id) {
+                    skills.remove(i);
+                    return;
+                }
             }
         }
     }
@@ -168,8 +188,10 @@ public class PlayerState {
 
     public int getTotalSkillLevel() {
         int totalSkillLevel = 0;
-        for (int[] skill: skills) {
-            totalSkillLevel += skill[1];
+        synchronized(skills) {
+            for (int[] skill : skills) {
+                totalSkillLevel += skill[1];
+            }
         }
         return totalSkillLevel;
     }
@@ -177,6 +199,17 @@ public class PlayerState {
     // tokens you lose on death (maxHealth/25) * totalSkillLevel
     public int getTokensLostOnDeath() {
         return (MAX_HEALTH/25) * getTotalSkillLevel();
+    }
+
+    public int getLevelOfSkill(int id) {
+        synchronized(skills) {
+            for (int[] skill : skills) {
+                if (skill[0] == id) {
+                    return skill[1];
+                }
+            }
+        }
+        return -1;
     }
 
     public int getHealth() {
@@ -188,24 +221,32 @@ public class PlayerState {
     }
 
     public int[] getSkillList() {
-        return getArrayFromIndexInDoubleArray(skills, 0);
+        synchronized(skills) {
+            return getArrayFromIndexInDoubleArray(skills, 0);
+        }
     }
 
     public int[] getSkillLevels() {
-        return getArrayFromIndexInDoubleArray(skills, 1);
+        synchronized(skills) {
+            return getArrayFromIndexInDoubleArray(skills, 1);
+        }
     }
 
     public int[] getItemList() {
-        return getArrayFromIndexInDoubleArray(items, 0);
-    }//
-
-    public int[] getItemAmountsList() {
-        return getArrayFromIndexInDoubleArray(items, 1);
+        synchronized(items) {
+            return getArrayFromIndexInDoubleArray(items, 0);
+        }
     }
 
-    public int[] getArrayFromIndexInDoubleArray(ArrayList<int[]> doubleArray, int index) {
+    public int[] getItemAmountsList() {
+        synchronized(items) {
+            return getArrayFromIndexInDoubleArray(items, 1);
+        }
+    }
+
+    public int[] getArrayFromIndexInDoubleArray(List<int[]> doubleArray, int index) {
         int[] newArray = new int[0];
-        for (int[] array: doubleArray) {
+        for (int[] array : doubleArray) {
             newArray = expandArray(newArray, array[index]);
         }
         return newArray;

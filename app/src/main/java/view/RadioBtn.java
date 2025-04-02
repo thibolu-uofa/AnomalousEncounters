@@ -45,13 +45,19 @@ public class RadioBtn {
         menuText.draw(canvas);
     }
 
-    public void checkForBtnPress(float eventX, float eventY, GamePresenter presenter) {
+    public void checkForBtnPressAndCheckBtn(float eventX, float eventY, GamePresenter presenter) {
         int rightX = x + getWidth();
         int topY = y + menuText.getHeight();
         boolean hasBeenPressed = presenter.isInHitbox((int) eventX, (int) eventY, x, rightX, topY, y);
         if (hasBeenPressed) {
             checkBtn();
         }
+    }
+
+    public boolean checkForBtnPress(float eventX, float eventY, GamePresenter presenter) {
+        int rightX = x + getWidth();
+        int topY = y + menuText.getHeight();
+        return presenter.isInHitbox((int) eventX, (int) eventY, x, rightX, topY, y);
     }
 
     public void checkBtn() {

@@ -128,6 +128,8 @@ public class BattleSideBar {
     private void handleAttackAction() {
         if (!hasAttacked) {
             skillBar.resetCheckedBtn();
+            String skillCooldowns = presenter.getSkillCooldownsString();
+            skillBar.updateSkillCooldowns(skillCooldowns);
             changeDisplay(DisplayOptions.SKILL_BAR);
         }
     }
@@ -146,6 +148,7 @@ public class BattleSideBar {
     }
 
     private void handleEndTurnAction() {
+        presenter.endPlayerTurn(skillBar.getSelectedSkill());
         presenter.startEnemyTurn();
     }
 
@@ -158,6 +161,11 @@ public class BattleSideBar {
 
     private void processSkillSelected(String selectedText) {
         if (Objects.equals(selectedText, "")) {
+            return;
+        }
+
+        if (Objects.equals(selectedText, "invalid_skill")) {
+            battleView.clearGrid();
             return;
         }
 
