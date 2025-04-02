@@ -1,11 +1,16 @@
 package model;
 
 public class ItemUtils {
-    public static void useHealthPotion(PlayerState playerState) {
+    public static void useHealthPotion(PlayerState playerState, int runeNumber) {
         // increase player state health by 20% of max health
         int maxHealth = playerState.getPlayerMaxHealth();
-        int healthIncrease = (int) (maxHealth * 0.2); // 20% of max health
-        playerState.modifyHealth(healthIncrease);
+        if (runeNumber == 1){
+            int healthIncrease = (int) (maxHealth * 0.2); // 20% of max health
+            playerState.modifyHealth(healthIncrease);
+        } else if (runeNumber == 2) {
+            int healthIncrease = (int) (maxHealth * 0.5); // 20% of max health
+            playerState.modifyHealth(healthIncrease);
+        }
     }
 
 
