@@ -1,6 +1,8 @@
 package model;
 
+import static model.EnemyUtils.getEnemyDropsFromTier;
 import static model.EnemyUtils.getEnemyMaxHealth;
+import static model.SkillUtils.calculateEnemySkillLevel;
 import static model.Utils.getStringListOfDataProperty;
 import static model.Utils.getRepeatingPattern;
 import static model.Utils.getSingleDataProperty;
@@ -345,17 +347,12 @@ public class BattleSystem {
                     playerSkills.add(skill);
                     break;
                 case "enemySkills":
-                    int skillLevel = generateEnemySkillLevel();
+                    int skillLevel = calculateEnemySkillLevel(tier);
                     skill = new Skill(skillNames.get(i), skillAtkTypes.get(i), skillLevel, tier);
                     enemySkills.add(skill);
                     break;
             }
         }
-    }
-
-    //TODO: calculate enemy skill level based on tier and some random proportions using formula
-    private int calculateEnemySkillLevel(int tier) {
-        return -1;
     }
 
     private int generateEnemySkillLevel() {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class SkillUtils {
     private int skillBook1 = 50;
@@ -131,6 +132,30 @@ public class SkillUtils {
 
         public static List<Integer> getSkillsByType(Types type) {
             return skillData.getOrDefault(type, List.of()); // Return list or empty list if type not found
+        }
+
+        public static int calculateEnemySkillLevel(int tier) {
+            Random rand = new Random();
+            int level = 1;
+            switch (tier) {
+                // Tier 4, 1-2
+                case 4:
+                    level = rand.nextInt(2) + 1;
+                    break;
+                // Tier 3, 3-4
+                case 3:
+                    level = rand.nextInt(2) + 3;
+                    break;
+                // Tier 2, 5-6
+                case 2:
+                    level = rand.nextInt(2) + 5;
+                    break;
+                //Tier 1, 7-10
+                case 1:
+                    level = rand.nextInt(4) + 7;
+                    break;
+            }
+            return level;
         }
     }
 
