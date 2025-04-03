@@ -140,15 +140,15 @@ public class SkillUtils {
             switch (tier) {
                 // Tier 4, 1-2
                 case 4:
-                    level = rand.nextInt(2) + 1;
+                    level = 1;
                     break;
-                // Tier 3, 3-4
+                // Tier 3, 2-3
                 case 3:
-                    level = rand.nextInt(2) + 3;
+                    level = rand.nextInt(1) + 2;
                     break;
-                // Tier 2, 5-6
+                // Tier 2, 3-5
                 case 2:
-                    level = rand.nextInt(2) + 5;
+                    level = rand.nextInt(2) + 3;
                     break;
                 //Tier 1, 7-10
                 case 1:

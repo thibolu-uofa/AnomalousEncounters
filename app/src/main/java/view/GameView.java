@@ -353,7 +353,11 @@ public class GameView  extends SurfaceView implements Runnable{
 
     public void displayOverworld() {
         isOnOverworld = true;
-        canPlayerMove = true;
+        if (isMenuOpen) {
+            canPlayerMove = false;
+        } else {
+            canPlayerMove = true;
+        }
     }
 
     public void displayBattle() {
@@ -381,11 +385,11 @@ public class GameView  extends SurfaceView implements Runnable{
     }
 
     private void handleEndBattle(){
-        battleView = null;
         //prevents player from immediately encountering another enemy
         int stopGap = 5000;
         lastEnemyEncounterCheck = System.currentTimeMillis() + stopGap;
         displayOverworld();
+        battleView = null;
     }
 
     public int getBoardWidth() {

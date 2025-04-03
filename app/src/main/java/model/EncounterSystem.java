@@ -18,6 +18,9 @@ public class EncounterSystem {
         startAndEndPoints.add(new int[]{-3095, -3369}); //Type 0
         startAndEndPoints.add(new int[]{-6060, -6308}); //Type 0
         startAndEndPoints.add(new int[]{-7003, -7107}); //Type 1
+
+        startAndEndPoints.add(new int[]{530, 339}); //Type 1
+
     }
     public boolean hasEncounteredEnemy(int x) {
         if (!canEncounterEnemy(x)) {
@@ -32,7 +35,7 @@ public class EncounterSystem {
 
     private boolean canEncounterEnemy(int x) {
         for (int[] startAndEndPoint: startAndEndPoints){
-            if (abs(x) >= abs(startAndEndPoint[0]) && abs(x) <= abs(startAndEndPoint[1])){
+            if (x <= startAndEndPoint[0] && x >= startAndEndPoint[1]){
 
                return true;
             }
