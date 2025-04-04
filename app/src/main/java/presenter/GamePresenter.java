@@ -18,7 +18,15 @@ import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import com.example.anomalousencounters.R;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,6 +59,18 @@ public class GamePresenter extends AppCompatActivity {
         // set orientation to landscape
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+        ImageView startNewGame = findViewById(R.id.startButton);
+        startNewGame.setOnClickListener(v ->
+                setContentView(view)
+        );
+
         setUpNewGame();
 
         // FOR TESTING PURPOSES
@@ -65,7 +85,6 @@ public class GamePresenter extends AppCompatActivity {
 
         // Initialize gameView and set it as the view
         view = new GameView(this, this);
-        setContentView(view);
     }
 
     // https://gamecodeschool.com/android/playing-sound-fx-demo/

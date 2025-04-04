@@ -251,6 +251,8 @@ public class GameView  extends SurfaceView implements Runnable{
 
             // user has removed finger from screen, so character should stop moving
             case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL: // handle interrupted touches
+            case MotionEvent.ACTION_OUTSIDE: // handle touches that move outside the view
                 if (isOnOverworld) {
                     playerSprite.setAnimation("idle");
                     backgroundImage.setDirection(0);
@@ -443,8 +445,6 @@ public class GameView  extends SurfaceView implements Runnable{
         } catch (InterruptedException e) {
             Log.e("Error:", "joining thread");
         }
-
-
     }
 
     /**

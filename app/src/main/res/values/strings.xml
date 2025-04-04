@@ -12,4 +12,8 @@
     <string name="successfullySoldItem">You have sold the item [%s] for %d tokens.</string>
     <string name="skillLimitReached">Cannot gain new skill. Max amount of skills reached.</string>
     <string name="withdrawMessage">Do you wish to withdraw from battle?\nYou will be charged a fee of 5 tokens.</string>
+    <string name="anomalous_encounters">Anomalous Encounters</string>
+    <string name="start_button">start button</string>
+    <string name="continue_button">continue game button</string>
+    <string name="how_to_play_button">how to play button</string>
 </resources>
