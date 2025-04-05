@@ -128,4 +128,8 @@ public class Skill {
     public int getCurrentCooldown() {
         return currentCooldown;
     }
+
+    public AttackPattern.AttackType getAtkType() {
+        return atkType;
+    }
 }

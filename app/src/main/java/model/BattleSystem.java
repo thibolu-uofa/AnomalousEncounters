@@ -54,6 +54,8 @@ public class BattleSystem {
 
         hasPlayerAttacked = false;
         hasPlayerMoved = false;
+
+        enemyAI = new EnemyAI(enemySkills, this, presenter);
     }
 
     private void initializePlayerAndEnemyStartingPositions() {
@@ -81,7 +83,6 @@ public class BattleSystem {
     }
 
     public void executeEnemyTurn() {
-        enemyAI = new EnemyAI(enemySkills, this, presenter);
         enemyAI.executeEnemyTurn();
     }
 
@@ -293,8 +294,7 @@ public class BattleSystem {
         return getRepeatingPattern(playerPosition, 1, positionVectors, maxRows, maxCols);
     }
 
-    public ArrayList<int[]> getAvailableMoveTilesForEnemy() {
-        int[][] positionVectors = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}, {-1, 0}, {1, 0}, {0, 1}, {0, -1}};
+    public ArrayList<int[]> getAvailableMoveTilesForEnemy(int[][] positionVectors) {
         return getRepeatingPattern(enemyPosition, 1, positionVectors, maxRows, maxCols);
     }
 
@@ -305,6 +305,14 @@ public class BattleSystem {
             if (Arrays.equals(newPosition, move) && !Arrays.equals(newPosition, position)) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    public boolean isSingleMoveValid(int[] newPosition) {
+        int[] position = isPlayerTurn ? enemyPosition : playerPosition;
+        if (!Arrays.equals(newPosition, position)) {
+            return true;
         }
         return false;
     }
