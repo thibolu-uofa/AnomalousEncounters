@@ -169,10 +169,9 @@ public class GameView  extends SurfaceView implements Runnable{
         backgroundImage.update(fps, canPlayerMove);
         backgroundImage.draw(canvas, paint);
 
-        // only check enemies every 500 millisecond
-        if (currentTime - lastEnemyEncounterCheck >= 500 && !isMenuOpen) {
+        if (((currentTime - lastEnemyEncounterCheck) >= 5000) && !isMenuOpen) {
             presenter.hasPlayerEncounteredEnemy(backgroundImage.getX());
-            lastEnemyEncounterCheck = currentTime;
+            lastEnemyEncounterCheck = System.currentTimeMillis();
         }
 
         settingsIcon.draw(canvas, paint);
@@ -233,6 +232,8 @@ public class GameView  extends SurfaceView implements Runnable{
                         indexMenu.checkForUserTouch(eventX, eventY, presenter);
                     }
                     if (hasInventoryBeenClosed(eventX, eventY) || hasShopBeenClosed(eventX, eventY) || hasIndexBeenClosed(eventX, eventY)) {
+                        int stopGap = 5000;
+                        lastEnemyEncounterCheck = System.currentTimeMillis() + stopGap;
                         isMenuOpen = false;
                         break;
                     }
