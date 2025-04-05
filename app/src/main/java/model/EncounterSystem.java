@@ -1,26 +1,27 @@
 package model;
 import static java.lang.Math.abs;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Random;
 
-import presenter.GamePresenter;
-
 public class EncounterSystem {
-    private final ArrayList<int[]> startAndEndPoints = new ArrayList<>();
+    private final ArrayList<int[][]> startAndEndPointsForTypes = new ArrayList<>();
+    private final int[][] enemyTypeIds = {{0, 3, 6}, {1, 4, 8}, {2, 5, 7}};
+    private int encounterType;
     private int previousEnemyId = -1;
     int numberOfEnemies = 9;
 
     public EncounterSystem() {
-        startAndEndPoints.add(new int[]{-927, -1172}); //Type 0
-        startAndEndPoints.add(new int[]{-1826, -2003}); //Type 1
-        startAndEndPoints.add(new int[]{-2610, -2810}); //Type 2
-        startAndEndPoints.add(new int[]{-3095, -3369}); //Type 0
-        startAndEndPoints.add(new int[]{-6060, -6308}); //Type 0
-        startAndEndPoints.add(new int[]{-7003, -7107}); //Type 1
+        int[][] coordsType0 = {{-927, -1172}, {-3095, -3369}, {-6060, -6308}};
+        startAndEndPointsForTypes.add(coordsType0);
 
-        startAndEndPoints.add(new int[]{530, 339}); //Type 1
+        int[][] coordsType1 = {{-1826, -2003}, {-7003, -7107}, {530, 339}};
+        startAndEndPointsForTypes.add(coordsType1);
 
+        int[][] coordsType2 = {{-2610, -2810}};
+        startAndEndPointsForTypes.add(coordsType2);
     }
     public boolean hasEncounteredEnemy(int x) {
         if (!canEncounterEnemy(x)) {
@@ -34,10 +35,13 @@ public class EncounterSystem {
     }
 
     private boolean canEncounterEnemy(int x) {
-        for (int[] startAndEndPoint: startAndEndPoints){
-            if (x <= startAndEndPoint[0] && x >= startAndEndPoint[1]){
-
-               return true;
+        for (int i = 0; i < startAndEndPointsForTypes.size(); i++) {
+            int[][] encounterTypeCoords = startAndEndPointsForTypes.get(i);
+            for (int[] startAndEndPoint : encounterTypeCoords) {
+                if (x <= startAndEndPoint[0] && x >= startAndEndPoint[1]) {
+                    encounterType = i;
+                    return true;
+                }
             }
         }
         return false;
@@ -45,10 +49,12 @@ public class EncounterSystem {
 
     public int getRandomEnemyId() {
         Random rand = new Random();
-        int enemyId = rand.nextInt(numberOfEnemies);
+        int randomIndex = rand.nextInt(enemyTypeIds[encounterType].length);
+        int enemyId = enemyTypeIds[encounterType][randomIndex];
 
         while (enemyId == previousEnemyId){
-            enemyId = rand.nextInt(numberOfEnemies);
+            enemyId = enemyTypeIds[encounterType][randomIndex];
+            randomIndex = rand.nextInt(enemyTypeIds[encounterType].length);
         }
 
         // Update previousEnemyId with the current value
