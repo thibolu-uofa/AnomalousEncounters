@@ -7,6 +7,7 @@ import java.util.List;
 public class PlayerState {
     private final int MAX_HEALTH;
     private int playerCurrentHealth;
+    private final double DAMAGE_REDUCTION_PERCENTAGE = 0.2;
     private final String name;
     private int tokens;
     private int phase;
@@ -55,6 +56,9 @@ public class PlayerState {
         }
     }
     public void modifyHealth(int delta) {
+        if (delta < 0){
+            delta = (int) (delta * (1 - DAMAGE_REDUCTION_PERCENTAGE));
+        }
         updateHealth(delta); // Calls the private method internally
     }
 

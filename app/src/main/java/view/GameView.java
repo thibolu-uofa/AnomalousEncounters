@@ -217,7 +217,7 @@ public class GameView  extends SurfaceView implements Runnable{
                 float eventX = motionEvent.getX();
                 float eventY = motionEvent.getY();
 
-                Log.d("Get Player/Background Position", "The Background X1 Position" + backgroundImage.getX());
+//                Log.d("Get Player/Background Position", "The Background X1 Position" + backgroundImage.getX());
 
                 if (isOnOverworld) {
                     checkIfInventoryOpened(eventX, eventY);

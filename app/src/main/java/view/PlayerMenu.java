@@ -9,6 +9,7 @@ import static view.menu.MenuText.calculateMinHeightRequired;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 
 import com.example.anomalousencounters.R;
 
@@ -26,6 +27,7 @@ public class PlayerMenu extends BaseMenu {
     private MenuItem forgetSkill;
     private MenuItem itemInfo;
     private MenuItem sellItem;
+    private MenuItem useItem;
     private String selectedItem;
     private String selectedSkill;
     private final int Y = 150;
@@ -43,6 +45,7 @@ public class PlayerMenu extends BaseMenu {
     private final String INFO_TEXT = "INFO";
     private String forgetSkillMsg;
     private String sellItemMsg;
+    private String useItemMsg;
 
     /**
      * Creates a player menu interface with various menu items.
@@ -141,11 +144,18 @@ public class PlayerMenu extends BaseMenu {
         int sellRectX = startingX + BUTTON_WIDTH + BUTTON_X_PADDING;
         Rectangle sellRect = new Rectangle(sellRectX, BUTTONS_Y);
 
-        String SELL_ITEM_TEXT = "SELL";
+        int useRectX = sellRectX + BUTTON_WIDTH + BUTTON_X_PADDING;
+        Rectangle useRect = new Rectangle(useRectX, BUTTONS_Y);
+
         itemInfo = new MenuItem(infoRect.x, infoRect.y, BUTTON_HEIGHT, BUTTON_WIDTH,INFO_TEXT, true, context );
 
+        String SELL_ITEM_TEXT = "SELL";
         sellItem = new MenuItem(sellRect.x, sellRect.y, BUTTON_HEIGHT, BUTTON_WIDTH, SELL_ITEM_TEXT,true, context);
         sellItem.changeFontColor(CONFIRM_TEXT_COLOR);
+
+        String USE_ITEM_TEXT = "USE";
+        useItem = new MenuItem(useRect.x, useRect.y, BUTTON_HEIGHT, BUTTON_WIDTH, USE_ITEM_TEXT,true, context);
+//        sellItem.changeFontColor(CONFIRM_TEXT_COLOR);
     }
 
     public void updateMenuTexts(GamePresenter presenter) {
@@ -188,18 +198,27 @@ public class PlayerMenu extends BaseMenu {
         boolean userTouchedPopUp = confirmPopUp.didUserTouchButton(eventX, eventY, presenter);
         if (userTouchedPopUp) {
             boolean didUserConfirm = confirmPopUp.didUserConfirm();
-            boolean isForgetSkill = Objects.equals(confirmPopUp.getMessage(), forgetSkillMsg);
-            boolean isSellItem = Objects.equals(confirmPopUp.getMessage(), sellItemMsg);
-
-            if (didUserConfirm && isForgetSkill) {
-                handleForgetSkillConfirmation(presenter);
+            if (!didUserConfirm) {
+                return;
             }
 
-            if (didUserConfirm && isSellItem) {
-                handleSellItemConfirmation(presenter);
-            }
-
+            String message = confirmPopUp.getMessage();
             confirmPopUp = null;
+
+            boolean isForgetSkill = Objects.equals(message, forgetSkillMsg);
+            boolean isSellItem = Objects.equals(message, sellItemMsg);
+            boolean isUseItem = Objects.equals(message, useItemMsg);
+
+            if (isForgetSkill) {
+                handleForgetSkillConfirmation(presenter);
+            } else if (isSellItem) {
+                handleSellItemConfirmation(presenter);
+            } else if (isUseItem){
+                handleUseItemConfirmation(presenter);
+            }
+
+            updateSkillListVisuals();
+            updateItemListVisuals();
         }
     }
 
@@ -208,9 +227,6 @@ public class PlayerMenu extends BaseMenu {
 
         String alertMsg = context.getString(R.string.successfullyForgotSkill, selectedSkill);
         alertPopUp = new AlertPopUp(alertMsg, context, true);
-
-        updateSkillListVisuals();
-        updateItemListVisuals();
     }
 
     private void handleSellItemConfirmation(GamePresenter presenter) {
@@ -220,8 +236,13 @@ public class PlayerMenu extends BaseMenu {
 
         String alertMsg = context.getString(R.string.successfullySoldItem, selectedItem, price);
         alertPopUp = new AlertPopUp(alertMsg, context, true);
+    }
 
-        updateItemListVisuals();
+    private void handleUseItemConfirmation(GamePresenter presenter) {
+        presenter.useItem(selectedItem);
+
+        String alertMsg = context.getString(R.string.successfullyUsedItem, selectedItem);
+        alertPopUp = new AlertPopUp(alertMsg, context, true);
     }
 
     private void handleSelections(float eventX, float eventY, GamePresenter presenter) {
@@ -276,6 +297,12 @@ public class PlayerMenu extends BaseMenu {
             sellItemMsg = context.getString(R.string.sellItemConfirmationMsg, selectedItem, price);
             confirmPopUp = new ConfirmPopUp(sellItemMsg, context, true);
         }
+
+        boolean hasUsedItemBeenPressed = hasBtnBeenPressed(useItem, (int) eventX, (int) eventY, presenter);
+        if (hasUsedItemBeenPressed){
+            useItemMsg = context.getString(R.string.useItemConfirmationMsg, selectedItem);
+            confirmPopUp = new ConfirmPopUp(useItemMsg, context, true);
+        }
     }
 
     private void updateSkillListVisuals() {
@@ -301,6 +328,7 @@ public class PlayerMenu extends BaseMenu {
         forgetSkill.draw(canvas, paint);
         itemInfo.draw(canvas, paint);
         sellItem.draw(canvas, paint);
+        useItem.draw(canvas, paint);
         drawPopUps(canvas, paint);
     }
 }

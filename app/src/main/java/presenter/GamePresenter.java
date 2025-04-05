@@ -557,10 +557,10 @@ public class GamePresenter extends AppCompatActivity {
     public void useItem(String name) {
         switch (name) {
             case "Health Rune I":
-                useHealthRune(name, 1);
+                useHealthRune(1);
                 break;
             case "Health Rune II":
-                useHealthRune(name, 2);
+                useHealthRune(2);
                 break;
             case "Life Skill Stone":
             case "Death Skill Stone":
@@ -568,14 +568,14 @@ public class GamePresenter extends AppCompatActivity {
                 useSkillStone(name);
                 break;
         }
-    }
-
-    public void useHealthRune(String name, int runeNumber) {
-        ItemUtils.useHealthRune(playerState, runeNumber);
 
         // remove item from the player's inventory
         int id = (int) getPropertyByName("items.json", name, "id", this);
         playerState.removeItem(id);
+    }
+
+    public void useHealthRune(int runeNumber) {
+        ItemUtils.useHealthRune(playerState, runeNumber);
     }
 
     public void useSkillStone(String name) {

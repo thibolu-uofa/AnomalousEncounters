@@ -122,19 +122,27 @@ public class SkillUtils {
         }
     }
 
-        private static final Map<AnomalyTypes, int[]> skillData = new HashMap<>() {{
-            int[] lifeSkillIds = {0, 1, 2, 3};
-            skillData.put(AnomalyTypes.DEATH, lifeSkillIds);
-
-            int[] deathSkillIds = {4, 5, 6, 7};
-            skillData.put(AnomalyTypes.LIFE, deathSkillIds);
-
-            int[] nullSkillIds = {8, 9, 10, 11};
-            skillData.put(AnomalyTypes.NOTHINGNESS, nullSkillIds);
-        }};
-
         public static int[] getSkillsByType(AnomalyTypes type) {
-            return skillData.get(type);
+            int[] skillIds;
+            int[] lifeSkillIds = {0, 1, 2, 3};
+            int[] deathSkillIds = {4, 5, 6, 7};
+            int[] nullSkillIds = {8, 9, 10, 11};
+
+            switch (type) {
+                case LIFE:
+                    skillIds = lifeSkillIds;
+                    break;
+                case DEATH:
+                    skillIds = deathSkillIds;
+                    break;
+                case NOTHINGNESS:
+                    skillIds = nullSkillIds;
+                    break;
+                default:
+                    skillIds = new int[]{};
+            }
+
+            return skillIds;
         }
 
         public static int calculateEnemySkillLevel(int tier) {

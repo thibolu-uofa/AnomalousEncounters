@@ -6,10 +6,12 @@
     <string name="notEnoughToken">You need %d tokens to complete this purchase.</string>
     <string name="purchaseConfirmationMsg">Are you sure you want to buy a [%s]? This will cost you %d tokens.</string>
     <string name="successfulPurchase">You have successfully purchased a %s</string>
-    <string name="forgetSkillConfirmationMsg">Are you sure you want to forget the skill [%s]? You will receive compensation.\nThis action cannot be revered.</string>
+    <string name="forgetSkillConfirmationMsg">Are you sure you want to forget the skill [%s]? You will receive compensation.\nThis action cannot be reversed.</string>
     <string name="successfullyForgotSkill">The skill [%s] has been forgotten.</string>
-    <string name="sellItemConfirmationMsg">Are you sure you want to sell the item [%s]? This item is worth %d tokens. This action cannot be revered.</string>
+    <string name="sellItemConfirmationMsg">Are you sure you want to sell the item [%s]? This item is worth %d tokens.\nThis action cannot be reversed.</string>
     <string name="successfullySoldItem">You have sold the item [%s] for %d tokens.</string>
+    <string name="useItemConfirmationMsg">Are you sure you want to use the item [%s]?\nThis action cannot be reversed.</string>
+    <string name="successfullyUsedItem">You have used the item [%s].</string>
     <string name="skillLimitReached">Cannot gain new skill. Max amount of skills reached.</string>
     <string name="withdrawMessage">Do you wish to withdraw from battle?\nYou will be charged a fee of 5 tokens.</string>
     <string name="anomalous_encounters">Anomalous Encounters</string>

@@ -83,7 +83,7 @@ public class Skill {
     private int calculateSkillDamage(int level, int tier, int baseDamage) {
         //[(skillDmg * level /(tier * 2)] + random number between 1 and 3 ^ 2) + baseDamage
         Random random = new Random();
-        int randomFactor = random.nextInt(10) + 1;
+        int randomFactor = random.nextInt(2) + 4;
         return ((baseDamage * level)/(tier * 2)) + randomFactor;
     }
 

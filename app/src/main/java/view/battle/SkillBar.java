@@ -35,7 +35,7 @@ public class SkillBar extends BaseMenuBar {
         title.setXAndY(x, y + titleTopPadding);
 
         // set positioning for the continue and go back buttons
-        int padding = 60;
+        int padding = 100;
         int y_pos = radioBtnList.getTopY() + padding;
         for (MenuText btn: textButtons) {
             btn.setXAndY(x, y_pos);
