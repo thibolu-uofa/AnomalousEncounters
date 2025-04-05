@@ -1,7 +1,10 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public class ItemUtils {
-    public static void useHealthPotion(PlayerState playerState, int runeNumber) {
+    public static void useHealthRune(PlayerState playerState, int runeNumber) {
         // increase player state health by 20% of max health
         int maxHealth = playerState.getPlayerMaxHealth();
         if (runeNumber == 1){
@@ -13,7 +16,6 @@ public class ItemUtils {
         }
     }
 
-
     public static int[] useExperienceBook(int volume, int level, int currentExperience) {
         //get experience gained from getSkillExpGainedForVolume
         // getUpdatedLevelAndExperience from skill utils
@@ -21,14 +23,26 @@ public class ItemUtils {
         return SkillUtils.getUpdatedLevelAndExperience(level, currentExperience, expGained);
     }
 
-    public static void useSkillTome(SkillUtils. Types tomeType,PlayerState playerState) {
-        //switch case on tomeType, and add a skill id of that type that the player
-        //does not already have
-        for (int skillId : SkillUtils.getSkillsByType(tomeType)) {
+    //TODO: What to do when the player already has all skills of that type, maybe send message that
+    // You already have all the skills of that type
+    public static void useSkillStone(SkillUtils.AnomalyTypes tomeType, PlayerState playerState) {
+        int[] skillIds = SkillUtils.getSkillsByType(tomeType);
+        ArrayList<Integer> newSkillIds = new ArrayList<>();
+
+        for (int skillId : skillIds) {
             if (playerState.getLevelOfSkill(skillId) == -1) { // Check if the player doesn't have the skill
-                playerState.addSkill(skillId, 1); // Add skill at level 1
-                break; // Add only one new skill
+                newSkillIds.add(skillId);
             }
         }
+
+        // player already has all skills of that type, return for now
+        if (newSkillIds.isEmpty()) {
+            return;
+        }
+
+        Random random = new Random();
+        int randIndex = random.nextInt(newSkillIds.size());
+        int newSkillId = newSkillIds.get(randIndex);
+        playerState.addSkill(newSkillId, 1); // Add skill at level 1
     }
 }

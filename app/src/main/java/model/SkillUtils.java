@@ -2,7 +2,7 @@ package model;
 
 import java.util.ArrayList;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -13,7 +13,7 @@ public class SkillUtils {
     public final static int SKILL_EXP_VOL_1_ID = 0;
     public final static int SKILL_EXP_VOL_2_ID = 1;
     public final static int SKILL_EXP_VOL_3_ID = 2;
-    public enum Types {
+    public enum AnomalyTypes {
         LIFE,
         DEATH,
         NOTHINGNESS
@@ -24,14 +24,14 @@ public class SkillUtils {
     }
 
     // NOTHINGNESS > DEATH > LIFE > NOTHINGNESS (weak the other way around)
-    public static double getResistanceFactor(Types activeType, Types receivingType) {
-        if ((activeType == Types.NOTHINGNESS && receivingType == Types.DEATH )
-                || (activeType == Types.DEATH && receivingType == Types.LIFE)
-                || (activeType == Types.LIFE && receivingType == Types.NOTHINGNESS)) {
+    public static double getResistanceFactor(AnomalyTypes activeType, AnomalyTypes receivingType) {
+        if ((activeType == AnomalyTypes.NOTHINGNESS && receivingType == AnomalyTypes.DEATH )
+                || (activeType == AnomalyTypes.DEATH && receivingType == AnomalyTypes.LIFE)
+                || (activeType == AnomalyTypes.LIFE && receivingType == AnomalyTypes.NOTHINGNESS)) {
             return 1.25;
-        } else if ((activeType == Types.DEATH && receivingType == Types.NOTHINGNESS )
-                || (activeType == Types.LIFE && receivingType == Types.DEATH)
-                || (activeType == Types.NOTHINGNESS && receivingType == Types.LIFE) ) {
+        } else if ((activeType == AnomalyTypes.DEATH && receivingType == AnomalyTypes.NOTHINGNESS )
+                || (activeType == AnomalyTypes.LIFE && receivingType == AnomalyTypes.DEATH)
+                || (activeType == AnomalyTypes.NOTHINGNESS && receivingType == AnomalyTypes.LIFE) ) {
             return 0.75;
         }
         return 1;
@@ -122,16 +122,19 @@ public class SkillUtils {
         }
     }
 
+        private static final Map<AnomalyTypes, int[]> skillData = new HashMap<>() {{
+            int[] lifeSkillIds = {0, 1, 2, 3};
+            skillData.put(AnomalyTypes.DEATH, lifeSkillIds);
 
+            int[] deathSkillIds = {4, 5, 6, 7};
+            skillData.put(AnomalyTypes.LIFE, deathSkillIds);
 
-        private static Map<Types, List<Integer>> skillData; // Assume this is initialized elsewhere
+            int[] nullSkillIds = {8, 9, 10, 11};
+            skillData.put(AnomalyTypes.NOTHINGNESS, nullSkillIds);
+        }};
 
-        public static void setSkillData(Map<Types, List<Integer>> data) {
-            skillData = data; // Load JSON into this structure
-        }
-
-        public static List<Integer> getSkillsByType(Types type) {
-            return skillData.getOrDefault(type, List.of()); // Return list or empty list if type not found
+        public static int[] getSkillsByType(AnomalyTypes type) {
+            return skillData.get(type);
         }
 
         public static int calculateEnemySkillLevel(int tier) {

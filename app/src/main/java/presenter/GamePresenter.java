@@ -39,8 +39,10 @@ import model.BattleSystem;
 import model.EncounterSystem;
 import model.EnemyState;
 import model.GameLogic;
+import model.ItemUtils;
 import model.PlayerState;
 import model.Skill;
+import model.SkillUtils;
 import view.GameView;
 
 public class GamePresenter extends AppCompatActivity {
@@ -550,6 +552,49 @@ public class GamePresenter extends AppCompatActivity {
         int id = (int) getPropertyByName("items.json", name, "id", this);
         playerState.removeItem(id);
         playerState.updateTokens(price);
+    }
+
+    public void useItem(String name) {
+        switch (name) {
+            case "Health Rune I":
+                useHealthRune(name, 1);
+                break;
+            case "Health Rune II":
+                useHealthRune(name, 2);
+                break;
+            case "Life Skill Stone":
+            case "Death Skill Stone":
+            case "Null Skill Stone":
+                useSkillStone(name);
+                break;
+        }
+    }
+
+    public void useHealthRune(String name, int runeNumber) {
+        ItemUtils.useHealthRune(playerState, runeNumber);
+
+        // remove item from the player's inventory
+        int id = (int) getPropertyByName("items.json", name, "id", this);
+        playerState.removeItem(id);
+    }
+
+    public void useSkillStone(String name) {
+        SkillUtils.AnomalyTypes type;
+        switch (name) {
+            case "Life Skill Stone":
+                type = SkillUtils.AnomalyTypes.LIFE;
+                break;
+            case "Death Skill Stone":
+                type = SkillUtils.AnomalyTypes.DEATH;
+                break;
+            case "Null Skill Stone":
+                type = SkillUtils.AnomalyTypes.NOTHINGNESS;
+                break;
+            default:
+                return;
+        }
+
+        ItemUtils.useSkillStone(type, playerState);
     }
 
     public int getNumberOfEnemies() {
