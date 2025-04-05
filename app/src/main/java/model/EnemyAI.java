@@ -90,7 +90,7 @@ public class EnemyAI {
     private boolean canAttackPlayer(int[] enemyPosition) {
         int maxDamage = 0;
         for (Skill skill: enemySkills) {
-            if (canSkillReachPlayer(skill, enemyPosition) && skill.getDamage() > maxDamage) {
+            if (canSkillReachPlayer(skill, enemyPosition) && skill.getDamage() > maxDamage && skill.canUseSkill()) {
                 chosenSkill = skill;
                 return true;
             }
@@ -154,7 +154,6 @@ public class EnemyAI {
                         break;
                     }
                 }
-
             }
         }
 

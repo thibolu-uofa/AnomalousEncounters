@@ -3,6 +3,7 @@ package model;
 import static model.SkillUtils.getSkillBaseDamage;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 
 public class Skill {
@@ -59,14 +60,10 @@ public class Skill {
     }
 
     private int getMaxCooldown() {
-        switch (atkType) {
-            case CONE:
-                return 1;
-            case STAR:
-                return 3;
-            default:
-                return 2;
+        if (Objects.requireNonNull(atkType) == AttackPattern.AttackType.STAR) {
+            return 2;
         }
+        return 1;
     }
 
     private int calculateSkillDistance(int level) {

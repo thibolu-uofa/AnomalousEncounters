@@ -270,6 +270,7 @@ public class GamePresenter extends AppCompatActivity {
     }
 
     public void endEnemyTurn() {
+        battleSystem.updateEnemySkillCooldowns();
         battleSystem.changeTurn();
         view.resetActionFlags();
     }
@@ -598,6 +599,10 @@ public class GamePresenter extends AppCompatActivity {
         }
 
         ItemUtils.useSkillStone(type, playerState);
+    }
+
+    public void useBookOfSkills(int bookNumber) {
+
     }
 
     public int getNumberOfEnemies() {

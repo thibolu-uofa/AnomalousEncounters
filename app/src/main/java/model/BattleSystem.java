@@ -190,6 +190,7 @@ public class BattleSystem {
         if (skill == null) {
             return;
         } // Exit if skill not found
+        if (!skill.canUseSkill()) return;
 
         // Get affected tiles using player's position
         ArrayList<int[]> affectedTiles = skill.getAffectedTiles(enemyPosition);
@@ -201,6 +202,14 @@ public class BattleSystem {
 
             // Apply damage to enemyState using modifyHealth() (negative delta for damage)
             playerState.modifyHealth(-damage);
+        }
+
+        skill.activateSkillCooldown();
+    }
+
+    public void updateEnemySkillCooldowns() {
+        for (Skill skill: enemySkills) {
+            skill.updateSkillCooldown();
         }
     }
 
