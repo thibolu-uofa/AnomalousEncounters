@@ -43,6 +43,6 @@ public class ItemUtils {
         Random random = new Random();
         int randIndex = random.nextInt(newSkillIds.size());
         int newSkillId = newSkillIds.get(randIndex);
-        playerState.addSkill(newSkillId, 1); // Add skill at level 1
+        playerState.addSkill(newSkillId, 1, 0); // Add skill at level 1
     }
 }

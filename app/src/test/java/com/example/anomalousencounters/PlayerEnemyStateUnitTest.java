@@ -52,7 +52,7 @@ public class PlayerEnemyStateUnitTest {
     @Test
     public void addAndRemoveSkillIsCorrect() {
         PlayerState player = new PlayerState();
-        player.addSkill(1, 2);
+        player.addSkill(1, 2, 0);
         assertArrayEquals(new int[]{1}, player.getSkillList());
         assertArrayEquals(new int[]{2}, player.getSkillLevels());
     }
@@ -60,7 +60,7 @@ public class PlayerEnemyStateUnitTest {
     @Test
     public void removeSkillIsCorrect() {
         PlayerState player = new PlayerState();
-        player.addSkill(1, 2);
+        player.addSkill(1, 2, 0);
         player.removeSkill(1);
         assertArrayEquals(new int[]{}, player.getSkillList());
     }

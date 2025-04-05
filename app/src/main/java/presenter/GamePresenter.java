@@ -164,7 +164,8 @@ public class GamePresenter extends AppCompatActivity {
                 JSONObject skill = skills.getJSONObject(i);
                 int skillId = skill.getInt("id");
                 int skillLevel = skill.getInt("level");
-                playerState.addSkill(skillId, skillLevel);
+                int skillExp = skill.getInt("experience");
+                playerState.addSkill(skillId, skillLevel, skillExp);
             }
 
         } catch (JSONException e) {
@@ -367,6 +368,7 @@ public class GamePresenter extends AppCompatActivity {
     private void checkIfPlayerWinner() {
         boolean isPlayerWinner = isPlayerWinner();
         if (isPlayerWinner) {
+            battleSystem.playerSkillExperience();
             view.endBattle(true);
         }
     }
@@ -374,6 +376,7 @@ public class GamePresenter extends AppCompatActivity {
     public void checkIfPlayerLoser() {
         boolean isPlayerLoser = isPlayerLoser();
         if (isPlayerLoser) {
+            battleSystem.playerSkillExperience();
             view.endBattle(false);
             playerLost();
         }

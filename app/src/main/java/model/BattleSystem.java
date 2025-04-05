@@ -3,6 +3,8 @@ package model;
 import static model.EnemyUtils.getEnemyDropsFromTier;
 import static model.EnemyUtils.getEnemyMaxHealth;
 import static model.SkillUtils.calculateEnemySkillLevel;
+import static model.SkillUtils.getExperienceGained;
+import static model.SkillUtils.getUpdatedLevelAndExperience;
 import static model.Utils.getStringListOfDataProperty;
 import static model.Utils.getRepeatingPattern;
 import static model.Utils.getSingleDataProperty;
@@ -351,12 +353,12 @@ public class BattleSystem {
             Skill skill;
             switch (skillList) {
                 case "playerSkills":
-                    skill = new Skill(skillNames.get(i), skillAtkTypes.get(i), playerSkillLevels[i], tier);
+                    skill = new Skill(skillNames.get(i), skillAtkTypes.get(i), playerSkillLevels[i], tier, ids[i]);
                     playerSkills.add(skill);
                     break;
                 case "enemySkills":
                     int skillLevel = calculateEnemySkillLevel(tier);
-                    skill = new Skill(skillNames.get(i), skillAtkTypes.get(i), skillLevel, tier);
+                    skill = new Skill(skillNames.get(i), skillAtkTypes.get(i), skillLevel, tier, ids[i]);
                     enemySkills.add(skill);
                     break;
             }
@@ -380,6 +382,22 @@ public class BattleSystem {
             playerSkillCooldowns.add(skill.getCurrentCooldown());
         }
         return playerSkillCooldowns;
+    }
+
+    public void playerSkillExperience() {
+        for (Skill skill: playerSkills) {
+            int enemyTier = enemyState.getTier();
+            int phase = playerState.getPhase();
+            int usage = skill.getTimesUsed();
+            int expGained = getExperienceGained(enemyTier, phase, usage);
+
+            int id = skill.getId();
+            int level = playerState.getLevelOfSkill(id);
+            int currentExperience = playerState.getExperienceOfSkill(id);
+            int[] levelAndExperience = getUpdatedLevelAndExperience(level, currentExperience, expGained);
+
+            playerState.setSkillLevelAndExperience(id, levelAndExperience[0], levelAndExperience[1]);
+        }
     }
 
     public int[] getPlayerPosition() {

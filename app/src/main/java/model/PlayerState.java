@@ -11,8 +11,9 @@ public class PlayerState {
     private final String name;
     private int tokens;
     private int phase;
-    private final List<int[]> items = Collections.synchronizedList(new ArrayList<>()); // Synchronized list for items
-    private final List<int[]> skills = Collections.synchronizedList(new ArrayList<>()); // Synchronized list for skills
+    private final List<int[]> items = Collections.synchronizedList(new ArrayList<>()); // Synchronized list for items [id, amount]
+    private final List<int[]> skills = Collections.synchronizedList(new ArrayList<>()); // Synchronized list for skills [id, level, experience]
+
 
 
     // Default Constructor
@@ -63,7 +64,7 @@ public class PlayerState {
     }
 
     // Add a skill to the skill list
-    public void addSkill(int id, int level) {
+    public void addSkill(int id, int level, int experience) {
         synchronized(skills) {
             // if player already has skill then return
             for (int[] skill : skills) {
@@ -72,8 +73,24 @@ public class PlayerState {
                 }
             }
 
-            int[] skill = {id, level};
+            int[] skill = {id, level, experience};
             skills.add(skill);
+        }
+    }
+
+    public void setSkillLevelAndExperience(int id, int level, int experience) {
+        if (level <= 0) {
+            return;
+        }
+
+        synchronized(skills) {
+            for (int[] skill : skills) {
+                if (skill[0] == id) {
+                    skill[1] = level;
+                    skill[2] = experience;
+                    return;
+                }
+            }
         }
     }
 
@@ -210,6 +227,17 @@ public class PlayerState {
             for (int[] skill : skills) {
                 if (skill[0] == id) {
                     return skill[1];
+                }
+            }
+        }
+        return -1;
+    }
+
+    public int getExperienceOfSkill(int id) {
+        synchronized(skills) {
+            for (int[] skill : skills) {
+                if (skill[0] == id) {
+                    return skill[2];
                 }
             }
         }

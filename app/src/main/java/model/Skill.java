@@ -14,6 +14,8 @@ public class Skill {
     private final AttackPattern atkPattern;
 
     private final AttackPattern.AttackType atkType;
+    private int timesUsed = 0;
+    private int id;
 
     public Skill(){
         this.name = "Entity";
@@ -25,7 +27,7 @@ public class Skill {
         this.currentCooldown = 0;
     }
 
-    public Skill(String name, String atkPattern, int level, int tier) {
+    public Skill(String name, String atkPattern, int level, int tier, int id) {
         this.name = name;
         this.atkType = determineAttackType(atkPattern);
         this.atkPattern = new AttackPattern(atkType);
@@ -34,6 +36,7 @@ public class Skill {
         this.damage = calculateSkillDamage(level, tier, baseDamage);
         this.MAX_COOLDOWN = getMaxCooldown();
         this.currentCooldown = 0;
+        this.id = id;
     }
 
     private AttackPattern.AttackType determineAttackType(String atkPattern) {
@@ -107,7 +110,7 @@ public class Skill {
     public void activateSkillCooldown() {
         // set current cooldown equal to max cooldown
         currentCooldown = MAX_COOLDOWN;
-
+        timesUsed++;
     }
 
     public ArrayList<int[]> getAffectedTiles(int[] origin_pos){
@@ -131,5 +134,13 @@ public class Skill {
 
     public AttackPattern.AttackType getAtkType() {
         return atkType;
+    }
+
+    public int getTimesUsed() {
+        return timesUsed;
+    }
+
+    public int getId() {
+        return id;
     }
 }
