@@ -203,7 +203,9 @@ public class BattleSystem {
             // Apply damage to enemyState using modifyHealth() (negative delta for damage)
             playerState.modifyHealth(-damage);
         }
+    }
 
+    public void activateEnemySkillCooldown(Skill skill) {
         skill.activateSkillCooldown();
     }
 

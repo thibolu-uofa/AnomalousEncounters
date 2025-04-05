@@ -199,6 +199,7 @@ public class PlayerMenu extends BaseMenu {
         if (userTouchedPopUp) {
             boolean didUserConfirm = confirmPopUp.didUserConfirm();
             if (!didUserConfirm) {
+                confirmPopUp = null;
                 return;
             }
 
@@ -219,6 +220,8 @@ public class PlayerMenu extends BaseMenu {
 
             updateSkillListVisuals();
             updateItemListVisuals();
+            selectedItem = "";
+            selectedSkill = "";
         }
     }
 
@@ -262,7 +265,7 @@ public class PlayerMenu extends BaseMenu {
     }
 
     private void handleSkillButtons(float eventX, float eventY, GamePresenter presenter) {
-        if (selectedSkill == null) {
+        if (selectedSkill == null || selectedSkill.isEmpty()) {
             return;
         }
 
@@ -280,7 +283,7 @@ public class PlayerMenu extends BaseMenu {
     }
 
     private void handleItemButtons(float eventX, float eventY, GamePresenter presenter) {
-        if (selectedItem == null) {
+        if (selectedItem == null || selectedItem.isEmpty()) {
             return;
         }
 
@@ -300,6 +303,16 @@ public class PlayerMenu extends BaseMenu {
 
         boolean hasUsedItemBeenPressed = hasBtnBeenPressed(useItem, (int) eventX, (int) eventY, presenter);
         if (hasUsedItemBeenPressed){
+            if (selectedItem.contains("Book of Skills")){
+                if (Objects.equals(selectedSkill, "") || selectedSkill == null  ) {
+                    String alertMsg = context.getString(R.string.noSkillSelectedMsg);
+                    alertPopUp = new AlertPopUp(alertMsg, context, true);
+                } else {
+                    useItemMsg = context.getString(R.string.useSkillBookConfirmationMsg, selectedItem, selectedSkill);
+                    confirmPopUp = new ConfirmPopUp(useItemMsg, context, true);
+                }
+                return;
+            }
             useItemMsg = context.getString(R.string.useItemConfirmationMsg, selectedItem);
             confirmPopUp = new ConfirmPopUp(useItemMsg, context, true);
         }
@@ -330,5 +343,9 @@ public class PlayerMenu extends BaseMenu {
         sellItem.draw(canvas, paint);
         useItem.draw(canvas, paint);
         drawPopUps(canvas, paint);
+    }
+
+    public String getSelectedSkill() {
+        return selectedSkill;
     }
 }

@@ -3,7 +3,10 @@ package presenter;
 import static model.EnemyUtils.ESSENCE_NAME;
 import static model.EnemyUtils.SHARD_NAME;
 import static model.EnemyUtils.getEnemyDropsFromTier;
+import static model.SkillUtils.getMaxExperience;
 import static model.SkillUtils.getSkillCompensation;
+import static model.SkillUtils.getSkillExpGainedForVolume;
+import static model.SkillUtils.getUpdatedLevelAndExperience;
 import static model.Utils.getDataProperty;
 import static model.Utils.getEnemyImage;
 import static model.Utils.getPropertyByName;
@@ -271,6 +274,10 @@ public class GamePresenter extends AppCompatActivity {
 
     public void endEnemyTurn() {
         battleSystem.updateEnemySkillCooldowns();
+        Skill selectedSkill = battleSystem.getChosenEnemySkill();
+        if (selectedSkill != null) {
+            battleSystem.activateEnemySkillCooldown(selectedSkill);
+        }
         battleSystem.changeTurn();
         view.resetActionFlags();
     }
@@ -426,7 +433,15 @@ public class GamePresenter extends AppCompatActivity {
 
     public String getSkillDescriptionByName(String name) {
         String description = (String) getPropertyByName("skills.json", name, "description", this);
-        return "Name: " + name + "\n" + "Description: " + description;
+        String skillInfo = "Name: " + name + "\n" + "Description: " + description;
+
+        int id = (int) getPropertyByName("skills.json", name, "id", this);
+        int currentExp = playerState.getExperienceOfSkill(id);
+        int level = playerState.getLevelOfSkill(id);
+        int maxExp = getMaxExperience(level);
+
+        skillInfo = skillInfo + "\nExperience Progress " + currentExp + "/" + maxExp;
+        return skillInfo;
     }
 
     public String getSkillLevelsString() {
@@ -571,6 +586,15 @@ public class GamePresenter extends AppCompatActivity {
             case "Null Skill Stone":
                 useSkillStone(name);
                 break;
+            case "Book of Skills: Volume I":
+                useBookOfSkills(1);
+                break;
+            case "Book of Skills: Volume II":
+                useBookOfSkills(2);
+                break;
+            case "Book of Skills: Volume III":
+                useBookOfSkills(3);
+                break;
         }
 
         // remove item from the player's inventory
@@ -601,8 +625,15 @@ public class GamePresenter extends AppCompatActivity {
         ItemUtils.useSkillStone(type, playerState);
     }
 
-    public void useBookOfSkills(int bookNumber) {
+    public void useBookOfSkills(int volume) {
+        String selectedSkill = view.getSelectedSkillForPlayerMenu();
+        int id = (int) getPropertyByName("skills.json", selectedSkill, "id", this);
+        int level = playerState.getLevelOfSkill(id);
+        int exp = playerState.getExperienceOfSkill(id);
+        int expGain = getSkillExpGainedForVolume(volume);
 
+        int[] newLevelAndExp = getUpdatedLevelAndExperience(level, exp, expGain);
+        playerState.setSkillLevelAndExperience(id, newLevelAndExp[0], newLevelAndExp[1]);
     }
 
     public int getNumberOfEnemies() {

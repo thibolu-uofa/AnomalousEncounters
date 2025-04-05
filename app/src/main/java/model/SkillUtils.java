@@ -52,7 +52,7 @@ public class SkillUtils {
         return (usage + phase) * enemyTier;
     }
 
-    private static int getMaxExperience(int level) {
+    public static int getMaxExperience(int level) {
         // Return max experience based on level, for example, level times 100
         double exp = Math.pow(2.25, level) + 100;
         int maxExperience = (int) exp;

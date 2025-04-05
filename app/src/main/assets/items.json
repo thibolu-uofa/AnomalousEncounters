@@ -3,19 +3,19 @@
     "name": "Book of Skills: Volume I",
     "id": 0,
     "price": 50,
-    "description": "A worn-leather bound book that introduces the basics of skill usage. Grants a small experience boost to any skill."
+    "description": "A worn-leather bound book that introduces the basics of skill usage. Grants a small experience boost of 50 exp to any skill."
   },
   {
     "name": "Book of Skills: Volume II",
     "id": 1,
     "price": 200,
-    "description": "A curated manuscript of skill techniques. Grants a moderate experience boost to any skill."
+    "description": "A curated manuscript of skill techniques. Grants a moderate experience boost of 250 exp to any skill."
   },
   {
     "name": "Book of Skills: Volume III",
     "id": 2,
     "price": 750,
-    "description": "A rare book detailing advanced descriptions of different paths to skill mastery. Grants a significant experience boost to any skill."
+    "description": "A rare book detailing advanced descriptions of different paths to skill mastery. Grants a significant experience boost of 1000 exp to any skill."
   },
   {
     "name": "Life Skill Stone",

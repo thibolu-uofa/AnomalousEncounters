@@ -169,7 +169,7 @@ public class GameView  extends SurfaceView implements Runnable{
         backgroundImage.update(fps, canPlayerMove);
         backgroundImage.draw(canvas, paint);
 
-        if (((currentTime - lastEnemyEncounterCheck) >= 5000) && !isMenuOpen) {
+        if (((currentTime - lastEnemyEncounterCheck) >= 3000) && !isMenuOpen) {
             presenter.hasPlayerEncounteredEnemy(backgroundImage.getX());
             lastEnemyEncounterCheck = System.currentTimeMillis();
         }
@@ -361,6 +361,10 @@ public class GameView  extends SurfaceView implements Runnable{
         } else {
             canPlayerMove = true;
         }
+    }
+
+    public String getSelectedSkillForPlayerMenu() {
+        return playerMenu.getSelectedSkill();
     }
 
     public void displayBattle() {
