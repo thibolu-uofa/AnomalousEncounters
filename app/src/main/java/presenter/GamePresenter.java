@@ -260,11 +260,8 @@ public class GamePresenter extends AppCompatActivity {
         view.updateEnemyGridPosition(position[0], position[1]);
     }
 
-    public void endPlayerTurn(String selectedSkill) {
+    public void endPlayerTurn() {
         battleSystem.updatePlayerSkillCooldowns();
-        if (!Objects.equals(selectedSkill, "")) {
-            battleSystem.activatePlayerSkillCooldown(selectedSkill);
-        }
     }
 
     public void startEnemyTurn() {
@@ -274,10 +271,6 @@ public class GamePresenter extends AppCompatActivity {
 
     public void endEnemyTurn() {
         battleSystem.updateEnemySkillCooldowns();
-        Skill selectedSkill = battleSystem.getChosenEnemySkill();
-        if (selectedSkill != null) {
-            battleSystem.activateEnemySkillCooldown(selectedSkill);
-        }
         battleSystem.changeTurn();
         view.resetActionFlags();
     }

@@ -60,9 +60,9 @@ public class Skill {
     }
 
     private int getMaxCooldown(boolean isEnemySkill) {
-        int maxCooldown = 0;
+        int maxCooldown = 1;
         if (isEnemySkill) {
-            maxCooldown = 1;
+            maxCooldown = 2;
         }
 
         if (Objects.requireNonNull(atkType) == AttackPattern.AttackType.STAR) {

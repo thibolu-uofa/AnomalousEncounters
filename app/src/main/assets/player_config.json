@@ -7,8 +7,7 @@
     "phase": 1,
     "items": [
       {"id": 6, "amount": 2},
-      {"id": 7, "amount": 1},
-      {"id": 4, "amount": 4}
+      {"id": 7, "amount": 1}
     ],
     "skills": [
       {"id": 4, "level": 1, "experience": 0},

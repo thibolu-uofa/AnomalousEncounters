@@ -170,7 +170,7 @@ public class BattleSideBar {
     }
 
     private void handleEndTurnAction() {
-        presenter.endPlayerTurn(skillBar.getSelectedSkill());
+        presenter.endPlayerTurn();
         presenter.startEnemyTurn();
     }
 

@@ -173,11 +173,7 @@ public class BattleSystem {
             enemyState.modifyHealth(-damage);
             hasPlayerAttacked = true;
         }
-    }
 
-    public void activatePlayerSkillCooldown(String skillName) {
-        Skill skill = getSkillByName(skillName, playerSkills);
-        if (skill == null) return; // Exit if skill not found
         skill.activateSkillCooldown();
     }
 
@@ -204,9 +200,7 @@ public class BattleSystem {
             // Apply damage to enemyState using modifyHealth() (negative delta for damage)
             playerState.modifyHealth(-damage);
         }
-    }
 
-    public void activateEnemySkillCooldown(Skill skill) {
         skill.activateSkillCooldown();
     }
 

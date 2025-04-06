@@ -57,6 +57,7 @@ public class SkillBar extends BaseMenuBar {
     public String checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
         String radioBtnPressed = radioBtnList.getPressedButton(eventX, eventY, presenter);
         if (!Objects.equals(radioBtnPressed, "")) {
+
             // prevent user from selecting a skill on cooldown
             boolean canPlayerUseSkill = presenter.canPlayerUseSkill(radioBtnPressed);
 
