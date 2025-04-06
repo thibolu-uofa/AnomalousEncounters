@@ -21,6 +21,9 @@ import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,7 +39,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import model.BattleSystem;
 import model.EncounterSystem;
@@ -56,7 +58,6 @@ public class GamePresenter extends AppCompatActivity {
     private BattleSystem battleSystem;
     private SoundPool soundPool;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,9 +73,26 @@ public class GamePresenter extends AppCompatActivity {
         });
 
         ImageView startNewGame = findViewById(R.id.startButton);
-        startNewGame.setOnClickListener(v ->
-                setContentView(view)
-        );
+        startNewGame.setOnClickListener(v -> {
+            View rootView = findViewById(android.R.id.content);
+            Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out_animation);
+            rootView.startAnimation(fadeOut);
+
+            fadeOut.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {}
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    setContentView(view);
+                    view.startFadeIn();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {}
+            });
+
+        });
 
         setUpNewGame();
 
@@ -234,14 +252,21 @@ public class GamePresenter extends AppCompatActivity {
     public void setUpBattle(int enemyId, int enemyTier) {
         battleSystem = new BattleSystem(this, playerState, enemyId, enemyTier,this);
 
-        // tell view that a battle has started
+        // tell view to fade out
+        view.startBattleTransition();
+    }
+
+    public void finishedBattleFadeOutTransition() {
         view.displayBattle();
 
-        //tell view what enemy image to use
+        // tell view what enemy image to use
+        int enemyId = battleSystem.getEnemyId();
         Bitmap enemyImage = getEnemyImage(enemyId, this);
         view.setEnemyImage(enemyImage);
 
         updatePlayerAndEnemyPositions();
+
+        view.startFadeIn();
     }
 
     private void updatePlayerAndEnemyPositions() {

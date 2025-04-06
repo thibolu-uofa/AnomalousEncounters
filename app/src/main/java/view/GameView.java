@@ -53,10 +53,16 @@ public class GameView  extends SurfaceView implements Runnable{
     private EndBattleScreen endBattleScreen;
     int backgroundDirection;
     private boolean isOnOverworld = true;
+    private boolean isInBattle = false;
     private boolean canPlayerMove = true;
     long fps; //keeps track of frame rate
     private long lastEnemyEncounterCheck = 0;
     private boolean isMenuOpen = false;
+    private int fadeAlpha = -1;       // -1 means no fade
+    private boolean isCanvasFadingIn = false;
+    private boolean isCanvasFadingOut = false;
+    private final int fadeSpeed = 10;
+
 
     public GameView(Context context, GamePresenter presenter){
         super(context);
@@ -152,10 +158,51 @@ public class GameView  extends SurfaceView implements Runnable{
                 endBattleScreen.draw(canvas, paint);
             }
 
+            if (isCanvasFadingOut || isCanvasFadingIn) {
+                handleCanvasTransitions();
+            }
+
             // draw everything to the screen and unlock the drawing surface
             surfaceHolder.unlockCanvasAndPost(canvas);
         }
     }
+
+    private void handleCanvasTransitions() {
+        Paint fadePaint = new Paint();
+        fadePaint.setColor(Color.BLACK);
+        fadePaint.setAlpha(fadeAlpha);
+        canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), fadePaint);
+
+        if (isCanvasFadingIn) {
+            fadeAlpha -= fadeSpeed;
+            if (fadeAlpha <= 0) {
+                fadeAlpha = -1; // done fading in
+                isCanvasFadingIn = false;
+            }
+        } else if (isCanvasFadingOut) {
+            fadeAlpha += fadeSpeed;
+            if (fadeAlpha >= 255) {
+                fadeAlpha = 255; // fully faded out
+                isCanvasFadingOut = false;
+                if (isInBattle) {
+                    presenter.finishedBattleFadeOutTransition();
+                }
+            }
+        }
+    }
+
+    public void startFadeIn() {
+        fadeAlpha = 255;
+        isCanvasFadingIn = true;
+        isCanvasFadingOut = false;
+    }
+
+    public void startFadeOut() {
+        fadeAlpha = 0;
+        isCanvasFadingIn = false;
+        isCanvasFadingOut = true;
+    }
+
 
     private void drawBackground() {
         int backgroundColor = Color.argb(255, 255, 255, 255);
@@ -355,6 +402,7 @@ public class GameView  extends SurfaceView implements Runnable{
     }
 
     public void displayOverworld() {
+        isInBattle = false;
         isOnOverworld = true;
         if (isMenuOpen) {
             canPlayerMove = false;
@@ -367,10 +415,15 @@ public class GameView  extends SurfaceView implements Runnable{
         return playerMenu.getSelectedSkill();
     }
 
-    public void displayBattle() {
-        battleView = new BattleView(this.getContext(), presenter, this);
+    public void startBattleTransition() {
+        startFadeOut();
         isOnOverworld = false;
         canPlayerMove = false;
+        isInBattle = true;
+    }
+
+    public void displayBattle() {
+        battleView = new BattleView(this.getContext(), presenter, this);
     }
 
     public void fleeFromBattle(){
