@@ -651,6 +651,15 @@ public class GamePresenter extends AppCompatActivity {
         playerState.setSkillLevelAndExperience(id, newLevelAndExp[0], newLevelAndExp[1]);
     }
 
+    public boolean hasReachedMaxSkillLimit() {
+        int MAX_NUMBER_OF_SKILLS = 5;
+        int numberOfSkills = playerState.getSkillList().length;
+        if (numberOfSkills >= 5) {
+            return true;
+        }
+        return false;
+    }
+
     public int getNumberOfEnemies() {
         return encounterSystem.getNumberOfEnemies();
     }
