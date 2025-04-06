@@ -313,6 +313,18 @@ public class PlayerMenu extends BaseMenu {
                 }
                 return;
             }
+            if (selectedItem.contains("Anomalous")){
+                String alertMsg = context.getString(R.string.cannotUseItem);
+                alertPopUp = new AlertPopUp(alertMsg, context, true);
+                return;
+            }
+
+            boolean hasReachedMaxSkills = presenter.hasReachedMaxSkillLimit();
+            if (selectedItem.contains("Skill Stone") && hasReachedMaxSkills) {
+                String alertMsg = context.getString(R.string.skillLimitReached);
+                alertPopUp = new AlertPopUp(alertMsg, context, true);
+                return;
+            }
             useItemMsg = context.getString(R.string.useItemConfirmationMsg, selectedItem);
             confirmPopUp = new ConfirmPopUp(useItemMsg, context, true);
         }

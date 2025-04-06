@@ -453,7 +453,7 @@ public class GamePresenter extends AppCompatActivity {
         int maxExp = getMaxExperience(level);
         int damage = battleSystem.getSkillDamage(name);
 
-        skillInfo = skillInfo + " LV " + level + "\nDamage: " + damage + "\nExperience Progress: " + currentExp + "/" + maxExp;
+        skillInfo = skillInfo + "   LV " + level + "\nDamage: " + damage + "\nExperience Progress: " + currentExp + "/" + maxExp;
         return skillInfo;
     }
 
@@ -654,7 +654,7 @@ public class GamePresenter extends AppCompatActivity {
     public boolean hasReachedMaxSkillLimit() {
         int MAX_NUMBER_OF_SKILLS = 5;
         int numberOfSkills = playerState.getSkillList().length;
-        if (numberOfSkills >= 5) {
+        if (numberOfSkills >= MAX_NUMBER_OF_SKILLS) {
             return true;
         }
         return false;
