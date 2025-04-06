@@ -452,8 +452,9 @@ public class GamePresenter extends AppCompatActivity {
         int level = playerState.getLevelOfSkill(id);
         int maxExp = getMaxExperience(level);
         int damage = battleSystem.getSkillDamage(name);
+        String atkPattern = (String) getPropertyByName("skills.json", name, "atkPattern", this);
 
-        skillInfo = skillInfo + "   LV " + level + "\nDamage: " + damage + "\nExperience Progress: " + currentExp + "/" + maxExp;
+        skillInfo = skillInfo + "   LV " + level + "\nDamage: " + damage + "\nAttack Pattern: " + atkPattern + "\nExperience Progress: " + currentExp + "/" + maxExp;
         return skillInfo;
     }
 

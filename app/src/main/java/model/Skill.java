@@ -24,18 +24,18 @@ public class Skill {
         this.atkType = AttackPattern.AttackType.DIAGONAL;
         this.distance = 2;
         this.atkPattern = new AttackPattern(atkType);
-        this.MAX_COOLDOWN = getMaxCooldown();
+        this.MAX_COOLDOWN = getMaxCooldown(false);
         this.currentCooldown = 0;
     }
 
-    public Skill(String name, String atkPattern, int level, int tier, int id) {
+    public Skill(String name, String atkPattern, int level, int tier, int id, boolean isEnemySkill) {
         this.name = name;
         this.atkType = determineAttackType(atkPattern);
         this.atkPattern = new AttackPattern(atkType);
         this.distance = calculateSkillDistance(level);
         int baseDamage = getSkillBaseDamage(tier);
         this.damage = calculateSkillDamage(level, tier, baseDamage);
-        this.MAX_COOLDOWN = getMaxCooldown();
+        this.MAX_COOLDOWN = getMaxCooldown(isEnemySkill);
         this.currentCooldown = 0;
         this.id = id;
     }
@@ -59,11 +59,18 @@ public class Skill {
         }
     }
 
-    private int getMaxCooldown() {
-        if (Objects.requireNonNull(atkType) == AttackPattern.AttackType.STAR) {
-            return 2;
+    private int getMaxCooldown(boolean isEnemySkill) {
+        int maxCooldown = 0;
+        if (isEnemySkill) {
+            maxCooldown = 1;
         }
-        return 1;
+
+        if (Objects.requireNonNull(atkType) == AttackPattern.AttackType.STAR) {
+            maxCooldown += 2;
+        } else {
+            maxCooldown += 1;
+        }
+        return maxCooldown;
     }
 
     private int calculateSkillDistance(int level) {

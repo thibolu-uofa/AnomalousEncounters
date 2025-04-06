@@ -25,7 +25,7 @@ public class EnemyAI {
         this.enemySkills = enemySkills;
         this.battleSystem = battleSystem;
         this.presenter = presenter;
-        setEnemyMoveVector(enemySkills);
+        this.moveVector = eightDimensionalMoveVectors;
     }
 
     private void setEnemyMoveVector(ArrayList<Skill> enemySkills) {
@@ -149,7 +149,8 @@ public class EnemyAI {
                 }
 
                 for (Skill skill: enemySkills) {
-                    if (canSkillReachPlayer(skill, tile)) {
+                    // make sure skill can reach player and that the skill is not on cooldown
+                    if (canSkillReachPlayer(skill, tile) && skill.canUseSkill()) {
                         validPotentialTargetTiles.add(tile);
                         break;
                     }

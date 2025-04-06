@@ -365,12 +365,12 @@ public class BattleSystem {
             Skill skill;
             switch (skillList) {
                 case "playerSkills":
-                    skill = new Skill(skillNames.get(i), skillAtkTypes.get(i), playerSkillLevels[i], tier, ids[i]);
+                    skill = new Skill(skillNames.get(i), skillAtkTypes.get(i), playerSkillLevels[i], tier, ids[i], false);
                     playerSkills.add(skill);
                     break;
                 case "enemySkills":
                     int skillLevel = calculateEnemySkillLevel(tier);
-                    skill = new Skill(skillNames.get(i), skillAtkTypes.get(i), skillLevel, tier, ids[i]);
+                    skill = new Skill(skillNames.get(i), skillAtkTypes.get(i), skillLevel, tier, ids[i], true);
                     enemySkills.add(skill);
                     break;
             }
