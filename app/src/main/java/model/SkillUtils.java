@@ -123,9 +123,9 @@ public class SkillUtils {
 
         public static int[] getSkillsByType(AnomalyTypes type) {
             int[] skillIds;
-            int[] lifeSkillIds = {0, 1, 2, 3};
-            int[] deathSkillIds = {4, 5, 6, 7};
-            int[] nullSkillIds = {8, 9, 10, 11};
+            int[] lifeSkillIds = {0, 1, 2, 3, 12};
+            int[] deathSkillIds = {4, 5, 6, 7, 13};
+            int[] nullSkillIds = {8, 9, 10, 11, 14};
 
             switch (type) {
                 case LIFE:
