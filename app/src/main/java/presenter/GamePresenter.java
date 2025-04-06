@@ -444,6 +444,21 @@ public class GamePresenter extends AppCompatActivity {
         return skillInfo;
     }
 
+    public String getSkillBattleDescriptionByName(String name) {
+        String skillInfo = name;
+
+        int id = (int) getPropertyByName("skills.json", name, "id", this);
+        int currentExp = playerState.getExperienceOfSkill(id);
+        int level = playerState.getLevelOfSkill(id);
+        int maxExp = getMaxExperience(level);
+        int damage = battleSystem.getSkillDamage(name);
+
+        skillInfo = skillInfo + " LV " + level + "\nDamage: " + damage + "\nExperience Progress: " + currentExp + "/" + maxExp;
+        return skillInfo;
+    }
+
+
+
     public String getSkillLevelsString() {
         int[] skillLevels = playerState.getSkillLevels();
         StringBuilder skillLevelsString = new StringBuilder();

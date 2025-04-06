@@ -16,6 +16,7 @@
     <string name="noSkillSelectedMsg">You need to select a skill to use this item.</string>
     <string name="skillLimitReached">Cannot gain new skill. Max amount of skills reached.</string>
     <string name="withdrawMessage">Do you wish to withdraw from battle?\nYou will be charged a fee of 5 tokens.</string>
+    <string name="selectSkillAlert">A skill needs to be selected to show the skill info.</string>
     <string name="anomalous_encounters">Anomalous Encounters</string>
     <string name="start_button">start button</string>
     <string name="continue_button">continue game button</string>

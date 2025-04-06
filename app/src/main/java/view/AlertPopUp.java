@@ -11,7 +11,7 @@ public class AlertPopUp extends BasePopUp {
     private final MenuItem okayBtn;
 
 
-    protected AlertPopUp(String message, Context context, boolean isTextCentred) {
+    public AlertPopUp(String message, Context context, boolean isTextCentred) {
         super(message, context, isTextCentred);
 
         int okayX = messageBox.getX();

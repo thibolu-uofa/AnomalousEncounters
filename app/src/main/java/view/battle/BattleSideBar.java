@@ -25,6 +25,7 @@ public class BattleSideBar {
     GamePresenter presenter;
     BattleView battleView;
     private ConfirmPopUp confirmPopUp;
+    private AlertPopUp alertPopUp;
     private final MenuNinePatch menuNinePatch;
     private final SkillBar skillBar;
     private final ActionBar actionBar;
@@ -44,7 +45,6 @@ public class BattleSideBar {
     private boolean hasAttacked = false;
     private boolean hasMoved = false;
     private boolean isAnimationPlaying = false;
-
     public BattleSideBar(int x, int y, Context context, GamePresenter presenter, BattleView battleView) {
         this.x = x;
         this.y = y;
@@ -65,6 +65,14 @@ public class BattleSideBar {
 
     public void checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
         if (isAnimationPlaying) {
+            return;
+        }
+
+        if (alertPopUp != null) {
+            boolean userClosedPopUp = alertPopUp.didUserClosePopUp(eventX, eventY, presenter);
+            if (userClosedPopUp) {
+                alertPopUp = null;
+            }
             return;
         }
 
@@ -110,9 +118,11 @@ public class BattleSideBar {
     private void handleSkillBarTouch(float eventX, float eventY, GamePresenter presenter) {
         String selectedText = skillBar.checkForUserTouch(eventX, eventY, presenter);
         processSkillSelected(selectedText);
+        processSkillInfoSelected(selectedText);
         processConfirm(selectedText, DisplayOptions.SKILL_BAR);
         processGoBack(selectedText, DisplayOptions.SKILL_BAR);
     }
+
 
     private void handleMoveBarTouch(float eventX, float eventY, GamePresenter presenter) {
         String selectedText = moveBar.checkForUserTouch(eventX, eventY, presenter);
@@ -191,6 +201,20 @@ public class BattleSideBar {
         }
     }
 
+    private void processSkillInfoSelected(String selectedText) {
+        if (!Objects.equals(selectedText, "[Skill Info]")) {
+            return;
+        }
+        String name = skillBar.getSelectedSkill();
+        String alertMsg;
+        if (name == null || name.isEmpty() || name.equals("invalid_skill")) {
+            alertMsg = presenter.getString(R.string.selectSkillAlert);
+        } else {
+            alertMsg = presenter.getSkillBattleDescriptionByName(name);
+        }
+        alertPopUp = new AlertPopUp(alertMsg, presenter, false);
+    }
+
     private void processMoveSelected(String selectedText) {
         if (Objects.equals(selectedText, "")) {
             return;
@@ -266,6 +290,10 @@ public class BattleSideBar {
 
         if (confirmPopUp != null) {
             confirmPopUp.draw(canvas, paint);
+        }
+
+        if (alertPopUp != null) {
+            alertPopUp.draw(canvas, paint);
         }
     }
 

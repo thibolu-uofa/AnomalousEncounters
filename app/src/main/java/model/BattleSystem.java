@@ -16,6 +16,7 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Random;
 
 import presenter.GamePresenter;
@@ -409,6 +410,16 @@ public class BattleSystem {
 
             playerState.setSkillLevelAndExperience(id, levelAndExperience[0], levelAndExperience[1]);
         }
+    }
+
+    public int getSkillDamage(String name) {
+        for (Skill skill: playerSkills) {
+            if (Objects.equals(skill.getName(), name)) {
+                return skill.getDamage();
+            }
+        }
+
+        return -1;
     }
 
     public int[] getPlayerPosition() {

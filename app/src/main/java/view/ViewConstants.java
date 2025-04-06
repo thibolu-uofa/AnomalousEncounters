@@ -18,8 +18,8 @@ public class ViewConstants {
     public static final int ENTITY_ICON_BG_COLOR = Color.argb(255, 17, 18, 37);
     public static final int FONT_SIZE_LARGE = 50;
     public static final int FONT_SIZE_MEDIUM = 32;
+    public static final int FONT_SIZE_MEDIUM_LARGE = 40;
     public static final int FONT_SIZE_SMALL = 28;
-    public static final int FONT_SIZE_EXTRA_SMALL = 20;
     public static int CANVAS_WIDTH;
     public static int CANVAS_HEIGHT;
     public static int SCREEN_WIDTH;

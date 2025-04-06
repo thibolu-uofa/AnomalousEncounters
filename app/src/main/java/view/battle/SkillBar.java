@@ -1,6 +1,9 @@
 package view.battle;
 
 import static view.ViewConstants.DEFAULT_TEXT_COLOR;
+import static view.ViewConstants.FONT_SIZE_LARGE;
+import static view.ViewConstants.FONT_SIZE_MEDIUM;
+import static view.ViewConstants.FONT_SIZE_MEDIUM_LARGE;
 import static view.ViewConstants.FONT_SIZE_SMALL;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -26,6 +29,9 @@ public class SkillBar extends BaseMenuBar {
         radioBtnList = new RadioBtnList(x + 10, y + 155, context, skillArrayList, width, height);
         skillCooldowns = createButton(skillCooldownsString, FONT_SIZE_SMALL, DEFAULT_TEXT_COLOR, false, context);
         skillCooldowns.setLineSpacingMultiplier(1.35f);
+
+        MenuText skillInfo = new MenuText("[Skill Info]", FONT_SIZE_MEDIUM_LARGE, DEFAULT_TEXT_COLOR, width, false, context, true);
+        textButtons.add(skillInfo);
 
         setTextPositions();
     }
