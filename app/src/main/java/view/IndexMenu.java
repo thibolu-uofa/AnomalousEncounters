@@ -104,7 +104,8 @@ public class IndexMenu extends BaseMenu {
     }
 
     private void createInfoMenu(int x) {
-        MenuItem infoHeaderMenu = new MenuItem(x, Y, HEADING_HEIGHT, INFO_MENU_WIDTH, BLANK_TEXT, false, context);
+        String helpMsg = context.getString(R.string.indexHelpMsg);
+        MenuItem infoHeaderMenu = new MenuItem(x, Y, HEADING_HEIGHT, INFO_MENU_WIDTH, helpMsg, false, context);
         menuItemsList.put("info_header", infoHeaderMenu);
 
         int infoY = Y + HEADING_HEIGHT;
@@ -157,6 +158,7 @@ public class IndexMenu extends BaseMenu {
     }
 
     private void updateEntityInfo(GamePresenter presenter, int id){
+        Objects.requireNonNull(menuItemsList.get("info_header")).updateText(BLANK_TEXT);
         Objects.requireNonNull(menuItemsList.get("info_menu")).updateText(presenter.getEnemyDescription(id));
     }
 

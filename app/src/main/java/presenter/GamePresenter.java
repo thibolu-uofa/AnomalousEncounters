@@ -241,12 +241,13 @@ public class GamePresenter extends AppCompatActivity {
         }
     }
 
-    public String getEnemyNameAndHealth() {
+    public String getEnemyNameHealthAndTier() {
         EnemyState enemyState = battleSystem.getEnemyState();
         String name = enemyState.getName();
+        int tier = enemyState.getTier();
         String maxHealth = String.valueOf(enemyState.getEnemyMaxHealth());
         String currentHealth = String.valueOf(enemyState.getEnemyCurrentHealth());
-        return name + "\nHP: " + currentHealth + "/" + maxHealth;
+        return name + "\nTier: " + tier + "\nHP: " + currentHealth + "/" + maxHealth;
     }
 
     public void setUpBattle(int enemyId, int enemyTier) {
@@ -573,7 +574,7 @@ public class GamePresenter extends AppCompatActivity {
     }
 
     public ArrayList<String> getShopItemsArray() {
-        int[] shopItemIds = {0, 1, 2, 3, 4, 5, 6};
+        int[] shopItemIds = {0, 1, 2, 3, 4, 5, 6, 7};
         return getStringListOfDataProperty("items.json", "name", shopItemIds, this);
     }
 
@@ -586,7 +587,7 @@ public class GamePresenter extends AppCompatActivity {
         StringBuilder itemInfo = new StringBuilder();
         String description = getItemDescriptionByName(name);
         int price = getItemPriceByName(name);
-        itemInfo.append('\n').append(description).append("\n\nPrice: ").append(price);
+        itemInfo.append('\n').append(description).append("\n\nPrice: ").append(price).append(" tokens");
         return String.valueOf(itemInfo);
     }
 
@@ -670,10 +671,25 @@ public class GamePresenter extends AppCompatActivity {
         playerState.setSkillLevelAndExperience(id, newLevelAndExp[0], newLevelAndExp[1]);
     }
 
+    public boolean hasMaxHealth() {
+        int maxHealth = playerState.getPlayerMaxHealth();
+        int currentHealth = playerState.getHealth();
+        return currentHealth == maxHealth;
+    }
+
     public boolean hasReachedMaxSkillLimit() {
         int MAX_NUMBER_OF_SKILLS = 5;
         int numberOfSkills = playerState.getSkillList().length;
         if (numberOfSkills >= MAX_NUMBER_OF_SKILLS) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean hasMinAmountOfSkills() {
+        int MIN_NUMBER_OF_SKILLS = 3;
+        int numberOfSkills = playerState.getSkillList().length;
+        if (numberOfSkills <= MIN_NUMBER_OF_SKILLS) {
             return true;
         }
         return false;

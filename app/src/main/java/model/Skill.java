@@ -90,7 +90,8 @@ public class Skill {
     private int calculateSkillDamage(int level, int tier, int baseDamage) {
         Random random = new Random();
         int randomFactor = random.nextInt(2) + 4;
-        return ((baseDamage * level)/(tier * 2)) + randomFactor + Math.max(level, 1);
+        int extraFactor = level > 1 ? level : 0;
+        return ((baseDamage * level)/(tier * 2)) + randomFactor + extraFactor;
     }
 
     public boolean canUseSkill() {

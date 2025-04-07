@@ -65,9 +65,7 @@ public class ShopMenu extends BaseMenu {
     }
 
     private void createItemInfoMenu(int x) {
-        String ITEM_NAME_FILLER = "[Item Name]";
-
-        MenuItem itemName = new MenuItem(x, Y, MENU_HEADING_HEIGHT, MENU_WIDTH, ITEM_NAME_FILLER, true, context);
+        MenuItem itemName = new MenuItem(x, Y, MENU_HEADING_HEIGHT, MENU_WIDTH, BLANK_TEXT, true, context);
         menuItemsList.put("item_name", itemName);
 
         MenuItem itemInfo = new MenuItem(x, Y + MENU_HEADING_HEIGHT, MENU_HEIGHT, MENU_WIDTH, BLANK_TEXT, false, context);
@@ -145,14 +143,22 @@ public class ShopMenu extends BaseMenu {
 
     private void handleBuyButton(int eventX, int eventY, GamePresenter presenter) {
         boolean hasBuyBtnBeenPressed = hasBtnBeenPressed(buyButton, eventX, eventY, presenter);
-        if (hasBuyBtnBeenPressed && selectedItem != null) {
-            int price = presenter.getItemPriceByName(selectedItem);
-            boolean canAfford = presenter.canPlayerAffordItem(selectedItem);
-            if (canAfford) {
-                showPurchaseConfirmation(price);
-            } else {
-                showPurchaseError(price);
-            }
+        if (!hasBuyBtnBeenPressed) {
+            return;
+        }
+
+        if (selectedItem == null) {
+            String alertMsg = context.getString(R.string.selectItemAlert);
+            alertPopUp = new AlertPopUp(alertMsg, context, true);
+            return;
+        }
+
+        int price = presenter.getItemPriceByName(selectedItem);
+        boolean canAfford = presenter.canPlayerAffordItem(selectedItem);
+        if (canAfford) {
+            showPurchaseConfirmation(price);
+        } else {
+            showPurchaseError(price);
         }
     }
 

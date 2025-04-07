@@ -220,8 +220,8 @@ public class PlayerMenu extends BaseMenu {
 
             updateSkillListVisuals();
             updateItemListVisuals();
-            selectedItem = "";
-            selectedSkill = "";
+            selectedItem = null;
+            selectedSkill = null;
         }
     }
 
@@ -265,35 +265,52 @@ public class PlayerMenu extends BaseMenu {
     }
 
     private void handleSkillButtons(float eventX, float eventY, GamePresenter presenter) {
-        if (selectedSkill == null || selectedSkill.isEmpty()) {
+        boolean hasSkillInfoBeenPressed = hasBtnBeenPressed(skillInfo, (int) eventX, (int) eventY, presenter);
+        boolean hasForgetSkillBeenPressed = hasBtnBeenPressed(forgetSkill, (int) eventX, (int) eventY, presenter);
+
+        if ((hasSkillInfoBeenPressed || hasForgetSkillBeenPressed) && selectedSkill == null) {
+            showSelectSkillAlertMsg();
             return;
         }
 
-        boolean hasSkillInfoBeenPressed = hasBtnBeenPressed(skillInfo, (int) eventX, (int) eventY, presenter);
         if (hasSkillInfoBeenPressed) {
             String alertMsg = presenter.getSkillDescriptionByName(selectedSkill);
             alertPopUp = new AlertPopUp(alertMsg, context, false);
         }
 
-        boolean hasForgetSkillBeenPressed = hasBtnBeenPressed(forgetSkill, (int) eventX, (int) eventY, presenter);
         if (hasForgetSkillBeenPressed) {
+            boolean hasMinAmountOfSkills= presenter.hasMinAmountOfSkills();
+            if (hasMinAmountOfSkills) {
+                String alertMsg = context.getString(R.string.minSkillLimitReached);
+                alertPopUp = new AlertPopUp(alertMsg, context, true);
+                return;
+            }
+
             forgetSkillMsg = context.getString(R.string.forgetSkillConfirmationMsg, selectedSkill);
             confirmPopUp = new ConfirmPopUp(forgetSkillMsg, context, true);
         }
     }
 
+    private void showSelectSkillAlertMsg() {
+        String alertMsg = context.getString(R.string.selectSkillAlert);
+        alertPopUp = new AlertPopUp(alertMsg, context, true);
+    }
+
     private void handleItemButtons(float eventX, float eventY, GamePresenter presenter) {
-        if (selectedItem == null || selectedItem.isEmpty()) {
+        boolean hasItemInfoBeenPressed = hasBtnBeenPressed(itemInfo, (int) eventX, (int) eventY, presenter);
+        boolean hasSellItemBeenPressed = hasBtnBeenPressed(sellItem, (int) eventX, (int) eventY, presenter);
+        boolean hasUsedItemBeenPressed = hasBtnBeenPressed(useItem, (int) eventX, (int) eventY, presenter);
+
+        if ((hasItemInfoBeenPressed || hasSellItemBeenPressed || hasUsedItemBeenPressed) && selectedItem == null) {
+            showSelectItemAlertMsg();
             return;
         }
 
-        boolean hasItemInfoBeenPressed = hasBtnBeenPressed(itemInfo, (int) eventX, (int) eventY, presenter);
         if (hasItemInfoBeenPressed) {
             String alertMsg = presenter.getItemInfoByName(selectedItem);
             alertPopUp = new AlertPopUp(alertMsg, context, false);
         }
 
-        boolean hasSellItemBeenPressed = hasBtnBeenPressed(sellItem, (int) eventX, (int) eventY, presenter);
         if (hasSellItemBeenPressed) {
             double DISCOUNT_FACTOR = 0.8;
             int price = (int) (presenter.getItemPriceByName(selectedItem) * DISCOUNT_FACTOR);
@@ -301,7 +318,6 @@ public class PlayerMenu extends BaseMenu {
             confirmPopUp = new ConfirmPopUp(sellItemMsg, context, true);
         }
 
-        boolean hasUsedItemBeenPressed = hasBtnBeenPressed(useItem, (int) eventX, (int) eventY, presenter);
         if (hasUsedItemBeenPressed){
             if (selectedItem.contains("Book of Skills")){
                 if (Objects.equals(selectedSkill, "") || selectedSkill == null  ) {
@@ -311,6 +327,12 @@ public class PlayerMenu extends BaseMenu {
                     useItemMsg = context.getString(R.string.useSkillBookConfirmationMsg, selectedItem, selectedSkill);
                     confirmPopUp = new ConfirmPopUp(useItemMsg, context, true);
                 }
+                return;
+            }
+            boolean hasMaxHealth = presenter.hasMaxHealth();
+            if (selectedItem.contains("Health Rune") && hasMaxHealth) {
+                String alertMsg = context.getString(R.string.cannotUseRuneMaxHealth);
+                alertPopUp = new AlertPopUp(alertMsg, context, true);
                 return;
             }
             if (selectedItem.contains("Anomalous")){
@@ -328,6 +350,11 @@ public class PlayerMenu extends BaseMenu {
             useItemMsg = context.getString(R.string.useItemConfirmationMsg, selectedItem);
             confirmPopUp = new ConfirmPopUp(useItemMsg, context, true);
         }
+    }
+
+    private void showSelectItemAlertMsg() {
+        String alertMsg = context.getString(R.string.selectItemAlert);
+        alertPopUp = new AlertPopUp(alertMsg, context, true);
     }
 
     private void updateSkillListVisuals() {
