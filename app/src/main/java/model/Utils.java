@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +44,27 @@ public final class Utils {
             throw new RuntimeException(e);
         }
     }
+
+    public static JSONArray loadJsonArrayFromFileOnDevice(String filename, Context context) {
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(context.openFileInput(filename)))) {
+
+            StringBuilder skillString = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                skillString.append(line);
+            }
+
+            return new JSONArray(skillString.toString());
+
+        } catch (FileNotFoundException e) {
+            // File doesn't exist yet — return empty array
+            return new JSONArray();
+        } catch (JSONException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public static void saveJsonArrayToFile(JSONArray jsonArray, String filename, Context context) {
         try {

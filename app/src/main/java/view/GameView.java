@@ -30,6 +30,7 @@ import android.view.SurfaceView;
 import com.example.anomalousencounters.R;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import presenter.GamePresenter;
 import view.battle.BattleView;
@@ -63,6 +64,8 @@ public class GameView  extends SurfaceView implements Runnable{
     private boolean isCanvasFadingOut = false;
     private final int fadeSpeed = 10;
     private ConfirmPopUp confirmPopUp;
+    private String saveMsg;
+    private String homeMsg;
 
 
     public GameView(Context context, GamePresenter presenter){
@@ -287,6 +290,7 @@ public class GameView  extends SurfaceView implements Runnable{
                     checkIfShopOpened(eventX, eventY);
                     checkIfIndexOpened(eventX, eventY);
                     checkIfHomeIconClicked(eventX, eventY);
+                    checkIfSaveMenuOpened(eventX, eventY);
                     if (!playerMenu.isMenuClosed()) {
                         playerMenu.checkForUserTouch(eventX, eventY, presenter);
                     }
@@ -332,9 +336,19 @@ public class GameView  extends SurfaceView implements Runnable{
         boolean userTouchedPopUp = confirmPopUp.didUserTouchButton(eventX, eventY, presenter);
         if (userTouchedPopUp) {
             boolean didUserConfirm = confirmPopUp.didUserConfirm();
-            if (didUserConfirm) {
+
+            String confirmText = confirmPopUp.getMessage();
+            boolean isHomePopUp = Objects.equals(confirmText, homeMsg);
+            boolean isSavePopUp = Objects.equals(confirmText, saveMsg);
+
+            if (isHomePopUp && didUserConfirm) {
                 presenter.changeViewBackToMainActivity();
             }
+
+            if (isSavePopUp && didUserConfirm) {
+                presenter.makeFirstSaveSlot();
+            }
+
             confirmPopUp = null;
             isMenuOpen = false;
             canPlayerMove = true;
@@ -383,8 +397,23 @@ public class GameView  extends SurfaceView implements Runnable{
         }
         if (homeIcon.hasBeenTouched(eventX, eventY, presenter, 1)) {
             isMenuOpen = true;
-            String confirmMsg = presenter.getString(R.string.confirmHomeBtn);
-            confirmPopUp = new ConfirmPopUp(confirmMsg, presenter, true);
+            homeMsg = presenter.getString(R.string.confirmHomeBtn);
+            confirmPopUp = new ConfirmPopUp(homeMsg, presenter, true);
+            canPlayerMove = false;
+        }
+    }
+
+    private void checkIfSaveMenuOpened(float eventX, float eventY) {
+        if (isMenuOpen){
+            return;
+        }
+        if (saveIcon.hasBeenTouched(eventX, eventY, presenter, 1)) {
+            isMenuOpen = true;
+            boolean hasSaveFile = presenter.hasSaveFile();
+            if (!hasSaveFile) {
+                saveMsg = presenter.getString(R.string.saveConfirmation);
+                confirmPopUp = new ConfirmPopUp(saveMsg, presenter, true);
+            }
             canPlayerMove = false;
         }
     }

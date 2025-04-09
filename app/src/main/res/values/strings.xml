@@ -29,4 +29,5 @@
     <string name="continue_button">continue game button</string>
     <string name="how_to_play_button">how to play button</string>
     <string name="confirmHomeBtn">Are you sure you want to return to the main menu?</string>
+    <string name="saveConfirmation">No save data exists.\nDo you want to create a new save slot?</string>
 </resources>

@@ -13,7 +13,7 @@ import static model.Utils.getPropertyByName;
 import static model.Utils.getSingleDataProperty;
 import static model.Utils.getStringListOfDataProperty;
 import static model.Utils.loadJsonArrayFromFile;
-import static model.Utils.saveJsonArrayToFile;
+import static model.Utils.loadJsonArrayFromFileOnDevice;
 
 import android.content.pm.ActivityInfo;
 import android.content.res.AssetFileDescriptor;
@@ -39,6 +39,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -189,63 +191,6 @@ public class GamePresenter extends AppCompatActivity {
         playerState = new PlayerState(name, maxHealth, tokens);
         loadPlayerItems(newPlayerIndex);
         loadPlayerSkills(newPlayerIndex);
-    }
-
-    private void makeNewSaveSlot() {
-        try {
-            // parse the existing JSON array
-            JSONArray jsonArray = loadJsonArrayFromFile("player_config.json", this);
-
-            JSONObject newPlayer = new JSONObject();
-
-            String name = playerState.getName();
-            newPlayer.put("name", name);
-
-            int health = playerState.getHealth();
-            newPlayer.put("health", health);
-
-            int maxHealth = playerState.getPlayerMaxHealth();
-            newPlayer.put("maxHealth", maxHealth);
-
-            int tokens = playerState.getTokens();
-            newPlayer.put("tokens", tokens);
-
-            int phase = playerState.getPhase();
-            newPlayer.put("phase", phase);
-
-            // create items array
-            JSONArray items = new JSONArray();
-            List<int[]> playerItems = playerState.getItems();
-            for (int[] item: playerItems) {
-                JSONObject itemObj = new JSONObject();
-                itemObj.put("id", item[0]);
-                itemObj.put("amount", item[1]);
-                items.put(itemObj);
-            }
-            newPlayer.put("items", items);
-
-            // create skills array
-            JSONArray skills = new JSONArray();
-            List<int[]> playerSkills = playerState.getSkills();
-            for (int[] skill: playerSkills) {
-                JSONObject skillObj = new JSONObject();
-                skillObj.put("id", skill[0]);
-                skillObj.put("level", skill[1]);
-                skillObj.put("experience", skill[2]);
-                skills.put(skillObj);
-            }
-            newPlayer.put("skills", skills);
-
-
-            // add the new player to the array
-            jsonArray.put(newPlayer);
-
-            // Save the updated JSON array back to the file
-            saveJsonArrayToFile(jsonArray, "player_config.json", this);
-
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private void loadPlayerItems(int playerIndex) {
@@ -781,6 +726,112 @@ public class GamePresenter extends AppCompatActivity {
 
     public int getNumberOfEnemies() {
         return encounterSystem.getNumberOfEnemies();
+    }
+
+    public void makeFirstSaveSlot() {
+        try {
+            JSONArray jsonArray = new JSONArray();
+
+            JSONObject newPlayer = createPlayerSaveObject();
+            jsonArray.put(newPlayer);
+
+            saveJSONArrayOnUserDevice(jsonArray);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void addSaveSlot() {
+        try {
+            String filename = "save_slots.json";
+            JSONArray existingSlots = loadJsonArrayFromFileOnDevice(filename, this);
+
+            JSONObject newPlayer = createPlayerSaveObject();
+            existingSlots.put(newPlayer);
+
+            saveJSONArrayOnUserDevice(existingSlots);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void overwriteSaveSlot(int index) {
+        try {
+            String filename = "save_slots.json";
+            JSONArray existingSlots = loadJsonArrayFromFileOnDevice(filename, this);
+
+            JSONObject newPlayer = createPlayerSaveObject();
+
+            if (index >= 0 && index < existingSlots.length()) {
+                existingSlots.put(index, newPlayer); // overwrites at given index
+                saveJSONArrayOnUserDevice(existingSlots);
+            } else {
+                throw new IndexOutOfBoundsException("Error: invalid save slot index: " + index);
+            }
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private JSONObject createPlayerSaveObject() throws JSONException {
+        JSONObject newPlayer = new JSONObject();
+
+        newPlayer.put("name", playerState.getName());
+        newPlayer.put("health", playerState.getHealth());
+        newPlayer.put("maxHealth", playerState.getPlayerMaxHealth());
+        newPlayer.put("tokens", playerState.getTokens());
+        newPlayer.put("phase", playerState.getPhase());
+
+        // Items
+        JSONArray items = new JSONArray();
+        for (int[] item : playerState.getItems()) {
+            JSONObject itemObj = new JSONObject();
+            itemObj.put("id", item[0]);
+            itemObj.put("amount", item[1]);
+            items.put(itemObj);
+        }
+        newPlayer.put("items", items);
+
+        // Skills
+        JSONArray skills = new JSONArray();
+        for (int[] skill : playerState.getSkills()) {
+            JSONObject skillObj = new JSONObject();
+            skillObj.put("id", skill[0]);
+            skillObj.put("level", skill[1]);
+            skillObj.put("experience", skill[2]);
+            skills.put(skillObj);
+        }
+        newPlayer.put("skills", skills);
+
+        return newPlayer;
+    }
+
+    private void saveJSONArrayOnUserDevice(JSONArray jsonArray) {
+        String filename = "save_slots.json";
+        try (FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE)) {
+            fos.write(jsonArray.toString().getBytes());
+            fos.flush();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean hasSaveFile() {
+        String filename = "save_slots.json";
+        File file = new File(getFilesDir(), filename);
+        return file.exists();
+    }
+
+    public ArrayList<String> getSaveSlotList() {
+        ArrayList<String> saveSlotList = new ArrayList<>();
+        JSONArray jsonArray = loadJsonArrayFromFileOnDevice("save_slots.json", this);
+        int numberOfSaveSlots = jsonArray.length() - 1;
+
+        for (int i = 1; i <= numberOfSaveSlots; i++) {
+            String saveSlot = "Save Slot " + i;
+            saveSlotList.add(saveSlot);
+        }
+        return saveSlotList;
     }
 
     // This method executes when the user continues the game
