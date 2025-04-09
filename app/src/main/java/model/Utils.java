@@ -9,9 +9,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public final class Utils {
@@ -38,6 +40,18 @@ public final class Utils {
             inputStream.close();
             return new JSONArray(skillString.toString());
         } catch (JSONException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void saveJsonArrayToFile(JSONArray jsonArray, String filename, Context context) {
+        try {
+            FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE);
+            OutputStreamWriter writer = new OutputStreamWriter(fos);
+            writer.write(jsonArray.toString(2));
+            writer.close();
+            fos.close();
+        } catch (IOException | JSONException e) {
             throw new RuntimeException(e);
         }
     }

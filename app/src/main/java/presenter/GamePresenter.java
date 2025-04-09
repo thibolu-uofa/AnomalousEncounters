@@ -12,6 +12,8 @@ import static model.Utils.getEnemyImage;
 import static model.Utils.getPropertyByName;
 import static model.Utils.getSingleDataProperty;
 import static model.Utils.getStringListOfDataProperty;
+import static model.Utils.loadJsonArrayFromFile;
+import static model.Utils.saveJsonArrayToFile;
 
 import android.content.pm.ActivityInfo;
 import android.content.res.AssetFileDescriptor;
@@ -39,6 +41,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import model.BattleSystem;
 import model.EncounterSystem;
@@ -61,53 +64,77 @@ public class GamePresenter extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // set orientation to landscape
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        applyWindowInsets();
 
-        ImageView startNewGame = findViewById(R.id.startButton);
-        startNewGame.setOnClickListener(v -> {
-            View rootView = findViewById(android.R.id.content);
-            Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out_animation);
-            rootView.startAnimation(fadeOut);
+        initializeGameComponents();
 
-            fadeOut.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {}
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    setContentView(view);
-                    view.startFadeIn();
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {}
-            });
-
-        });
-
-        setUpNewGame();
+        View mainView = findViewById(android.R.id.content);
+        setupStartButtonListeners(mainView);
 
         // FOR TESTING PURPOSES
         // playSound("sample_sound.wav");
     }
 
-    private void setUpNewGame() {
-        makeNewPlayer();
-
+    private void initializeGameComponents() {
+        playerState = new PlayerState();
         gameLogic = new GameLogic();
         encounterSystem = new EncounterSystem();
-
-        // Initialize gameView and set it as the view
         view = new GameView(this, this);
+    }
+
+    public void changeViewBackToMainActivity() {
+        view.pause();
+        setContentView(R.layout.activity_main);
+        applyWindowInsets();
+
+        // Apply fade-in animation to main menu
+        View mainView = findViewById(android.R.id.content);
+        Animation fadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in_animation);
+        mainView.startAnimation(fadeIn);
+
+        setupStartButtonListeners(mainView);
+        setupContinueGameListeners(mainView);
+
+        view.resume();
+    }
+
+    private void setupStartButtonListeners(View mainView) {
+        ImageView startNewGame = findViewById(R.id.startButton);
+        startNewGame.setOnClickListener(v -> {
+            Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out_animation);
+            mainView.startAnimation(fadeOut);
+
+            fadeOut.setAnimationListener(new FadeOutListener(() -> {
+                makeNewPlayer();
+                setContentView(view);
+                view.startNewGame();
+                view.startFadeIn();
+            }));
+        });
+    }
+
+    private void setupContinueGameListeners(View mainView) {
+        ImageView continueGame = findViewById(R.id.continueButton);
+        continueGame.setOnClickListener(v -> {
+            Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out_animation);
+            mainView.startAnimation(fadeOut);
+
+            fadeOut.setAnimationListener(new FadeOutListener(() -> {
+                setContentView(view);
+                view.startFadeIn();
+            }));
+        });
+    }
+
+    private void applyWindowInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
     }
 
     // https://gamecodeschool.com/android/playing-sound-fx-demo/
@@ -162,6 +189,63 @@ public class GamePresenter extends AppCompatActivity {
         playerState = new PlayerState(name, maxHealth, tokens);
         loadPlayerItems(newPlayerIndex);
         loadPlayerSkills(newPlayerIndex);
+    }
+
+    private void makeNewSaveSlot() {
+        try {
+            // parse the existing JSON array
+            JSONArray jsonArray = loadJsonArrayFromFile("player_config.json", this);
+
+            JSONObject newPlayer = new JSONObject();
+
+            String name = playerState.getName();
+            newPlayer.put("name", name);
+
+            int health = playerState.getHealth();
+            newPlayer.put("health", health);
+
+            int maxHealth = playerState.getPlayerMaxHealth();
+            newPlayer.put("maxHealth", maxHealth);
+
+            int tokens = playerState.getTokens();
+            newPlayer.put("tokens", tokens);
+
+            int phase = playerState.getPhase();
+            newPlayer.put("phase", phase);
+
+            // create items array
+            JSONArray items = new JSONArray();
+            List<int[]> playerItems = playerState.getItems();
+            for (int[] item: playerItems) {
+                JSONObject itemObj = new JSONObject();
+                itemObj.put("id", item[0]);
+                itemObj.put("amount", item[1]);
+                items.put(itemObj);
+            }
+            newPlayer.put("items", items);
+
+            // create skills array
+            JSONArray skills = new JSONArray();
+            List<int[]> playerSkills = playerState.getSkills();
+            for (int[] skill: playerSkills) {
+                JSONObject skillObj = new JSONObject();
+                skillObj.put("id", skill[0]);
+                skillObj.put("level", skill[1]);
+                skillObj.put("experience", skill[2]);
+                skills.put(skillObj);
+            }
+            newPlayer.put("skills", skills);
+
+
+            // add the new player to the array
+            jsonArray.put(newPlayer);
+
+            // Save the updated JSON array back to the file
+            saveJsonArrayToFile(jsonArray, "player_config.json", this);
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void loadPlayerItems(int playerIndex) {
@@ -713,4 +797,22 @@ public class GamePresenter extends AppCompatActivity {
         view.pause();
     }
 
+    private class FadeOutListener implements Animation.AnimationListener {
+        private final Runnable onAnimationEndAction;
+
+        public FadeOutListener(Runnable onAnimationEndAction) {
+            this.onAnimationEndAction = onAnimationEndAction;
+        }
+
+        @Override
+        public void onAnimationStart(Animation animation) {}
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            onAnimationEndAction.run();
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {}
+    }
 }

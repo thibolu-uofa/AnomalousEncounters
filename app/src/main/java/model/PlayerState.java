@@ -160,6 +160,7 @@ public class PlayerState {
     public void updateTokens(int delta) {
         int newTokenAmount = tokens + delta;
         if (newTokenAmount < 0) {
+            tokens = 0;
             return;
         }
         tokens += delta;
@@ -298,5 +299,13 @@ public class PlayerState {
 
     public int getPhase() {
         return phase;
+    }
+
+    public List<int[]> getItems() {
+        return items;
+    }
+
+    public List<int[]> getSkills() {
+        return skills;
     }
 }

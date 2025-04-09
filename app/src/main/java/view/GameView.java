@@ -43,7 +43,7 @@ public class GameView  extends SurfaceView implements Runnable{
     private Canvas canvas;
     private final Paint paint;
     private final HealthBar healthBar;
-    private final Sprite inventory, settingsIcon, shopIcon, indexIcon;
+    private final Sprite inventory, homeIcon, saveIcon, shopIcon, indexIcon;
     private final PlayerSprite playerSprite;
     private final BackgroundImage backgroundImage;
     private PlayerMenu playerMenu;
@@ -62,6 +62,7 @@ public class GameView  extends SurfaceView implements Runnable{
     private boolean isCanvasFadingIn = false;
     private boolean isCanvasFadingOut = false;
     private final int fadeSpeed = 10;
+    private ConfirmPopUp confirmPopUp;
 
 
     public GameView(Context context, GamePresenter presenter){
@@ -74,12 +75,15 @@ public class GameView  extends SurfaceView implements Runnable{
         SCREEN_WIDTH = displayMetrics.widthPixels;
         SCREEN_HEIGHT = displayMetrics.heightPixels;
 
-        Bitmap settingsIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.settings_icon);
-        int iconsX = SCREEN_WIDTH - settingsIconBitmap.getWidth() - 25;
-        settingsIcon = new Sprite(settingsIconBitmap, iconsX, 70);
+        Bitmap homeIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.house_icon);
+        int iconsX = SCREEN_WIDTH - homeIconBitmap.getWidth() - 25;
+        homeIcon = new Sprite(homeIconBitmap, iconsX, 70);
+
+        Bitmap saveIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.save_icon);
+        saveIcon = new Sprite(saveIconBitmap, iconsX, homeIcon.getY() + homeIconBitmap.getHeight() + 20);
 
         Bitmap indexIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.book_icon);
-        indexIcon = new Sprite(indexIconBitmap, iconsX, settingsIcon.getY() + settingsIconBitmap.getHeight() + 20);
+        indexIcon = new Sprite(indexIconBitmap, iconsX, saveIcon.getY() + saveIconBitmap.getHeight() + 20);
 
         Bitmap shopIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.shop_icon);
         shopIcon = new Sprite(shopIconBitmap, iconsX, indexIcon.getY() + indexIconBitmap.getHeight() + 20);
@@ -150,12 +154,20 @@ public class GameView  extends SurfaceView implements Runnable{
             }
 
             if (battleView != null) {
-                battleView.updateMenuTexts();
-                battleView.draw(canvas, paint);
+                try {
+                    battleView.updateMenuTexts();
+                    battleView.draw(canvas, paint);
+                } catch (NullPointerException e) {
+                    Log.e("Null Pointer Exception for BattleView", "BattleView is null", e);
+                }
             }
 
             if (endBattleScreen != null) {
                 endBattleScreen.draw(canvas, paint);
+            }
+
+            if (confirmPopUp != null) {
+                confirmPopUp.draw(canvas, paint);
             }
 
             if (isCanvasFadingOut || isCanvasFadingIn) {
@@ -221,7 +233,8 @@ public class GameView  extends SurfaceView implements Runnable{
             lastEnemyEncounterCheck = System.currentTimeMillis();
         }
 
-        settingsIcon.draw(canvas, paint);
+        homeIcon.draw(canvas, paint);
+        saveIcon.draw(canvas, paint);
         indexIcon.draw(canvas, paint);
         shopIcon.draw(canvas, paint);
         inventory.draw(canvas, paint);
@@ -266,9 +279,14 @@ public class GameView  extends SurfaceView implements Runnable{
 //                Log.d("Get Player/Background Position", "The Background X1 Position" + backgroundImage.getX());
 
                 if (isOnOverworld) {
+                    if (confirmPopUp != null) {
+                        handleConfirmPopUp(eventX, eventY, presenter);
+                        break;
+                    }
                     checkIfInventoryOpened(eventX, eventY);
                     checkIfShopOpened(eventX, eventY);
                     checkIfIndexOpened(eventX, eventY);
+                    checkIfHomeIconClicked(eventX, eventY);
                     if (!playerMenu.isMenuClosed()) {
                         playerMenu.checkForUserTouch(eventX, eventY, presenter);
                     }
@@ -310,6 +328,19 @@ public class GameView  extends SurfaceView implements Runnable{
         return true;
     }
 
+    private void handleConfirmPopUp(float eventX, float eventY, GamePresenter presenter) {
+        boolean userTouchedPopUp = confirmPopUp.didUserTouchButton(eventX, eventY, presenter);
+        if (userTouchedPopUp) {
+            boolean didUserConfirm = confirmPopUp.didUserConfirm();
+            if (didUserConfirm) {
+                presenter.changeViewBackToMainActivity();
+            }
+            confirmPopUp = null;
+            isMenuOpen = false;
+            canPlayerMove = true;
+        }
+    }
+
     private void checkIfInventoryOpened(float eventX, float eventY) {
         if (isMenuOpen){
             return;
@@ -342,6 +373,18 @@ public class GameView  extends SurfaceView implements Runnable{
             isMenuOpen = true;
             indexMenu = new IndexMenu(presenter, getContext());
             indexMenu.openMenu();
+            canPlayerMove = false;
+        }
+    }
+
+    private void checkIfHomeIconClicked(float eventX, float eventY) {
+        if(isMenuOpen){
+            return;
+        }
+        if (homeIcon.hasBeenTouched(eventX, eventY, presenter, 1)) {
+            isMenuOpen = true;
+            String confirmMsg = presenter.getString(R.string.confirmHomeBtn);
+            confirmPopUp = new ConfirmPopUp(confirmMsg, presenter, true);
             canPlayerMove = false;
         }
     }
@@ -445,6 +488,7 @@ public class GameView  extends SurfaceView implements Runnable{
     }
 
     private void handleEndBattle(){
+        startFadeIn();
         //prevents player from immediately encountering another enemy
         int stopGap = 5000;
         lastEnemyEncounterCheck = System.currentTimeMillis() + stopGap;
@@ -486,6 +530,11 @@ public class GameView  extends SurfaceView implements Runnable{
         battleView.setTilesToHighlight(tileList);
         battleView.setTileHighlightColor(ENEMY_TILE_HIGHLIGHT_COLOR);
         battleView.flashTiles();
+    }
+
+    public void startNewGame() {
+        displayOverworld();
+        backgroundImage.resetPositions();
     }
 
     public String getChosenPlayerSkill() {

@@ -29,6 +29,13 @@ public class BackgroundImage {
         this.y = y;
     }
 
+    public void resetPositions() {
+        this.skyX1 = 0;
+        this.skyX2 = skyBitmap.getWidth();
+        this.groundX1 = 0;
+        this.groundX2 = groundBitmap.getWidth();
+    }
+
     public void draw(Canvas canvas, Paint paint) {
         canvas.drawBitmap(skyBitmap, skyX1, y, paint);
         canvas.drawBitmap(skyBitmap, skyX2, y, paint);

@@ -82,7 +82,7 @@ public class EnemyAI {
             return Action.MOVE_ATTACK;
         }
 
-        // Worse Case: enemy just moves closer to the player
+        // Worse Case: enemy finds best tile to move towards
         findBestTileToMoveTowards();
         return Action.MOVE;
     }
