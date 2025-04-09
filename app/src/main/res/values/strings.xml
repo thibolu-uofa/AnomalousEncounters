@@ -30,4 +30,14 @@
     <string name="how_to_play_button">how to play button</string>
     <string name="confirmHomeBtn">Are you sure you want to return to the main menu?</string>
     <string name="saveConfirmation">No save data exists.\nDo you want to create a new save slot?</string>
+    <string name="newSaveConfirmation">Are you sure you want to create a new save file?</string>
+    <string name="newSaveAlert">You have successfully made a new save slot.</string>
+    <string name="overwriteSaveConfirmation">Are you sure you want to overwrite save slot [%d]?\nThis action cannot be undone</string>
+    <string name="overwriteAlert">You have successfully overwritten an old save slot.</string>
+    <string name="maxSavesReached">Cannot create new save file.\nMax amount of save files reached.</string>
+    <string name="selectSaveSlot">Please select a save slot.</string>
+    <string name="deleteConfirmation">Are you sure you want to delete save slot [%d]?</string>
+    <string name="deleteAlert">You have successfully deleted a save slot.</string>
+    <string name="loadConfirmation">Are you sure you want to load the save slot [%d]?</string>
+    <string name="loadAlert">You have successfully loaded a save slot.</string>
 </resources>

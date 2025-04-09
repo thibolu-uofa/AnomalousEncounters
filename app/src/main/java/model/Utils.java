@@ -66,14 +66,12 @@ public final class Utils {
     }
 
 
-    public static void saveJsonArrayToFile(JSONArray jsonArray, String filename, Context context) {
-        try {
-            FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE);
-            OutputStreamWriter writer = new OutputStreamWriter(fos);
-            writer.write(jsonArray.toString(2));
-            writer.close();
-            fos.close();
-        } catch (IOException | JSONException e) {
+    public static void saveJSONArrayOnUserDevice(JSONArray jsonArray, Context context) {
+        String filename = "save_slots.json";
+        try (FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE)) {
+            fos.write(jsonArray.toString().getBytes());
+            fos.flush();
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -131,6 +129,16 @@ public final class Utils {
         JSONArray jsonArray = loadJsonArrayFromFile(filename, context);
         try {
              dataProperty = jsonArray.getJSONObject(id).get(property);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return dataProperty;
+    }
+
+    public static Object getSingleDataPropertyFromJSONArray(JSONArray jsonArray, String property, int id, Context context) {
+        Object dataProperty;
+        try {
+            dataProperty = jsonArray.getJSONObject(id).get(property);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }

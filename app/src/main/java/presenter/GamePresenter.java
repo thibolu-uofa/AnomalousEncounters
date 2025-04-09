@@ -11,9 +11,11 @@ import static model.Utils.getDataProperty;
 import static model.Utils.getEnemyImage;
 import static model.Utils.getPropertyByName;
 import static model.Utils.getSingleDataProperty;
+import static model.Utils.getSingleDataPropertyFromJSONArray;
 import static model.Utils.getStringListOfDataProperty;
 import static model.Utils.loadJsonArrayFromFile;
 import static model.Utils.loadJsonArrayFromFileOnDevice;
+import static model.Utils.saveJSONArrayOnUserDevice;
 
 import android.content.pm.ActivityInfo;
 import android.content.res.AssetFileDescriptor;
@@ -189,13 +191,16 @@ public class GamePresenter extends AppCompatActivity {
         int tokens = (int) getSingleDataProperty("player_config.json", "tokens", newPlayerIndex, this);
 
         playerState = new PlayerState(name, maxHealth, tokens);
-        loadPlayerItems(newPlayerIndex);
-        loadPlayerSkills(newPlayerIndex);
+
+        JSONArray items = (JSONArray) getSingleDataProperty("player_config.json", "items", newPlayerIndex, this);
+        loadPlayerItems(items);
+
+        JSONArray skills = (JSONArray) getSingleDataProperty("player_config.json", "skills", newPlayerIndex, this);
+        loadPlayerSkills(skills);
     }
 
-    private void loadPlayerItems(int playerIndex) {
+    private void loadPlayerItems(JSONArray items) {
         try {
-            JSONArray items = (JSONArray) getSingleDataProperty("player_config.json", "items", playerIndex, this);
             for (int i = 0; i < items.length(); i++) {
                 JSONObject item = items.getJSONObject(i);
                 int itemId = item.getInt("id");
@@ -207,9 +212,8 @@ public class GamePresenter extends AppCompatActivity {
         }
     }
 
-    private void loadPlayerSkills(int playerIndex) {
+    private void loadPlayerSkills(JSONArray skills) {
         try {
-            JSONArray skills = (JSONArray) getSingleDataProperty("player_config.json", "skills", playerIndex, this);
             for (int i = 0; i < skills.length(); i++) {
                 JSONObject skill = skills.getJSONObject(i);
                 int skillId = skill.getInt("id");
@@ -221,6 +225,21 @@ public class GamePresenter extends AppCompatActivity {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void loadSaveSlot(int index) {
+        JSONArray jsonArray = loadJsonArrayFromFileOnDevice("save_slots.json", this);
+
+        String name = (String) getSingleDataPropertyFromJSONArray(jsonArray, "name", index, this);
+        int maxHealth = (int) getSingleDataPropertyFromJSONArray(jsonArray, "maxHealth", index, this);
+        int tokens = (int) getSingleDataPropertyFromJSONArray(jsonArray, "tokens", index, this);
+        playerState = new PlayerState(name, maxHealth, tokens);
+
+        JSONArray items = (JSONArray) getSingleDataPropertyFromJSONArray(jsonArray, "items", index, this);
+        loadPlayerItems(items);
+
+        JSONArray skills = (JSONArray) getSingleDataPropertyFromJSONArray(jsonArray, "skills", index, this);
+        loadPlayerSkills(skills);
     }
 
     public boolean isInHitbox(int eventX, int eventY, int leftX, int rightX, int topY, int bottomY) {
@@ -735,11 +754,19 @@ public class GamePresenter extends AppCompatActivity {
             JSONObject newPlayer = createPlayerSaveObject();
             jsonArray.put(newPlayer);
 
-            saveJSONArrayOnUserDevice(jsonArray);
+            saveJSONArrayOnUserDevice(jsonArray, this);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean hasMaxSaves() {
+        JSONArray jsonArray = loadJsonArrayFromFileOnDevice("save_slots.json", this);
+        int numberOfSaveSlots = jsonArray.length();
+        int MAX_SAVE_SLOTS = 3;
+        return numberOfSaveSlots >= MAX_SAVE_SLOTS;
+    }
+
     public void addSaveSlot() {
         try {
             String filename = "save_slots.json";
@@ -748,10 +775,15 @@ public class GamePresenter extends AppCompatActivity {
             JSONObject newPlayer = createPlayerSaveObject();
             existingSlots.put(newPlayer);
 
-            saveJSONArrayOnUserDevice(existingSlots);
+            saveJSONArrayOnUserDevice(existingSlots, this);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public int getIndexOfSaveSlot(String saveSlot) {
+        char num = saveSlot.charAt(saveSlot.length() - 1);
+        return Character.getNumericValue(num);
     }
 
     public void overwriteSaveSlot(int index) {
@@ -763,13 +795,24 @@ public class GamePresenter extends AppCompatActivity {
 
             if (index >= 0 && index < existingSlots.length()) {
                 existingSlots.put(index, newPlayer); // overwrites at given index
-                saveJSONArrayOnUserDevice(existingSlots);
+                saveJSONArrayOnUserDevice(existingSlots, this);
             } else {
                 throw new IndexOutOfBoundsException("Error: invalid save slot index: " + index);
             }
 
         } catch (JSONException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteSaveSlot(int index) {
+        String filename = "save_slots.json";
+        JSONArray existingSlots = loadJsonArrayFromFileOnDevice(filename, this);
+        if (index >= 0 && index < existingSlots.length()) {
+            existingSlots.remove(index);
+            saveJSONArrayOnUserDevice(existingSlots, this);
+        } else {
+            throw new IndexOutOfBoundsException("Error: invalid save slot index: " + index);
         }
     }
 
@@ -806,16 +849,6 @@ public class GamePresenter extends AppCompatActivity {
         return newPlayer;
     }
 
-    private void saveJSONArrayOnUserDevice(JSONArray jsonArray) {
-        String filename = "save_slots.json";
-        try (FileOutputStream fos = openFileOutput(filename, MODE_PRIVATE)) {
-            fos.write(jsonArray.toString().getBytes());
-            fos.flush();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public boolean hasSaveFile() {
         String filename = "save_slots.json";
         File file = new File(getFilesDir(), filename);
@@ -825,9 +858,9 @@ public class GamePresenter extends AppCompatActivity {
     public ArrayList<String> getSaveSlotList() {
         ArrayList<String> saveSlotList = new ArrayList<>();
         JSONArray jsonArray = loadJsonArrayFromFileOnDevice("save_slots.json", this);
-        int numberOfSaveSlots = jsonArray.length() - 1;
+        int numberOfSaveSlots = jsonArray.length();
 
-        for (int i = 1; i <= numberOfSaveSlots; i++) {
+        for (int i = 1; i < numberOfSaveSlots + 1; i++) {
             String saveSlot = "Save Slot " + i;
             saveSlotList.add(saveSlot);
         }

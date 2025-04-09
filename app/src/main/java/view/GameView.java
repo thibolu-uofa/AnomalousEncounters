@@ -50,6 +50,7 @@ public class GameView  extends SurfaceView implements Runnable{
     private PlayerMenu playerMenu;
     private ShopMenu shopMenu;
     private IndexMenu indexMenu;
+    private SaveMenu saveMenu;
     private BattleView battleView;
     private EndBattleScreen endBattleScreen;
     int backgroundDirection;
@@ -119,6 +120,7 @@ public class GameView  extends SurfaceView implements Runnable{
         playerMenu = new PlayerMenu(presenter, getContext());
         shopMenu = new ShopMenu(presenter, getContext());
         indexMenu = new IndexMenu(presenter, getContext());
+        saveMenu = new SaveMenu(presenter, getContext());
     }
 
     /**
@@ -260,6 +262,10 @@ public class GameView  extends SurfaceView implements Runnable{
         if (!indexMenu.isMenuClosed()) {
             indexMenu.draw(canvas, paint);
         }
+
+        if (!saveMenu.isMenuClosed()) {
+            saveMenu.draw(canvas, paint);
+        }
     }
 
 
@@ -300,7 +306,11 @@ public class GameView  extends SurfaceView implements Runnable{
                     if (!indexMenu.isMenuClosed()) {
                         indexMenu.checkForUserTouch(eventX, eventY, presenter);
                     }
-                    if (hasInventoryBeenClosed(eventX, eventY) || hasShopBeenClosed(eventX, eventY) || hasIndexBeenClosed(eventX, eventY)) {
+                    if (!saveMenu.isMenuClosed()) {
+                        saveMenu.checkForUserTouch(eventX, eventY, presenter);
+                    }
+                    if (hasInventoryBeenClosed(eventX, eventY) || hasShopBeenClosed(eventX, eventY)
+                            || hasIndexBeenClosed(eventX, eventY) || hasSaveMenuBeenClosed(eventX, eventY)) {
                         int stopGap = 5000;
                         lastEnemyEncounterCheck = System.currentTimeMillis() + stopGap;
                         isMenuOpen = false;
@@ -413,6 +423,9 @@ public class GameView  extends SurfaceView implements Runnable{
             if (!hasSaveFile) {
                 saveMsg = presenter.getString(R.string.saveConfirmation);
                 confirmPopUp = new ConfirmPopUp(saveMsg, presenter, true);
+            } else {
+                saveMenu = new SaveMenu(presenter, getContext());
+                saveMenu.openMenu();
             }
             canPlayerMove = false;
         }
@@ -449,6 +462,18 @@ public class GameView  extends SurfaceView implements Runnable{
         }
         if (indexMenu.hasClosedMenu(eventX, eventY, presenter)) {
             indexMenu.closeMenu();
+            canPlayerMove = true;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean hasSaveMenuBeenClosed(float eventX, float eventY) {
+        if (saveMenu.isMenuClosed()) {
+            return false;
+        }
+        if (saveMenu.hasClosedMenu(eventX, eventY, presenter)) {
+            saveMenu.closeMenu();
             canPlayerMove = true;
             return true;
         }
