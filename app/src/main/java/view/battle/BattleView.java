@@ -70,7 +70,7 @@ public class BattleView {
 
     public void updateMenuTexts() {
         playerInfo.updateText(presenter.getPlayerNameAndHealth());
-        enemyInfo.updateText(presenter.getEnemyNameAndHealth());
+        enemyInfo.updateText(presenter.getEnemyNameHealthAndTier());
     }
 
     public void checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {

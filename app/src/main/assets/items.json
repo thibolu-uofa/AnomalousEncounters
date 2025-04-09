@@ -38,13 +38,13 @@
   {
     "name": "Health Rune I",
     "id": 6,
-    "price": 25,
-    "description": "A single-use run engraved on a token. Restores 20% of the user's health upon use."
+    "price": 5,
+    "description": "A single-use rune engraved on a token. Restores 20% of the user's health upon use."
   },
   {
     "name": "Health Rune II",
     "id": 7,
-    "price": 25,
+    "price": 10,
     "description": "A single-use rune engraved on a token. Restores 50% of the user's health upon use."
   },
   {

@@ -78,7 +78,9 @@ public class RadioBtnList {
     }
 
     public void draw(Canvas canvas, Paint paint) {
-        for (RadioBtn radioBtn: radioButtons) {
+        // use a copy to avoid ConcurrentModificationException
+        ArrayList<RadioBtn> buttonsCopy = new ArrayList<>(radioButtons);
+        for (RadioBtn radioBtn: buttonsCopy) {
             radioBtn.draw(canvas, paint);
         }
     }

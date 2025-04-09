@@ -11,7 +11,6 @@ import android.graphics.drawable.NinePatchDrawable;
 import com.example.anomalousencounters.R;
 
 import java.util.ArrayList;
-import android.util.Log;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -208,7 +207,7 @@ public class BattleSideBar {
         String name = skillBar.getSelectedSkill();
         String alertMsg;
         if (name == null || name.isEmpty() || name.equals("invalid_skill")) {
-            alertMsg = presenter.getString(R.string.selectSkillAlert);
+            alertMsg = presenter.getString(R.string.selectSkillForInfoAlert);
         } else {
             alertMsg = presenter.getSkillBattleDescriptionByName(name);
         }
