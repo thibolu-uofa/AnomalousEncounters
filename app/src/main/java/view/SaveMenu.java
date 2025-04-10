@@ -20,6 +20,7 @@ public class SaveMenu extends BaseMenu {
     private MenuItem newSaveSlotButton;
     private MenuItem loadSaveButton;
     private MenuItem deleteSaveButton;
+    private  MenuItem saveInfoButton;
     private RadioBtnList saveRadioBtnList;
     private String selectedSaveSlot;
     private final int Y = 150;
@@ -39,6 +40,7 @@ public class SaveMenu extends BaseMenu {
         createLoadButton(x);
         createOverwriteButton(x);
         createDeleteButton(x);
+        createInfoButton(x);
     }
 
     private void createSaveMenu(int x) {
@@ -89,10 +91,18 @@ public class SaveMenu extends BaseMenu {
     private void createDeleteButton(int x) {
         String TEXT = "Delete";
         int PAD = 50;
-        int OVERWRITE_BTN_X = x + BTN_WIDTH + PAD;
-        int OVERWRITE_BTN_Y = Y + MENU_HEADING_HEIGHT + MENU_HEIGHT + PAD + MENU_HEADING_HEIGHT + PAD;
+        int DELETE_BTN_X = x + BTN_WIDTH + PAD;
+        int DELETE_BTN_Y = Y + MENU_HEADING_HEIGHT + MENU_HEIGHT + PAD + MENU_HEADING_HEIGHT + PAD;
 
-        deleteSaveButton = new MenuItem(OVERWRITE_BTN_X, OVERWRITE_BTN_Y, MENU_HEADING_HEIGHT, BTN_WIDTH, TEXT,true, context);
+        deleteSaveButton = new MenuItem(DELETE_BTN_X, DELETE_BTN_Y, MENU_HEADING_HEIGHT, BTN_WIDTH, TEXT,true, context);
+    }
+
+    private void createInfoButton(int x) {
+        String TEXT = "Save Info";
+        int BUTTON_Y_PAD = 50;
+        int INFO_BTN_Y = Y + MENU_HEADING_HEIGHT + MENU_HEIGHT + BUTTON_Y_PAD + MENU_HEADING_HEIGHT + BUTTON_Y_PAD + MENU_HEADING_HEIGHT + BUTTON_Y_PAD;
+
+        saveInfoButton = new MenuItem(x, INFO_BTN_Y, MENU_HEADING_HEIGHT, BTN_WIDTH, TEXT,true, context);
     }
 
     public void checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {
@@ -116,6 +126,7 @@ public class SaveMenu extends BaseMenu {
         handleOverwriteButton((int) eventX, (int) eventY, presenter);
         handleDeleteButton((int) eventX, (int) eventY, presenter);
         handleLoadButton((int) eventX, (int) eventY, presenter);
+        handleInfoButton((int) eventX, (int) eventY, presenter);
     }
 
     private void handleConfirmPopUp(float eventX, float eventY, GamePresenter presenter) {
@@ -249,6 +260,23 @@ public class SaveMenu extends BaseMenu {
         confirmPopUp = new ConfirmPopUp(loadMsg, context, true);
     }
 
+    private void handleInfoButton(int eventX, int eventY, GamePresenter presenter) {
+        boolean hasNewSaveBeenPressed = hasBtnBeenPressed(saveInfoButton, eventX, eventY, presenter);
+        if (!hasNewSaveBeenPressed) {
+            return;
+        }
+
+        if (selectedSaveSlot == null) {
+            String alertMsg = context.getString(R.string.selectSaveSlot);
+            alertPopUp = new AlertPopUp(alertMsg, context, true);
+            return;
+        }
+
+        int index = presenter.getIndexOfSaveSlot(selectedSaveSlot) - 1;
+        String alertMsg = presenter.getSaveFileInfo(index);
+        alertPopUp = new AlertPopUp(alertMsg, context, false);
+    }
+
     private void updateSaveSlotVisuals() {
         ArrayList<String> saveSlotList = presenter.getSaveSlotList();
         saveRadioBtnList.updateRadioBtnList(saveSlotList);
@@ -266,6 +294,7 @@ public class SaveMenu extends BaseMenu {
         newSaveSlotButton.draw(canvas, paint);
         loadSaveButton.draw(canvas, paint);
         deleteSaveButton.draw(canvas, paint);
+        saveInfoButton.draw(canvas, paint);
         drawPopUps(canvas, paint);
     }
 }

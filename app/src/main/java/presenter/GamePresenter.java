@@ -13,7 +13,6 @@ import static model.Utils.getPropertyByName;
 import static model.Utils.getSingleDataProperty;
 import static model.Utils.getSingleDataPropertyFromJSONArray;
 import static model.Utils.getStringListOfDataProperty;
-import static model.Utils.loadJsonArrayFromFile;
 import static model.Utils.loadJsonArrayFromFileOnDevice;
 import static model.Utils.saveJSONArrayOnUserDevice;
 
@@ -42,10 +41,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
 
 import model.BattleSystem;
 import model.EncounterSystem;
@@ -566,7 +564,6 @@ public class GamePresenter extends AppCompatActivity {
         playerState.addItem(itemId, amount);
     }
 
-    //TODO: Call this function appropriately
     private void playerLost() {
         int playerHealth = playerState.getHealth();
         if (playerHealth <= 0) {
@@ -865,6 +862,81 @@ public class GamePresenter extends AppCompatActivity {
             saveSlotList.add(saveSlot);
         }
         return saveSlotList;
+    }
+
+    public String getSaveFileInfo(int index) {
+        JSONArray jsonArray = loadJsonArrayFromFileOnDevice("save_slots.json", this);
+
+        String name = (String) getSingleDataPropertyFromJSONArray(jsonArray, "name", index, this);
+        int health = (int) getSingleDataPropertyFromJSONArray(jsonArray, "health", index, this);
+        int maxHealth = (int) getSingleDataPropertyFromJSONArray(jsonArray, "maxHealth", index, this);
+        int tokens = (int) getSingleDataPropertyFromJSONArray(jsonArray, "tokens", index, this);
+        int phase = (int) getSingleDataPropertyFromJSONArray(jsonArray, "phase", index, this);
+
+        JSONArray items = (JSONArray) getSingleDataPropertyFromJSONArray(jsonArray, "items", index, this);
+        JSONArray skills = (JSONArray) getSingleDataPropertyFromJSONArray(jsonArray, "skills", index, this);
+
+        String info = String.format(Locale.ENGLISH, "%s \nHP: %d/%d | Tokens: %d | Phase: %d",
+                name, health, maxHealth, tokens, phase);
+
+        String skillsInfo = getSkillsListForSaveFileInfo(skills);
+        String itemsInfo = getItemsListForSaveFile(items);
+
+        return info + "\n\n" + skillsInfo + "\n\n" + itemsInfo;
+    }
+
+    private String getItemsListForSaveFile(JSONArray items) {
+        if (items == null) {
+            return "Items: None";
+        }
+
+        StringBuilder itemsSb = new StringBuilder("Items: \n");
+        try {
+            int displayCount = items.length();
+            for (int i = 0; i < displayCount; i++) {
+                JSONObject item = items.getJSONObject(i);
+                int itemId = item.getInt("id");
+                int amount = item.getInt("amount");
+                String name = (String) getSingleDataProperty("items.json", "name", itemId, this);
+
+                itemsSb.append(name).append("(").append(amount).append(")");
+
+                if (i < displayCount - 1) {
+                    itemsSb.append(", ");
+                }
+            }
+        } catch (JSONException e) {
+            return "Items: Error loading";
+        }
+
+        return itemsSb.toString();
+    }
+
+    private String getSkillsListForSaveFileInfo(JSONArray skills) {
+        if (skills == null) {
+            return "Skills: None";
+        }
+
+        StringBuilder skillsSb = new StringBuilder("Skills: \n");
+        try {
+            int displayCount = skills.length();
+            for (int i = 0; i < displayCount; i++) {
+                JSONObject skill = skills.getJSONObject(i);
+                int skillId = skill.getInt("id");
+                int level = skill.getInt("level");
+                String name = (String) getSingleDataProperty("skills.json", "name", skillId, this);
+
+                skillsSb.append(name).append(" Lv").append(level);
+
+                if (i < displayCount - 1) {
+                    skillsSb.append(", ");
+                }
+            }
+        } catch (JSONException e) {
+            return "Skills: Error loading";
+        }
+
+        return skillsSb.toString();
     }
 
     // This method executes when the user continues the game
