@@ -4,6 +4,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import model.EnemyState;
 import model.PlayerState;
 
@@ -72,19 +76,41 @@ public class PlayerEnemyStateUnitTest {
     }
 
     @Test
-    public void addAndRemoveItemIsCorrect() {
+    public void getItemListIsCorrect(){
+        PlayerState playerState = new PlayerState();
+        playerState.addItem(0, 2);
+        assertArrayEquals(new int[]{0}, playerState.getItemList());
+
+    }
+
+    @Test
+    public void getItemAmountsListIsCorrect(){
+        PlayerState playerState = new PlayerState();
+        playerState.addItem(0, 3);
+        assertArrayEquals(new int[]{3}, playerState.getItemAmountsList());
+    }
+
+    @Test
+    public void addItemIsCorrect() {
         PlayerState player = new PlayerState();
         player.addItem(1, 2);
         assertArrayEquals(new int[]{1}, player.getItemList());
         assertArrayEquals(new int[]{2}, player.getItemAmountsList());
+    }
 
-        player.addItem(1, 3);
-        assertArrayEquals(new int[]{1}, player.getItemList());
-        assertArrayEquals(new int[]{3}, player.getItemAmountsList());
+    @Test
+    public void removeItemIsCorrect() {
+        PlayerState player = new PlayerState();
+        player.addItem(1, 2);
+        player.addItem(2, 1);
+        player.addItem(3, 4);
+        player.removeItem(2);
 
-        player.removeItem(1);
-        assertArrayEquals(new int[]{1}, player.getItemList());
-        assertArrayEquals(new int[]{2}, player.getItemAmountsList());
+        int[] itemId = {1, 3};
+        int[] playerItemIds =  player.getItemList();
+
+        assertArrayEquals(itemId, playerItemIds);
+
     }
 
     @Test

@@ -2,6 +2,7 @@ package view.battle;
 
 import static view.ViewConstants.BATTLE_BACKGROUND_COLOR;
 import static view.ViewConstants.PLAYER_TILE_HIGHLIGHT_COLOR;
+import static view.ViewConstants.SCREEN_WIDTH;
 import static view.ViewConstants.TRANSPARENT_COLOR;
 
 import android.annotation.SuppressLint;
@@ -46,26 +47,37 @@ public class BattleView {
     public BattleView(Context context, GamePresenter presenter, GameView view){
         this.presenter = presenter;
         this.view = view;
+        int INFO_MARGIN = 30;
+        int INFO_CARD_X = 30;
+        int PLAYER_INFO_Y = 75;
+        String playerInfoNameAndHealth = presenter.getPlayerNameAndHealth();
+        String enemyInfoText = presenter.getEnemyNameHealthAndTier();
+
+        @SuppressLint("UseCompatLoadingForDrawables") NinePatchDrawable playerInfoNinePatchDrawable = (NinePatchDrawable) context.getResources().getDrawable(R.drawable.border1, null);
+        playerInfo = new MenuNinePatch(playerInfoNinePatchDrawable, INFO_CARD_X, PLAYER_INFO_Y, playerInfoNameAndHealth, MAX_CARD_WIDTH, false, context);
+
+        int ENEMY_INFO_Y = 75 + playerInfo.getHeight() + INFO_MARGIN;
+        @SuppressLint("UseCompatLoadingForDrawables") NinePatchDrawable enemyInfoNinePatchDrawable = (NinePatchDrawable) context.getResources().getDrawable(R.drawable.border1, null);
+        enemyInfo = new MenuNinePatch(enemyInfoNinePatchDrawable, INFO_CARD_X, ENEMY_INFO_Y, enemyInfoText, MAX_CARD_WIDTH, false, context);
+
+        int sidebarX = (int) (SCREEN_WIDTH * 0.73) - 20;
+        int sidebarWidth = (int) (SCREEN_WIDTH * 0.27);
+        sideBar = new BattleSideBar(sidebarX, PLAYER_INFO_Y, sidebarWidth, context, presenter, this);
+
 
         Bitmap gridBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.battle_grid);
-        int gridX = 720;
+        int gridStartX = INFO_CARD_X + enemyInfo.getWidth();
+        int gridX =  (gridStartX + sidebarX)/2 - gridBitmap.getWidth()/2;;
         int gridY = 170;
         grid = new Sprite(gridBitmap, gridX, gridY);
 
+
         Bitmap playerIconBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.player_heart);
-        playerIcon = new Sprite(playerIconBitmap, gridX + 100, gridY + 100);
+        playerIcon = new Sprite(playerIconBitmap, gridX, gridY);
 
         Bitmap enemyIconBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.depressed_mustache);
-        enemyIcon = new Sprite(enemyIconBitmap, gridX + GRID_BORDER_WEIGHT, gridY + GRID_BORDER_WEIGHT);
+        enemyIcon = new Sprite(enemyIconBitmap, gridX, gridY);
 
-
-        @SuppressLint("UseCompatLoadingForDrawables") NinePatchDrawable playerInfoNinePatchDrawable = (NinePatchDrawable) context.getResources().getDrawable(R.drawable.border1, null);
-        playerInfo = new MenuNinePatch(playerInfoNinePatchDrawable, 30, 75, presenter.getPlayerNameAndHealth(), MAX_CARD_WIDTH, false, context);
-
-        @SuppressLint("UseCompatLoadingForDrawables") NinePatchDrawable enemyInfoNinePatchDrawable = (NinePatchDrawable) context.getResources().getDrawable(R.drawable.border1, null);
-        enemyInfo = new MenuNinePatch(enemyInfoNinePatchDrawable, 30, 75 + playerInfo.getHeight() + 30, "The Strange Triangle\nHP 9/10", MAX_CARD_WIDTH, false, context);
-
-        sideBar = new BattleSideBar(1750, 75, context, presenter, this);
     }
 
     public void updateMenuTexts() {
