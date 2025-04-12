@@ -308,4 +308,8 @@ public class PlayerState {
     public List<int[]> getSkills() {
         return skills;
     }
+
+    public void setPlayerCurrentHealth(int playerCurrentHealth) {
+        this.playerCurrentHealth = playerCurrentHealth;
+    }
 }

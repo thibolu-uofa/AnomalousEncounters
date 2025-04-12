@@ -24,7 +24,7 @@ public class ShopMenu extends BaseMenu {
     private String selectedItem;
     private final int Y = 150;
     private final int MENU_HEADING_HEIGHT = 90;
-    private final int MENU_HEIGHT = 600;
+    private final int MENU_HEIGHT = 650;
     private final int MENU_WIDTH = 750;
     private final String BLANK_TEXT = "";
 

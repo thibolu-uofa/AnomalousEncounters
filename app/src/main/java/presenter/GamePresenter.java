@@ -230,8 +230,10 @@ public class GamePresenter extends AppCompatActivity {
 
         String name = (String) getSingleDataPropertyFromJSONArray(jsonArray, "name", index, this);
         int maxHealth = (int) getSingleDataPropertyFromJSONArray(jsonArray, "maxHealth", index, this);
+        int health = (int) getSingleDataPropertyFromJSONArray(jsonArray, "health", index, this);
         int tokens = (int) getSingleDataPropertyFromJSONArray(jsonArray, "tokens", index, this);
         playerState = new PlayerState(name, maxHealth, tokens);
+        playerState.setPlayerCurrentHealth(health);
 
         JSONArray items = (JSONArray) getSingleDataPropertyFromJSONArray(jsonArray, "items", index, this);
         loadPlayerItems(items);
