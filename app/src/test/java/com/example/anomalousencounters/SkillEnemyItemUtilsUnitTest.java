@@ -1,11 +1,16 @@
 package com.example.anomalousencounters;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
 import model.EnemyUtils;
+import model.ItemUtils;
+import model.PlayerState;
+import model.SkillUtils;
 
 public class SkillEnemyItemUtilsUnitTest {
     @Test
@@ -75,5 +80,142 @@ public class SkillEnemyItemUtilsUnitTest {
     public void testConstants() {
         assertEquals("Anomalous Essence", EnemyUtils.ESSENCE_NAME);
         assertEquals("Anomalous Shard", EnemyUtils.SHARD_NAME);
+    }
+
+    @Test
+    public void testSkillBaseDamage() {
+        assertEquals(40, SkillUtils.getSkillBaseDamage(1));
+        assertEquals(30, SkillUtils.getSkillBaseDamage(2));
+        assertEquals(20, SkillUtils.getSkillBaseDamage(3));
+    }
+
+    @Test
+    public void testResistanceFactor() {
+        assertEquals(1.25, SkillUtils.getResistanceFactor(SkillUtils.AnomalyTypes.NOTHINGNESS, SkillUtils.AnomalyTypes.DEATH));
+        assertEquals(1.25, SkillUtils.getResistanceFactor(SkillUtils.AnomalyTypes.DEATH, SkillUtils.AnomalyTypes.LIFE));
+        assertEquals(1.25, SkillUtils.getResistanceFactor(SkillUtils.AnomalyTypes.LIFE, SkillUtils.AnomalyTypes.NOTHINGNESS));
+
+        assertEquals(0.75, SkillUtils.getResistanceFactor(SkillUtils.AnomalyTypes.DEATH, SkillUtils.AnomalyTypes.NOTHINGNESS));
+        assertEquals(0.75, SkillUtils.getResistanceFactor(SkillUtils.AnomalyTypes.LIFE, SkillUtils.AnomalyTypes.DEATH));
+        assertEquals(0.75, SkillUtils.getResistanceFactor(SkillUtils.AnomalyTypes.NOTHINGNESS, SkillUtils.AnomalyTypes.LIFE));
+
+        assertEquals(1.0, SkillUtils.getResistanceFactor(SkillUtils.AnomalyTypes.LIFE, SkillUtils.AnomalyTypes.LIFE));
+    }
+
+    @Test
+    public void testGetUpdatedLevelAndExperience() {
+        int[] result = SkillUtils.getUpdatedLevelAndExperience(1, 200, 300);
+        assertEquals(2, result[0]); // Level up
+        assertTrue(result[1] >= 0); // Remaining EXP should be non-negative
+    }
+
+    @Test
+    public void testGetExperienceGained() {
+        assertEquals(6, SkillUtils.getExperienceGained(2, 1, 1));
+        assertEquals(9, SkillUtils.getExperienceGained(3, 2, 1));
+    }
+
+    @Test
+    public void testMaxExperienceGrowth() {
+        assertTrue(SkillUtils.getMaxExperience(1) < SkillUtils.getMaxExperience(2));
+        assertTrue(SkillUtils.getMaxExperience(5) < SkillUtils.getMaxExperience(10));
+    }
+
+    @Test
+    public void testSkillExpGainForVolume() {
+        assertEquals(50, SkillUtils.getSkillExpGainedForVolume(1));
+        assertEquals(250, SkillUtils.getSkillExpGainedForVolume(2));
+        assertEquals(1000, SkillUtils.getSkillExpGainedForVolume(3));
+    }
+
+    @Test
+    public void testSkillCompensationTokens() {
+        PlayerState state = new PlayerState();
+        SkillUtils.getSkillCompensation(1, state);
+        assertEquals(20, state.getTokens());
+    }
+
+
+
+    @Test
+    public void testGetSkillsByType() {
+        assertArrayEquals(new int[]{0, 1, 2, 3, 12}, SkillUtils.getSkillsByType(SkillUtils.AnomalyTypes.LIFE));
+        assertArrayEquals(new int[]{4, 5, 6, 7, 13}, SkillUtils.getSkillsByType(SkillUtils.AnomalyTypes.DEATH));
+        assertArrayEquals(new int[]{8, 9, 10, 11, 14}, SkillUtils.getSkillsByType(SkillUtils.AnomalyTypes.NOTHINGNESS));
+    }
+
+    @Test
+    public void testEnemySkillLevelRange() {
+        for (int i = 0; i < 100; i++) {
+            int lvl = SkillUtils.calculateEnemySkillLevel(3);
+            assertTrue("Tier 3 skill level should be 2–3, got: " + lvl, lvl >= 2 && lvl <= 3);
+        }
+    }
+    @Test
+    public void testHealthModification() {
+        PlayerState player = new PlayerState();
+        player.modifyHealth(10); // Increase health by 10
+        assertEquals(100, player.getHealth());
+
+        player.modifyHealth(-150); // Decrease health by 150 (should clamp to 0)
+        assertEquals(0, player.getHealth());
+
+        player.modifyHealth(-50); // Decrease health by 50 (damage reduction applied)
+        assertEquals(40, player.getHealth());
+    }
+
+    // Test Adding and Removing Skills
+    /* @Test
+    public void testAddAndRemoveSkills() {
+        PlayerState player = new PlayerState();
+        player.addSkill(1, 5, 100);
+        player.addSkill(2, 3, 50);
+
+        // Test skill addition
+        assertEquals(5, player.getLevelOfSkill(1));
+        assertEquals(3, player.getLevelOfSkill(2));
+
+        // Remove skill and check
+        player.removeSkill(1);
+        assertEquals(-1, player.getLevelOfSkill(1));
+    }
+
+    // Test Adding and Removing Items
+    @Test
+    public void testAddAndRemoveItems() {
+        PlayerState player = new PlayerState();
+
+        player.addItem(101, 5); // Add 5 of item with ID 101
+        assertArrayEquals(new int[] {101}, player.getItemList();
+
+        player.addItem(101, 3); // Add 3 more of item 101
+        assertArrayEquals(new int[] {101}, player.getItemList());
+
+        player.removeItem(101); // Remove 1 of item 101
+        assertEquals(7, player.getItemAmountsList()[0]);
+
+        player.removeItem(101); // Remove last item of 101
+        assertArrayEquals(new int[] {}, player.getItemList());
+    }
+*/
+    // Test Token Management
+    @Test
+    public void testTokenManagement() {
+        PlayerState player = new PlayerState();
+
+        // Tokens should be 20 by default
+        assertEquals(20, player.getTokens());
+
+        // Update tokens and ensure they don't exceed max
+        player.updateTokens(50);
+        assertEquals(70, player.getTokens());
+
+        // Tokens shouldn't drop below 0
+        player.updateTokens(-100);
+        assertEquals(0, player.getTokens());
+
+        // Check if tokens update is valid
+        assertTrue("Player should be able to update tokens by -10", player.canUpdateTokens(-10));
+        assertFalse("Player should not be able to update tokens by a huge negative number", player.canUpdateTokens(-99999));
     }
 }
