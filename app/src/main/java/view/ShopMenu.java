@@ -1,7 +1,7 @@
 package view;
 
 
-import static view.ViewConstants.CONFIRM_TEXT_COLOR;
+import static view.ViewConstants.GREEN_TEXT_COLOR;
 import static view.ViewConstants.FONT_SIZE_SMALL;
 import static view.ViewConstants.SCREEN_WIDTH;
 
@@ -80,7 +80,7 @@ public class ShopMenu extends BaseMenu {
         int BUY_BTN_Y = Y + MENU_HEADING_HEIGHT + MENU_HEIGHT + BUTTON_Y_PAD;
 
         buyButton = new MenuItem(BUY_BTN_X, BUY_BTN_Y, MENU_HEADING_HEIGHT, PLAYER_CARD_WIDTH, BUY_TEXT,true, context);
-        buyButton.changeFontColor(CONFIRM_TEXT_COLOR);
+        buyButton.changeFontColor(GREEN_TEXT_COLOR);
     }
 
     public void updateMenuTexts(GamePresenter presenter) {

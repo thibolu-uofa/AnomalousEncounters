@@ -1,5 +1,9 @@
 package view;
 
+import static view.ViewConstants.BLUE_TEXT_COLOR;
+import static view.ViewConstants.GREEN_TEXT_COLOR;
+import static view.ViewConstants.PURPLE_TEXT_COLOR;
+import static view.ViewConstants.RED_TEXT_COLOR;
 import static view.ViewConstants.SCREEN_WIDTH;
 
 import android.content.Context;
@@ -16,6 +20,7 @@ import view.menu.BaseMenu;
 import view.menu.MenuItem;
 
 public class SaveMenu extends BaseMenu {
+    private GameView gameView;
     private MenuItem overwriteButton;
     private MenuItem newSaveSlotButton;
     private MenuItem loadSaveButton;
@@ -29,10 +34,11 @@ public class SaveMenu extends BaseMenu {
     private final int MENU_WIDTH = 750;
     private final int BTN_WIDTH = 350;
     private final String BLANK_TEXT = "";
-    private String newSaveMsg, overwriteMsg, deleteMsg, loadMsg;
+    private String newSaveMsg, overwriteMsg, deleteMsg, loadMsg, loadSaveMsg;
 
-    public SaveMenu(GamePresenter presenter, Context context){
+    public SaveMenu(GamePresenter presenter, Context context, GameView gameView){
         super(presenter, context);
+        this.gameView = gameView;
         int x = SCREEN_WIDTH/2 - MENU_WIDTH/2;
 
         createSaveMenu(x);
@@ -69,6 +75,7 @@ public class SaveMenu extends BaseMenu {
         int SAVE_BTN_Y = Y + MENU_HEADING_HEIGHT + MENU_HEIGHT + BUTTON_Y_PAD;
 
         newSaveSlotButton = new MenuItem(x, SAVE_BTN_Y, MENU_HEADING_HEIGHT, BTN_WIDTH, SAVE_TEXT,true, context);
+        newSaveSlotButton.changeFontColor(GREEN_TEXT_COLOR);
     }
 
     private void createLoadButton(int x) {
@@ -77,6 +84,7 @@ public class SaveMenu extends BaseMenu {
         int SAVE_BTN_Y = Y + MENU_HEADING_HEIGHT + MENU_HEIGHT + BUTTON_Y_PAD + MENU_HEADING_HEIGHT + BUTTON_Y_PAD;
 
         loadSaveButton = new MenuItem(x, SAVE_BTN_Y, MENU_HEADING_HEIGHT, BTN_WIDTH, TEXT,true, context);
+        loadSaveButton.changeFontColor(BLUE_TEXT_COLOR);
     }
 
     private void createOverwriteButton(int x) {
@@ -86,6 +94,7 @@ public class SaveMenu extends BaseMenu {
         int OVERWRITE_BTN_Y = Y + MENU_HEADING_HEIGHT + MENU_HEIGHT + PAD;
 
         overwriteButton = new MenuItem(OVERWRITE_BTN_X, OVERWRITE_BTN_Y, MENU_HEADING_HEIGHT, BTN_WIDTH, OVERWRITE_TEXT,true, context);
+        overwriteButton.changeFontColor(PURPLE_TEXT_COLOR);
     }
 
     private void createDeleteButton(int x) {
@@ -95,6 +104,7 @@ public class SaveMenu extends BaseMenu {
         int DELETE_BTN_Y = Y + MENU_HEADING_HEIGHT + MENU_HEIGHT + PAD + MENU_HEADING_HEIGHT + PAD;
 
         deleteSaveButton = new MenuItem(DELETE_BTN_X, DELETE_BTN_Y, MENU_HEADING_HEIGHT, BTN_WIDTH, TEXT,true, context);
+        deleteSaveButton.changeFontColor(RED_TEXT_COLOR);
     }
 
     private void createInfoButton(int x) {
@@ -163,11 +173,12 @@ public class SaveMenu extends BaseMenu {
 
             boolean isLoadPopUp = Objects.equals(confirmPopUp.getMessage(), loadMsg);
             if (didUserConfirm && isLoadPopUp) {
-                int index = presenter.getIndexOfSaveSlot(selectedSaveSlot) - 1;
+                int saveSlotNum = presenter.getIndexOfSaveSlot(selectedSaveSlot);
+                int index = saveSlotNum - 1;
                 presenter.loadSaveSlot(index);
 
-                String alertMsg = context.getString(R.string.loadAlert);
-                alertPopUp = new AlertPopUp(alertMsg, context, true);
+                loadSaveMsg = context.getString(R.string.loadAlert, saveSlotNum);
+                alertPopUp = new AlertPopUp(loadSaveMsg, context, true);
 
                 selectedSaveSlot = null;
             }
@@ -180,9 +191,17 @@ public class SaveMenu extends BaseMenu {
     private void handleAlertPopUp(float eventX, float eventY, GamePresenter presenter) {
         boolean userClosePopUp = alertPopUp.didUserClosePopUp(eventX, eventY, presenter);
 
-        if (userClosePopUp){
-            alertPopUp = null;
+        if (!userClosePopUp) {
+            return;
         }
+
+        boolean didUserLoadSave = Objects.equals(alertPopUp.getMessage(), loadSaveMsg);
+        if (didUserLoadSave) {
+            alertPopUp = null;
+            gameView.closeSaveMenu();
+        }
+
+        alertPopUp = null;
     }
 
     private void handleRadioBtnInteraction(float eventX, float eventY, GamePresenter presenter) {

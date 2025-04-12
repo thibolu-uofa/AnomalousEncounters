@@ -1,15 +1,15 @@
 package view;
 
-import static view.ViewConstants.CONFIRM_TEXT_COLOR;
+import static view.ViewConstants.GREEN_TEXT_COLOR;
 import static view.ViewConstants.FONT_SIZE_MEDIUM;
-import static view.ViewConstants.FORGET_TEXT_COLOR;
+import static view.ViewConstants.YELLOW_TEXT_COLOR;
 import static view.ViewConstants.SCREEN_WIDTH;
+import static view.ViewConstants.BLUE_TEXT_COLOR;
 import static view.menu.MenuText.calculateMinHeightRequired;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
 
 import com.example.anomalousencounters.R;
 
@@ -102,7 +102,7 @@ public class PlayerMenu extends BaseMenu {
         String FORGET_SKILL_TEXT = "FORGET";
         skillInfo = new MenuItem(infoRect.x, infoRect.y, BUTTON_HEIGHT, BUTTON_WIDTH,INFO_TEXT, true, context );
         forgetSkill = new MenuItem(forgetRect.x, forgetRect.y, BUTTON_HEIGHT, BUTTON_WIDTH, FORGET_SKILL_TEXT,true, context);
-        forgetSkill.changeFontColor(FORGET_TEXT_COLOR);
+        forgetSkill.changeFontColor(YELLOW_TEXT_COLOR);
     }
 
     private void createItemMenu(int x) {
@@ -151,11 +151,11 @@ public class PlayerMenu extends BaseMenu {
 
         String SELL_ITEM_TEXT = "SELL";
         sellItem = new MenuItem(sellRect.x, sellRect.y, BUTTON_HEIGHT, BUTTON_WIDTH, SELL_ITEM_TEXT,true, context);
-        sellItem.changeFontColor(CONFIRM_TEXT_COLOR);
+        sellItem.changeFontColor(GREEN_TEXT_COLOR);
 
         String USE_ITEM_TEXT = "USE";
         useItem = new MenuItem(useRect.x, useRect.y, BUTTON_HEIGHT, BUTTON_WIDTH, USE_ITEM_TEXT,true, context);
-//        sellItem.changeFontColor(CONFIRM_TEXT_COLOR);
+        useItem.changeFontColor(BLUE_TEXT_COLOR);
     }
 
     public void updateMenuTexts(GamePresenter presenter) {

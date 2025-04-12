@@ -120,7 +120,7 @@ public class GameView  extends SurfaceView implements Runnable{
         playerMenu = new PlayerMenu(presenter, getContext());
         shopMenu = new ShopMenu(presenter, getContext());
         indexMenu = new IndexMenu(presenter, getContext());
-        saveMenu = new SaveMenu(presenter, getContext());
+        saveMenu = new SaveMenu(presenter, getContext(), this);
     }
 
     /**
@@ -311,9 +311,7 @@ public class GameView  extends SurfaceView implements Runnable{
                     }
                     if (hasInventoryBeenClosed(eventX, eventY) || hasShopBeenClosed(eventX, eventY)
                             || hasIndexBeenClosed(eventX, eventY) || hasSaveMenuBeenClosed(eventX, eventY)) {
-                        int stopGap = 5000;
-                        lastEnemyEncounterCheck = System.currentTimeMillis() + stopGap;
-                        isMenuOpen = false;
+                        handleMenuClosed();
                         break;
                     }
                     updatePlayerAnimation((int) eventX);
@@ -340,6 +338,12 @@ public class GameView  extends SurfaceView implements Runnable{
                 break;
         }
         return true;
+    }
+
+    private void handleMenuClosed() {
+        int stopGap = 5000;
+        lastEnemyEncounterCheck = System.currentTimeMillis() + stopGap;
+        isMenuOpen = false;
     }
 
     private void handleConfirmPopUp(float eventX, float eventY, GamePresenter presenter) {
@@ -424,7 +428,7 @@ public class GameView  extends SurfaceView implements Runnable{
                 saveMsg = presenter.getString(R.string.saveConfirmation);
                 confirmPopUp = new ConfirmPopUp(saveMsg, presenter, true);
             } else {
-                saveMenu = new SaveMenu(presenter, getContext());
+                saveMenu = new SaveMenu(presenter, getContext(), this);
                 saveMenu.openMenu();
             }
             canPlayerMove = false;
@@ -478,6 +482,12 @@ public class GameView  extends SurfaceView implements Runnable{
             return true;
         }
         return false;
+    }
+
+    public void closeSaveMenu() {
+        saveMenu.closeMenu();
+        canPlayerMove = true;
+        handleMenuClosed();
     }
 
     private boolean hasEndBattleScreenBeenClosed(float eventX, float eventY) {

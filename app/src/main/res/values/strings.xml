@@ -39,5 +39,5 @@
     <string name="deleteConfirmation">Are you sure you want to delete save slot [%d]?</string>
     <string name="deleteAlert">You have successfully deleted a save slot.</string>
     <string name="loadConfirmation">Are you sure you want to load the save slot [%d]?</string>
-    <string name="loadAlert">You have successfully loaded a save slot.</string>
+    <string name="loadAlert">You have successfully loaded a Save Slot [%d].</string>
 </resources>

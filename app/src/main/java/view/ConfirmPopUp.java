@@ -1,7 +1,7 @@
 package view;
 
-import static view.ViewConstants.CANCEL_TEXT_COLOR;
-import static view.ViewConstants.CONFIRM_TEXT_COLOR;
+import static view.ViewConstants.RED_TEXT_COLOR;
+import static view.ViewConstants.GREEN_TEXT_COLOR;
 
 import android.content.Context;
 
@@ -27,13 +27,13 @@ public class ConfirmPopUp extends BasePopUp {
 
         cancelText = context.getString(R.string.cancelAction);
         MenuItem cancelBtn = new MenuItem(cancelX, buttonsY, HEIGHT, WIDTH, cancelText, true, context);
-        cancelBtn.changeFontColor(CANCEL_TEXT_COLOR);
+        cancelBtn.changeFontColor(RED_TEXT_COLOR);
         buttons.add(cancelBtn);
 
         int confirmX = cancelX + WIDTH;
         confirmText = context.getString(R.string.confirmAction);
         MenuItem confirmBtn = new MenuItem(confirmX, buttonsY, HEIGHT, WIDTH, confirmText, true, context);
-        confirmBtn.changeFontColor(CONFIRM_TEXT_COLOR);
+        confirmBtn.changeFontColor(GREEN_TEXT_COLOR);
         buttons.add(confirmBtn);
     }
 
