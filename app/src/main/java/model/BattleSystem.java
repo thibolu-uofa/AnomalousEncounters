@@ -75,10 +75,6 @@ public class BattleSystem {
         enemyPosition = ENEMY_START_POSITIONS.get(randEnemyIndex);
     }
 
-    public boolean canEndPlayerTurn() {
-        return hasPlayerMoved || hasPlayerAttacked;
-    }
-
     public void changeTurn() {
         isPlayerTurn = !isPlayerTurn;
         hasPlayerMoved = false;
@@ -124,31 +120,6 @@ public class BattleSystem {
 
     public ArrayList<int[]> getAffectedTilesForEnemy(Skill skill) {
         return skill.getAffectedTiles(enemyPosition);
-    }
-
-    //TODO: TEST FUNCTION BEFORE USING
-    public void useSkill(String skillName) {
-        ArrayList<Skill> skillList = isPlayerTurn ? playerSkills : enemySkills;
-        Skill skill = getSkillByName(skillName, skillList);
-        if (skill == null) return; // Exit if skill not found
-
-        // Get affected tiles using
-        int[] originPosition = isPlayerTurn ? playerPosition : enemyPosition;
-        ArrayList<int[]> affectedTiles = skill.getAffectedTiles(originPosition);
-
-        // Check if the attack hits
-        if (didAtkHit(affectedTiles)) {
-            // Get skill damage
-            int damage = skill.getDamage();
-
-            // Apply damage using modifyHealth() (negative delta for damage)
-            if (isPlayerTurn) {
-                enemyState.modifyHealth(-damage);
-                hasPlayerAttacked = true;
-            } else {
-                playerState.modifyHealth(-damage);
-            }
-        }
     }
 
     public boolean canUsePlayerSkill(String skillName) {
@@ -209,15 +180,6 @@ public class BattleSystem {
             skill.updateSkillCooldown();
         }
     }
-
-    private Skill getRandomEnemySkill() {
-        int[] skillIds = enemyState.getSkillList();
-
-        Random rand = new Random();
-        int random_skill_id = rand.nextInt(skillIds.length);
-
-        return enemySkills.get(random_skill_id);
-    }
     
     public Skill getSkillByName(String name, ArrayList<Skill> skillList) {
         // this function goes and finds the correct skill by matching the name to the name on
@@ -228,21 +190,6 @@ public class BattleSystem {
             }
         }
         return null; // Skill not found, return null
-    }
-
-    public ArrayList<Integer> getEnemySkillIDs(int enemyId) {
-        JSONArray skillIdsJson = (JSONArray) getSingleDataProperty("enemySkill.json", "skills", enemyId, context);
-        ArrayList<Integer> skillIds = new ArrayList<>();
-
-        try {
-            for (int i = 0; i < skillIdsJson.length(); i++) {
-                skillIds.add(skillIdsJson.getInt(i));
-            }
-        } catch (JSONException e) {
-            throw new RuntimeException("Error parsing skill IDs from enemySkill.json", e);
-        }
-
-        return skillIds;
     }
 
 
@@ -325,9 +272,6 @@ public class BattleSystem {
         return false;
     }
 
-    public ArrayList<Skill> getEnemySkills() {
-        return enemySkills;
-    }
 
     private void populatePlayerSkills() {
         int[] skillIds = playerState.getSkillList();
@@ -371,10 +315,6 @@ public class BattleSystem {
         }
     }
 
-    private int generateEnemySkillLevel() {
-        Random rand = new Random();
-        return rand.nextInt(3);
-    }
 
     private void createEnemy(int enemyId, int tier) {
         String name = (String) getSingleDataProperty("enemies.json", "name", enemyId, context);
