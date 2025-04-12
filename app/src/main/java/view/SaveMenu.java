@@ -316,4 +316,9 @@ public class SaveMenu extends BaseMenu {
         saveInfoButton.draw(canvas, paint);
         drawPopUps(canvas, paint);
     }
+
+    @Override
+    public void updateMenuTexts(GamePresenter presenter) {
+        // do nothing
+    }
 }

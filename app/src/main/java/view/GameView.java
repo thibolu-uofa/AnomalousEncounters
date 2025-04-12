@@ -30,6 +30,8 @@ import android.view.SurfaceView;
 import com.example.anomalousencounters.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import presenter.GamePresenter;
@@ -44,10 +46,14 @@ public class GameView  extends SurfaceView implements Runnable{
     private final SurfaceHolder surfaceHolder;
     private Canvas canvas;
     private final Paint paint;
-    private final HealthBar healthBar;
-    private final Sprite inventory, homeIcon, saveIcon, shopIcon, indexIcon;
-    private final PlayerSprite playerSprite;
-    private final BackgroundImage backgroundImage;
+    private HealthBar healthBar;
+    private Sprite inventory;
+    private Sprite homeIcon;
+    private Sprite saveIcon;
+    private Sprite shopIcon;
+    private Sprite indexIcon;
+    private PlayerSprite playerSprite;
+    private BackgroundImage backgroundImage;
     private PlayerMenu playerMenu;
     private ShopMenu shopMenu;
     private IndexMenu indexMenu;
@@ -70,54 +76,83 @@ public class GameView  extends SurfaceView implements Runnable{
     private String homeMsg;
 
 
-    public GameView(Context context, GamePresenter presenter){
+    public GameView(Context context, GamePresenter presenter) {
         super(context);
         this.presenter = presenter;
         surfaceHolder = getHolder();
         paint = new Paint();
 
+        // initialize screen dimensions
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         SCREEN_WIDTH = displayMetrics.widthPixels;
         SCREEN_HEIGHT = displayMetrics.heightPixels;
 
-        Bitmap homeIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.house_icon);
+        initializeVisualComponents();
+    }
+
+    private void initializeVisualComponents() {
+        initializeOverworldMenuIcons();
+        initializeInventory();
+        initializeHealthBar();
+        initializeBackground();
+        initializePlayerSprite();
+        initializeMenus();
+    }
+
+    private void initializeOverworldMenuIcons() {
+        Bitmap homeIconBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.house_icon);
         int iconsX = SCREEN_WIDTH - homeIconBitmap.getWidth() - 25;
         homeIcon = new Sprite(homeIconBitmap, iconsX, 70);
 
-        Bitmap saveIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.save_icon);
+        Bitmap saveIconBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.save_icon);
         saveIcon = new Sprite(saveIconBitmap, iconsX, homeIcon.getY() + homeIconBitmap.getHeight() + 20);
 
-        Bitmap indexIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.book_icon);
+        Bitmap indexIconBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.book_icon);
         indexIcon = new Sprite(indexIconBitmap, iconsX, saveIcon.getY() + saveIconBitmap.getHeight() + 20);
 
-        Bitmap shopIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.shop_icon);
+        Bitmap shopIconBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.shop_icon);
         shopIcon = new Sprite(shopIconBitmap, iconsX, indexIcon.getY() + indexIconBitmap.getHeight() + 20);
+    }
 
-        Bitmap inventoryBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.quick_inventory);
+    private void initializeInventory() {
+        Bitmap inventoryBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.quick_inventory);
         int inventoryX = SCREEN_WIDTH/2 - inventoryBitmap.getWidth()/2;
         int inventoryY = (int) (SCREEN_HEIGHT*0.75);
         inventory = new Sprite(inventoryBitmap, inventoryX, inventoryY);
+    }
 
-        Bitmap healthBarBaseBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.healthbar_base);
-        Bitmap healthBarHealthBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.healthbar_health);
+    private void initializeHealthBar() {
+        Bitmap healthBarBaseBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.healthbar_base);
+        Bitmap healthBarHealthBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.healthbar_health);
         int healthBarX = SCREEN_WIDTH/2 - healthBarHealthBitmap.getWidth()/2;
         healthBar = new HealthBar(healthBarBaseBitmap, healthBarHealthBitmap, healthBarX, 50);
+    }
 
-
-        Bitmap skyBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.game_sky);
-        Bitmap groundBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.game_map);
+    private void initializeBackground() {
+        Bitmap skyBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.game_sky);
+        Bitmap groundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.game_map);
         int backgroundY = -(SCREEN_HEIGHT/5);
 
-        Bitmap playerBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.player_sprite_sheet_v2);
-        int playerX = SCREEN_WIDTH/2 - playerBitmap.getWidth()/12;
-        int playerY = (int) (backgroundY + (groundBitmap.getHeight() * 0.65) - ((double) playerBitmap.getHeight()/4)) + 5;
+        int singlePlayerSpriteWidth = BitmapFactory.decodeResource(getResources(), R.drawable.player_sprite_sheet_v2).getWidth()/12;
+        int playerX = SCREEN_WIDTH/2 - singlePlayerSpriteWidth;
 
         backgroundImage = new BackgroundImage(skyBitmap, groundBitmap, backgroundY, playerX);
         backgroundImage.setDirection(0);
+    }
+
+    private void initializePlayerSprite() {
+        Bitmap playerBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.player_sprite_sheet_v2);
+        int playerX = SCREEN_WIDTH/2 - playerBitmap.getWidth()/12;
+
+        Bitmap groundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.game_map);
+        int backgroundY = -(SCREEN_HEIGHT/5);
+        int playerY = (int) (backgroundY + (groundBitmap.getHeight() * 0.65) - ((double) playerBitmap.getHeight()/4)) + 5;
 
         playerSprite = new PlayerSprite(playerBitmap, playerX, playerY);
         playerSprite.setAnimation("idle");
+    }
 
+    private void initializeMenus() {
         playerMenu = new PlayerMenu(presenter, getContext());
         shopMenu = new ShopMenu(presenter, getContext());
         indexMenu = new IndexMenu(presenter, getContext());
@@ -128,7 +163,6 @@ public class GameView  extends SurfaceView implements Runnable{
      * This function will run the game loop that draws frames and calculates the fps.
      * The implementation of this function has code adapted from:
      * Source: <a href="https://gamecodeschool.com/android/building-a-simple-game-engine/">...</a>
-     *
      */
     @Override
     public void run() {
@@ -146,64 +180,140 @@ public class GameView  extends SurfaceView implements Runnable{
         }
     }
 
-    public void drawOnCanvas(){
-        // make sure our drawing surface is valid or we crash
-        if (surfaceHolder.getSurface().isValid()) {
-            canvas = surfaceHolder.lockCanvas(); // Lock the canvas ready to draw and make the drawing surface our canvas object
-            CANVAS_WIDTH = canvas.getWidth();
-            CANVAS_HEIGHT = canvas.getHeight();
+    public void drawOnCanvas() {
+        // make sure our drawing surface is valid or the app will crash
+        if (!surfaceHolder.getSurface().isValid()) {
+            return;
+        }
 
-            drawBackground();
+        setUpCanvas();
+        drawBackground();
 
-            if (isOnOverworld){
-                drawOverworldElements();
-            }
+        if (isOnOverworld) {
+            drawOverworldElements();
+        }
 
-            if (battleView != null) {
-                try {
-                    battleView.updateMenuTexts();
-                    battleView.draw(canvas, paint);
-                } catch (NullPointerException e) {
-                    Log.e("Null Pointer Exception for BattleView", "BattleView is null", e);
+        drawBattleView();
+        drawEndBattleScreen();
+        drawConfirmPopUp();
+        handleCanvasTransitions();
+
+        // finish drawing
+        surfaceHolder.unlockCanvasAndPost(canvas);
+    }
+
+    private void setUpCanvas() {
+        // lock the canvas ready to draw and make the drawing surface our canvas object
+        canvas = surfaceHolder.lockCanvas();
+        CANVAS_WIDTH = canvas.getWidth();
+        CANVAS_HEIGHT = canvas.getHeight();
+    }
+
+    private void drawBackground() {
+        int backgroundColor = Color.argb(255, 255, 255, 255);
+        canvas.drawColor(backgroundColor); // draw the background color
+        paint.setColor(Color.argb(255,  255, 255, 255)); // choose the brush color for drawing
+    }
+
+    private void drawOverworldElements() {
+        long currentTime = System.currentTimeMillis();
+
+        updateAndDrawBackground();
+        checkForEnemyEncounter(currentTime);
+        drawOverworldSprites();
+        drawHealthBar();
+        updateAndDrawPlayer(currentTime);
+        drawOpenMenus();
+    }
+
+    private void updateAndDrawBackground() {
+        backgroundImage.update(fps, canPlayerMove);
+        backgroundImage.draw(canvas, paint);
+    }
+
+    private void checkForEnemyEncounter(long currentTime) {
+        int TIME_GAP = 3000;  // in milliseconds
+        boolean hasEnoughTimePassedSinceLastEncounter = (currentTime - lastEnemyEncounterCheck) >= TIME_GAP;
+        if (hasEnoughTimePassedSinceLastEncounter && !isMenuOpen) {
+            presenter.hasPlayerEncounteredEnemy(backgroundImage.getX());
+            lastEnemyEncounterCheck = System.currentTimeMillis();
+        }
+    }
+
+    private void drawOverworldSprites() {
+        Sprite[] sprites = {homeIcon, saveIcon, indexIcon, shopIcon, inventory};
+        for (Sprite sprite: sprites) {
+            sprite.draw(canvas, paint);
+        }
+    }
+
+    private void drawHealthBar() {
+        healthBar.draw(canvas, paint, presenter.getPlayerHealthPercentage());
+    }
+
+    private void updateAndDrawPlayer(long currentTime) {
+        playerSprite.update(currentTime, canPlayerMove);
+        playerSprite.draw(canvas);
+    }
+
+    private void drawOpenMenus() {
+        BaseMenu[] menus = {playerMenu, shopMenu, indexMenu, saveMenu};
+        List<BaseMenu> menusToUpdate = Arrays.asList(playerMenu, shopMenu);
+
+        for (BaseMenu menu : menus) {
+            if (menu != null && !menu.isMenuClosed()) {
+                if (menusToUpdate.contains(menu)) {
+                    menu.updateMenuTexts(presenter);
                 }
+                menu.draw(canvas, paint);
             }
+        }
+    }
 
-            if (endBattleScreen != null) {
-                endBattleScreen.draw(canvas, paint);
+    private void drawBattleView() {
+        if (battleView != null) {
+            try {
+                battleView.updateMenuTexts();
+                battleView.draw(canvas, paint);
+            } catch (NullPointerException e) {
+                Log.e("Null Pointer Exception for BattleView", "BattleView is null", e);
             }
+        }
+    }
 
-            if (confirmPopUp != null) {
-                confirmPopUp.draw(canvas, paint);
-            }
+    private void drawEndBattleScreen() {
+        if (endBattleScreen != null) {
+            endBattleScreen.draw(canvas, paint);
+        }
+    }
 
-            if (isCanvasFadingOut || isCanvasFadingIn) {
-                handleCanvasTransitions();
-            }
-
-            // draw everything to the screen and unlock the drawing surface
-            surfaceHolder.unlockCanvasAndPost(canvas);
+    private void drawConfirmPopUp() {
+        if (confirmPopUp != null) {
+            confirmPopUp.draw(canvas, paint);
         }
     }
 
     private void handleCanvasTransitions() {
-        Paint fadePaint = new Paint();
-        fadePaint.setColor(Color.BLACK);
-        fadePaint.setAlpha(fadeAlpha);
-        canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), fadePaint);
+        if (isCanvasFadingOut || isCanvasFadingIn) {
+            Paint fadePaint = new Paint();
+            fadePaint.setColor(Color.BLACK);
+            fadePaint.setAlpha(fadeAlpha);
+            canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), fadePaint);
 
-        if (isCanvasFadingIn) {
-            fadeAlpha -= fadeSpeed;
-            if (fadeAlpha <= 0) {
-                fadeAlpha = -1; // done fading in
-                isCanvasFadingIn = false;
-            }
-        } else if (isCanvasFadingOut) {
-            fadeAlpha += fadeSpeed;
-            if (fadeAlpha >= 255) {
-                fadeAlpha = 255; // fully faded out
-                isCanvasFadingOut = false;
-                if (isInBattle) {
-                    presenter.finishedBattleFadeOutTransition();
+            if (isCanvasFadingIn) {
+                fadeAlpha -= fadeSpeed;
+                if (fadeAlpha <= 0) {
+                    fadeAlpha = -1; // done fading in
+                    isCanvasFadingIn = false;
+                }
+            } else if (isCanvasFadingOut) {
+                fadeAlpha += fadeSpeed;
+                if (fadeAlpha >= 255) {
+                    fadeAlpha = 255; // fully faded out
+                    isCanvasFadingOut = false;
+                    if (isInBattle) {
+                        presenter.finishedBattleFadeOutTransition();
+                    }
                 }
             }
         }
@@ -219,54 +329,6 @@ public class GameView  extends SurfaceView implements Runnable{
         fadeAlpha = 0;
         isCanvasFadingIn = false;
         isCanvasFadingOut = true;
-    }
-
-
-    private void drawBackground() {
-        int backgroundColor = Color.argb(255, 255, 255, 255);
-        canvas.drawColor(backgroundColor); // draw the background color
-        paint.setColor(Color.argb(255,  255, 255, 255)); // choose the brush color for drawing
-    }
-
-    private void drawOverworldElements() {
-        long currentTime = System.currentTimeMillis();
-
-        backgroundImage.update(fps, canPlayerMove);
-        backgroundImage.draw(canvas, paint);
-
-        if (((currentTime - lastEnemyEncounterCheck) >= 3000) && !isMenuOpen) {
-            presenter.hasPlayerEncounteredEnemy(backgroundImage.getX());
-            lastEnemyEncounterCheck = System.currentTimeMillis();
-        }
-
-        homeIcon.draw(canvas, paint);
-        saveIcon.draw(canvas, paint);
-        indexIcon.draw(canvas, paint);
-        shopIcon.draw(canvas, paint);
-        inventory.draw(canvas, paint);
-
-        healthBar.draw(canvas, paint, presenter.getPlayerHealthPercentage());
-
-        playerSprite.update(currentTime, canPlayerMove);
-        playerSprite.draw(canvas);
-
-        if (!playerMenu.isMenuClosed()) {
-            playerMenu.updateMenuTexts(presenter);
-            playerMenu.draw(canvas, paint);
-        }
-
-        if (!shopMenu.isMenuClosed()) {
-            shopMenu.updateMenuTexts(presenter);
-            shopMenu.draw(canvas, paint);
-        }
-
-        if (!indexMenu.isMenuClosed()) {
-            indexMenu.draw(canvas, paint);
-        }
-
-        if (!saveMenu.isMenuClosed()) {
-            saveMenu.draw(canvas, paint);
-        }
     }
 
 

@@ -55,7 +55,11 @@ public abstract class BaseMenu {
         return presenter.isInHitbox(eventX, eventY, leftX, rightX, topY, bottomY);
     }
 
+    public abstract void updateMenuTexts(GamePresenter presenter);
+
     public abstract void checkForUserTouch(float eventX, float eventY, GamePresenter presenter);
+
+    public abstract void draw(Canvas canvas, Paint paint);
 
     protected void drawOverlay(Canvas canvas, Paint paint){
         canvas.drawColor(OVERLAY_DARK_COLOR);

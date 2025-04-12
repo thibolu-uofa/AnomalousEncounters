@@ -187,4 +187,9 @@ public class IndexMenu extends BaseMenu {
         }
         drawPopUps(canvas, paint);
     }
+
+    @Override
+    public void updateMenuTexts(GamePresenter presenter) {
+        // do nothing
+    }
 }
