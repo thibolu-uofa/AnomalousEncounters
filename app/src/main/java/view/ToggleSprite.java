@@ -13,14 +13,6 @@ public class ToggleSprite extends Sprite {
         this.text = text;
     }
 
-    public void toggleSpriteImage() {
-        if (imageResource == defaultBitmap) {
-            imageResource = changedBitmap;
-        } else {
-            imageResource = defaultBitmap;
-        }
-    }
-
     public void select() {
         imageResource = changedBitmap;
     }

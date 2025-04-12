@@ -14,8 +14,8 @@ public class AttackPattern {
     }
 
     private final AttackType attackType;
-    private final int maxRows = 6;
-    private final int maxCols = 8;
+    private final int MAX_ROWS = 6;
+    private final int MAX_COLS = 8;
 
     AttackPattern(AttackType attackType) {
         this.attackType = attackType;
@@ -42,31 +42,31 @@ public class AttackPattern {
 
     private ArrayList<int[]> getDiagonalPattern(int[] origin_pos, int distance) {
         int[][] positionVectors = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
-        return getRepeatingPattern(origin_pos, distance, positionVectors, maxRows, maxCols);
+        return getRepeatingPattern(origin_pos, distance, positionVectors, MAX_ROWS, MAX_COLS);
     }
     
     private ArrayList<int[]> getStraightPattern(int[] origin_pos, int distance) {
         int[][] positionVectors = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
-        return getRepeatingPattern(origin_pos, distance, positionVectors, maxRows, maxCols);
+        return getRepeatingPattern(origin_pos, distance, positionVectors, MAX_ROWS, MAX_COLS);
     }
 
     private ArrayList<int[]> getStarPattern(int[] origin_pos, int distance) {
         int[][] positionVectors = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}, {-1, 0}, {1, 0}, {0, 1}, {0, -1}};
-        return getRepeatingPattern(origin_pos, distance, positionVectors, maxRows, maxCols);
+        return getRepeatingPattern(origin_pos, distance, positionVectors, MAX_ROWS, MAX_COLS);
     }
 
     private ArrayList<int[]> getConePattern(int[] origin_pos, int distance) {
         int[][] positionVectors = {{-1, 1}, {0, 1}, {1, 1}};
-        return getRepeatingPattern(origin_pos, distance, positionVectors, maxRows, maxCols);
+        return getRepeatingPattern(origin_pos, distance, positionVectors, MAX_ROWS, MAX_COLS);
     }
 
     private ArrayList<int[]> getHourglassPattern(int[] origin_pos, int distance) {
         int[][] positionVectors = {{-1, 1}, {1, -1}, {0, 1}, {0, -1}, {1, 1}, {-1, -1}};
-        return getRepeatingPattern(origin_pos, distance, positionVectors, maxRows, maxCols);
+        return getRepeatingPattern(origin_pos, distance, positionVectors, MAX_ROWS, MAX_COLS);
     }
 
     private ArrayList<int[]> getButterflyPattern(int[] origin_pos, int distance) {
         int[][] positionVectors = {{-1, 0}, {1, 0}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
-        return getRepeatingPattern(origin_pos, distance, positionVectors, maxRows, maxCols);
+        return getRepeatingPattern(origin_pos, distance, positionVectors, MAX_ROWS, MAX_COLS);
     }
 }

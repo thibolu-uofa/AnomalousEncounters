@@ -485,8 +485,8 @@ public class GameView  extends SurfaceView implements Runnable{
     }
 
     private void handleMenuClosed() {
-        int stopGap = 5000;
-        lastEnemyEncounterCheck = System.currentTimeMillis() + stopGap;
+        int STOP_GAP = 5000;
+        lastEnemyEncounterCheck = System.currentTimeMillis() + STOP_GAP;
         isMenuOpen = false;
     }
 
@@ -583,8 +583,8 @@ public class GameView  extends SurfaceView implements Runnable{
     private void handleEndBattle(){
         startFadeIn();
         //prevents player from immediately encountering another enemy
-        int stopGap = 5000;
-        lastEnemyEncounterCheck = System.currentTimeMillis() + stopGap;
+        int STOP_GAP = 5000;
+        lastEnemyEncounterCheck = System.currentTimeMillis() + STOP_GAP;
         displayOverworld();
         battleView = null;
     }

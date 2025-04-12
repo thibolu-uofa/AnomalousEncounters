@@ -7,9 +7,6 @@ import java.util.Map;
 import java.util.Random;
 
 public class SkillUtils {
-    private int skillBook1 = 50;
-    private int skillBook2 = 250;
-    private int skillBook3 = 1000;
     public final static int SKILL_EXP_VOL_1_ID = 0;
     public final static int SKILL_EXP_VOL_2_ID = 1;
     public final static int SKILL_EXP_VOL_3_ID = 2;

@@ -37,9 +37,9 @@ public abstract class BaseMenu {
     private void createCloseBtn(Context context) {
         int x = (int) (SCREEN_WIDTH * 0.95);
         int y = (int) (SCREEN_HEIGHT * 0.1);
-        int size = 70;
+        int SIZE = 70;
         String text = "X";
-        MenuItem closeButton = new MenuItem(x, y, size, size, text, true, context);
+        MenuItem closeButton = new MenuItem(x, y, SIZE, SIZE, text, true, context);
         menuItemsList.put("close_button", closeButton);
     }
 
