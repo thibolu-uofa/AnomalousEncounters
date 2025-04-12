@@ -206,6 +206,7 @@ public class GamePresenter extends AppCompatActivity {
                 playerState.addItem(itemId, itemAmount);
             }
         } catch (JSONException e) {
+            Log.e("Error with JSON file", "failed to load JSON file", e);
             throw new RuntimeException(e);
         }
     }
@@ -221,6 +222,7 @@ public class GamePresenter extends AppCompatActivity {
             }
 
         } catch (JSONException e) {
+            Log.e("Error with JSON file", "failed to load JSON files", e);
             throw new RuntimeException(e);
         }
     }
@@ -755,6 +757,7 @@ public class GamePresenter extends AppCompatActivity {
 
             saveJSONArrayOnUserDevice(jsonArray, this);
         } catch (JSONException e) {
+            Log.e("Error with JSON file", "failed to load JSON files", e);
             throw new RuntimeException(e);
         }
     }
@@ -776,6 +779,7 @@ public class GamePresenter extends AppCompatActivity {
 
             saveJSONArrayOnUserDevice(existingSlots, this);
         } catch (JSONException e) {
+            Log.e("Error with JSON file", "failed to load JSON files", e);
             throw new RuntimeException(e);
         }
     }
@@ -800,6 +804,7 @@ public class GamePresenter extends AppCompatActivity {
             }
 
         } catch (JSONException e) {
+            Log.e("Error with JSON file", "failed to load JSON files", e);
             throw new RuntimeException(e);
         }
     }
@@ -888,7 +893,7 @@ public class GamePresenter extends AppCompatActivity {
     }
 
     private String getItemsListForSaveFile(JSONArray items) {
-        if (items == null) {
+        if (items == null || items.length() == 0) {
             return "Items: None";
         }
 
@@ -908,6 +913,7 @@ public class GamePresenter extends AppCompatActivity {
                 }
             }
         } catch (JSONException e) {
+            Log.e("Error with JSON file", "failed to load JSON files", e);
             return "Items: Error loading";
         }
 
@@ -915,7 +921,7 @@ public class GamePresenter extends AppCompatActivity {
     }
 
     private String getSkillsListForSaveFileInfo(JSONArray skills) {
-        if (skills == null) {
+        if (skills == null || skills.length() == 0) {
             return "Skills: None";
         }
 
@@ -935,6 +941,7 @@ public class GamePresenter extends AppCompatActivity {
                 }
             }
         } catch (JSONException e) {
+            Log.e("Error with JSON file", "failed to load JSON files", e);
             return "Skills: Error loading";
         }
 

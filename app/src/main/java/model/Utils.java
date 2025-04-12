@@ -3,6 +3,7 @@ package model;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,6 +42,7 @@ public final class Utils {
             inputStream.close();
             return new JSONArray(skillString.toString());
         } catch (JSONException | IOException e) {
+            Log.e("Error with JSON file", "failed to load JSON files", e);
             throw new RuntimeException(e);
         }
     }
@@ -58,9 +60,10 @@ public final class Utils {
             return new JSONArray(skillString.toString());
 
         } catch (FileNotFoundException e) {
-            // File doesn't exist yet — return empty array
+            Log.e("Error with JSON file", "JSON file does not exist", e);
             return new JSONArray();
         } catch (JSONException | IOException e) {
+            Log.e("Error with JSON file", "failed to load JSON files", e);
             throw new RuntimeException(e);
         }
     }
@@ -72,6 +75,7 @@ public final class Utils {
             fos.write(jsonArray.toString().getBytes());
             fos.flush();
         } catch (Exception e) {
+            Log.e("Error with JSON file", "failed to save JSON files", e);
             throw new RuntimeException(e);
         }
     }
@@ -93,6 +97,7 @@ public final class Utils {
             try {
                 dataProperties.append(jsonArray.getJSONObject(id).getString(property)).append("\n");
             } catch (JSONException e) {
+                Log.e("Error with JSON file", "failed to load property from JSON file", e);
                 throw new RuntimeException(e);
             }
         }
@@ -117,6 +122,7 @@ public final class Utils {
                 String dataProperty = jsonArray.getJSONObject(id).getString(property);
                 dataProperties.add(dataProperty);
             } catch (JSONException e) {
+                Log.e("Error with JSON file", "failed to load JSON files", e);
                 throw new RuntimeException(e);
             }
         }
@@ -130,6 +136,7 @@ public final class Utils {
         try {
              dataProperty = jsonArray.getJSONObject(id).get(property);
         } catch (JSONException e) {
+            Log.e("Error with JSON file", "failed to load JSON file property", e);
             throw new RuntimeException(e);
         }
         return dataProperty;
@@ -140,6 +147,7 @@ public final class Utils {
         try {
             dataProperty = jsonArray.getJSONObject(id).get(property);
         } catch (JSONException e) {
+            Log.e("Error with JSON file", "failed to load JSON file property", e);
             throw new RuntimeException(e);
         }
         return dataProperty;
@@ -157,6 +165,7 @@ public final class Utils {
 
             }
         } catch (JSONException e) {
+            Log.e("Error with JSON file", "failed to load property from JSON file", e);
             throw new RuntimeException(e);
         }
 

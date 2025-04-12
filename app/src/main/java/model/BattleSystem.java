@@ -10,6 +10,7 @@ import static model.Utils.getRepeatingPattern;
 import static model.Utils.getSingleDataProperty;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -290,6 +291,7 @@ public class BattleSystem {
             }
             populateSkills(skillArray, "enemySkills", tier);
         } catch (JSONException e) {
+            Log.e("Error with JSON file", "failed to load JSON files", e);
             throw new RuntimeException(e);
         }
     }
