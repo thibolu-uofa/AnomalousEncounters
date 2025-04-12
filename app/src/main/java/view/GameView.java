@@ -35,6 +35,7 @@ import java.util.Objects;
 import presenter.GamePresenter;
 import view.battle.BattleView;
 import view.battle.EndBattleScreen;
+import view.menu.BaseMenu;
 
 public class GameView  extends SurfaceView implements Runnable{
     private final GamePresenter presenter;
@@ -280,51 +281,9 @@ public class GameView  extends SurfaceView implements Runnable{
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
-            // User has touched the screen
+            // user has touched the screen
             case MotionEvent.ACTION_DOWN:
-                float eventX = motionEvent.getX();
-                float eventY = motionEvent.getY();
-
-//                Log.d("Get Player/Background Position", "The Background X1 Position" + backgroundImage.getX());
-
-                if (isOnOverworld) {
-                    if (confirmPopUp != null) {
-                        handleConfirmPopUp(eventX, eventY, presenter);
-                        break;
-                    }
-                    checkIfInventoryOpened(eventX, eventY);
-                    checkIfShopOpened(eventX, eventY);
-                    checkIfIndexOpened(eventX, eventY);
-                    checkIfHomeIconClicked(eventX, eventY);
-                    checkIfSaveMenuOpened(eventX, eventY);
-                    if (!playerMenu.isMenuClosed()) {
-                        playerMenu.checkForUserTouch(eventX, eventY, presenter);
-                    }
-                    if (!shopMenu.isMenuClosed()) {
-                        shopMenu.checkForUserTouch(eventX, eventY, presenter);
-                    }
-                    if (!indexMenu.isMenuClosed()) {
-                        indexMenu.checkForUserTouch(eventX, eventY, presenter);
-                    }
-                    if (!saveMenu.isMenuClosed()) {
-                        saveMenu.checkForUserTouch(eventX, eventY, presenter);
-                    }
-                    if (hasInventoryBeenClosed(eventX, eventY) || hasShopBeenClosed(eventX, eventY)
-                            || hasIndexBeenClosed(eventX, eventY) || hasSaveMenuBeenClosed(eventX, eventY)) {
-                        handleMenuClosed();
-                        break;
-                    }
-                    updatePlayerAnimation((int) eventX);
-                }
-
-                if (battleView != null) {
-                    battleView.checkForUserTouch(eventX, eventY, presenter);
-                }
-
-                if (endBattleScreen != null && hasEndBattleScreenBeenClosed(eventX, eventY)) {
-                    closeEndBattleInfo();
-                }
-
+                processActionDownEvent(motionEvent);
                 break;
 
             // user has removed finger from screen, so character should stop moving
@@ -338,6 +297,133 @@ public class GameView  extends SurfaceView implements Runnable{
                 break;
         }
         return true;
+    }
+
+    private void processActionDownEvent(MotionEvent motionEvent) {
+        float eventX = motionEvent.getX();
+        float eventY = motionEvent.getY();
+
+        if (isOnOverworld) {
+            handleOverworldOnTouchEvents(eventX, eventY);
+        }
+
+        if (battleView != null) {
+            battleView.checkForUserTouch(eventX, eventY, presenter);
+        }
+
+        if (endBattleScreen != null && hasEndBattleScreenBeenClosed(eventX, eventY)) {
+            closeEndBattleInfo();
+        }
+    }
+
+    private void handleOverworldOnTouchEvents(float eventX, float eventY) {
+        if (confirmPopUp != null) {
+            handleConfirmPopUp(eventX, eventY, presenter);
+            return;
+        }
+
+        if (!isMenuOpen) {
+            checkMenuOpening(eventX, eventY);
+        }
+
+        checkOpenMenuTouches(eventX, eventY);
+
+        if (checkForMenuClosing(eventX, eventY)) {
+            handleMenuClosed();
+            //return to prevent player from moving on player when a menu has just been closed
+            return;
+        }
+
+        updatePlayerAnimation((int) eventX);
+    }
+
+    private void checkMenuOpening(float eventX, float eventY) {
+        if (inventory.hasBeenTouched(eventX, eventY, presenter, 3)) {
+            openMenu("player");
+        }
+        else if (shopIcon.hasBeenTouched(eventX, eventY, presenter, 1)) {
+            openMenu("shop");
+        }
+        else if (indexIcon.hasBeenTouched(eventX, eventY, presenter, 1)) {
+            openMenu("index");
+        }
+        else if (homeIcon.hasBeenTouched(eventX, eventY, presenter, 1)) {
+            showReturnToMainMenuConfirmation();
+        }
+        else if (saveIcon.hasBeenTouched(eventX, eventY, presenter, 1)) {
+            handleSaveIconTouched();
+        }
+    }
+
+    private void openMenu(String menuType) {
+        isMenuOpen = true;
+        canPlayerMove = false;
+
+        switch (menuType) {
+            case "player":
+                playerMenu = new PlayerMenu(presenter, getContext());
+                playerMenu.openMenu();
+                break;
+            case "shop":
+                shopMenu = new ShopMenu(presenter, getContext());
+                shopMenu.openMenu();
+                break;
+            case "index":
+                indexMenu = new IndexMenu(presenter, getContext());
+                indexMenu.openMenu();
+                break;
+            case "save":
+                saveMenu = new SaveMenu(presenter, getContext(), this);
+                saveMenu.openMenu();
+                break;
+        }
+    }
+
+    private void showReturnToMainMenuConfirmation() {
+        homeMsg = presenter.getString(R.string.confirmHomeBtn);
+        confirmPopUp = new ConfirmPopUp(homeMsg, presenter, true);
+        isMenuOpen = true;
+        canPlayerMove = false;
+    }
+
+    private void handleSaveIconTouched() {
+        if (!presenter.hasSaveFile()) {
+            saveMsg = presenter.getString(R.string.saveConfirmation);
+            confirmPopUp = new ConfirmPopUp(saveMsg, presenter, true);
+        } else {
+            openMenu("save");
+        }
+        isMenuOpen = true;
+        canPlayerMove = false;
+    }
+
+    private void checkOpenMenuTouches(float eventX, float eventY) {
+        BaseMenu[] menus = {playerMenu, shopMenu, indexMenu, saveMenu};
+        for (BaseMenu menu: menus) {
+            // if the menu is not closed (so open), check for user touch
+            if (!menu.isMenuClosed()) {
+                menu.checkForUserTouch(eventX, eventY, presenter);
+            }
+        }
+    }
+
+    private boolean checkForMenuClosing(float eventX, float eventY) {
+        boolean closedAnyMenu = false;
+
+        BaseMenu[] menus = {playerMenu, shopMenu, indexMenu, saveMenu};
+        for (BaseMenu menu: menus) {
+            // if the menu is open, and has been closed, then close menu
+            if (!menu.isMenuClosed() && menu.hasClosedMenu(eventX, eventY, presenter)) {
+                menu.closeMenu();
+                closedAnyMenu = true;
+            }
+        }
+
+        if (closedAnyMenu) {
+            canPlayerMove = true;
+        }
+
+        return closedAnyMenu;
     }
 
     private void handleMenuClosed() {
@@ -367,121 +453,6 @@ public class GameView  extends SurfaceView implements Runnable{
             isMenuOpen = false;
             canPlayerMove = true;
         }
-    }
-
-    private void checkIfInventoryOpened(float eventX, float eventY) {
-        if (isMenuOpen){
-            return;
-        }
-        if (inventory.hasBeenTouched(eventX, eventY, presenter, 3)) {
-            isMenuOpen = true;
-            playerMenu = new PlayerMenu(presenter, getContext());
-            playerMenu.openMenu();
-            canPlayerMove = false;
-        }
-    }
-
-    private void checkIfShopOpened(float eventX, float eventY) {
-        if(isMenuOpen){
-            return;
-        }
-        if (shopIcon.hasBeenTouched(eventX, eventY, presenter, 1)) {
-            isMenuOpen = true;
-            shopMenu = new ShopMenu(presenter, getContext());
-            shopMenu.openMenu();
-            canPlayerMove = false;
-        }
-    }
-
-    private void checkIfIndexOpened(float eventX, float eventY) {
-        if(isMenuOpen){
-            return;
-        }
-        if (indexIcon.hasBeenTouched(eventX, eventY, presenter, 1)) {
-            isMenuOpen = true;
-            indexMenu = new IndexMenu(presenter, getContext());
-            indexMenu.openMenu();
-            canPlayerMove = false;
-        }
-    }
-
-    private void checkIfHomeIconClicked(float eventX, float eventY) {
-        if(isMenuOpen){
-            return;
-        }
-        if (homeIcon.hasBeenTouched(eventX, eventY, presenter, 1)) {
-            isMenuOpen = true;
-            homeMsg = presenter.getString(R.string.confirmHomeBtn);
-            confirmPopUp = new ConfirmPopUp(homeMsg, presenter, true);
-            canPlayerMove = false;
-        }
-    }
-
-    private void checkIfSaveMenuOpened(float eventX, float eventY) {
-        if (isMenuOpen){
-            return;
-        }
-        if (saveIcon.hasBeenTouched(eventX, eventY, presenter, 1)) {
-            isMenuOpen = true;
-            boolean hasSaveFile = presenter.hasSaveFile();
-            if (!hasSaveFile) {
-                saveMsg = presenter.getString(R.string.saveConfirmation);
-                confirmPopUp = new ConfirmPopUp(saveMsg, presenter, true);
-            } else {
-                saveMenu = new SaveMenu(presenter, getContext(), this);
-                saveMenu.openMenu();
-            }
-            canPlayerMove = false;
-        }
-    }
-
-    private boolean hasInventoryBeenClosed(float eventX, float eventY) {
-        if (playerMenu.isMenuClosed()) {
-            return false;
-        }
-
-        if (playerMenu.hasClosedMenu(eventX, eventY, presenter)) {
-            playerMenu.closeMenu();
-            canPlayerMove = true;
-            return true;
-        }
-        return false;
-    }
-
-    private boolean hasShopBeenClosed(float eventX, float eventY) {
-        if (shopMenu.isMenuClosed()) {
-            return false;
-        }
-        if (shopMenu.hasClosedMenu(eventX, eventY, presenter)) {
-            shopMenu.closeMenu();
-            canPlayerMove = true;
-            return true;
-        }
-        return false;
-    }
-
-    private boolean hasIndexBeenClosed(float eventX, float eventY) {
-        if (indexMenu.isMenuClosed()) {
-            return false;
-        }
-        if (indexMenu.hasClosedMenu(eventX, eventY, presenter)) {
-            indexMenu.closeMenu();
-            canPlayerMove = true;
-            return true;
-        }
-        return false;
-    }
-
-    private boolean hasSaveMenuBeenClosed(float eventX, float eventY) {
-        if (saveMenu.isMenuClosed()) {
-            return false;
-        }
-        if (saveMenu.hasClosedMenu(eventX, eventY, presenter)) {
-            saveMenu.closeMenu();
-            canPlayerMove = true;
-            return true;
-        }
-        return false;
     }
 
     public void closeSaveMenu() {

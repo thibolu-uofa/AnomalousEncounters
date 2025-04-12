@@ -18,7 +18,7 @@ import view.AlertPopUp;
 import view.ConfirmPopUp;
 import view.Rectangle;
 
-public class BaseMenu {
+public abstract class BaseMenu {
     protected Context context;
     protected GamePresenter presenter;
     protected Map<String, MenuItem> menuItemsList = new LinkedHashMap<>();
@@ -54,6 +54,8 @@ public class BaseMenu {
         int leftX = textBounds[0], rightX = textBounds[1], topY = textBounds[2], bottomY = textBounds[3];
         return presenter.isInHitbox(eventX, eventY, leftX, rightX, topY, bottomY);
     }
+
+    public abstract void checkForUserTouch(float eventX, float eventY, GamePresenter presenter);
 
     protected void drawOverlay(Canvas canvas, Paint paint){
         canvas.drawColor(OVERLAY_DARK_COLOR);
