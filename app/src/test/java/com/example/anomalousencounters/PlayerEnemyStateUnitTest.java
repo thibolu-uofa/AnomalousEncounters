@@ -24,16 +24,53 @@ public class PlayerEnemyStateUnitTest {
         assertEquals(50, playerState.getPlayerMaxHealth());
 
     }
+
     @Test
-    public void modifyHealthIsCorrect() {
-        PlayerState player = new PlayerState();
-        player.modifyHealth(-20);
-        assertEquals(80, player.getHealth());
-        player.modifyHealth(50);
-        assertEquals(100, player.getHealth());
+    public void modifyHealthWithNegativeDeltaIsCorrect() {
+        int maxHealth = 50;
+        PlayerState player = new PlayerState("Nxy", 50, 20);
+        int delta = -20;
+        player.modifyHealth(delta);
+
+        double DAMAGE_REDUCTION_PERCENTAGE = 0.2;
+        int newHealth =  maxHealth + (int) (delta * (1 - DAMAGE_REDUCTION_PERCENTAGE));
+
+        assertEquals(newHealth, player.getHealth());
+    }
+
+    @Test
+    public void modifyHealthWithPositiveDeltaIsCorrect() {
+        PlayerState player = new PlayerState("Nxy", 50, 20);
+        int delta = -20;
+        player.modifyHealth(delta);
+
+        int delta2 = 10;
+        int currentHealth = player.getHealth();
+        player.modifyHealth(delta2);
+
+        int newHealth = currentHealth + delta2;
+
+        assertEquals(newHealth, player.getHealth());
+    }
+
+    @Test
+    public void modifyHealthWithNegativeOverflowIsCorrect() {
+        PlayerState player = new PlayerState("Nxy", 50, 20);
+
         player.modifyHealth(-200);
         assertEquals(0, player.getHealth());
     }
+
+    @Test
+    public void modifyHealthWithPositiveOverflowIsCorrect() {
+        int maxHealth = 50;
+        PlayerState player = new PlayerState("Nxy", maxHealth, 20);
+        player.modifyHealth(-20);
+
+        player.modifyHealth(200);
+        assertEquals(maxHealth, player.getHealth());
+    }
+
     @Test
     public void addAndRemoveItemIsCorrect() {
         PlayerState player = new PlayerState();
@@ -49,6 +86,7 @@ public class PlayerEnemyStateUnitTest {
         assertArrayEquals(new int[]{1}, player.getItemList());
         assertArrayEquals(new int[]{2}, player.getItemAmountsList());
     }
+
     @Test
     public void addAndRemoveSkillIsCorrect() {
         PlayerState player = new PlayerState();
@@ -66,16 +104,50 @@ public class PlayerEnemyStateUnitTest {
     }
 
     @Test
+    public void getTokensIsCorrect() {
+        int tokens = 5;
+        PlayerState player = new PlayerState("Ben", 50, tokens);
+        assertEquals(tokens, player.getTokens());
+    }
+
+    @Test
     public void updateTokensIsCorrect() {
         PlayerState player = new PlayerState();
-        assertTrue(player.canUpdateTokens(-10));
-        player.updateTokens(-10);
-        assertEquals(10, player.getTokens());
+        int tokens = player.getTokens();
+        int delta = -5;
+        player.updateTokens(delta);
 
-        assertFalse(player.canUpdateTokens(-15));
-        player.updateTokens(-15);
-        assertEquals(10, player.getTokens()); // Should not change since it would go negative
+        assertEquals(tokens + delta, player.getTokens());
     }
+
+    @Test
+    public void updateTokensNegOverflowIsCorrect() {
+        PlayerState player = new PlayerState();
+        int tokens = player.getTokens();
+        int delta = -(tokens + 50);
+        player.updateTokens(delta);
+
+        assertEquals(0, player.getTokens());
+    }
+
+    @Test
+    public void canUpdateTokensIsCorrect() {
+        PlayerState player = new PlayerState();
+        player.updateTokens(20);
+        int delta = -5;
+        assertTrue(player.canUpdateTokens(delta));
+    }
+
+    @Test
+    public void canUpdateTokensWithNegOverflowIsCorrect() {
+        PlayerState player = new PlayerState();
+        int tokens = player.getTokens();
+        int delta = -(tokens + 50);
+
+        assertFalse(player.canUpdateTokens(delta));
+    }
+
+
     @Test
     public void modifyEnemyHealthIsCorrect() {
         EnemyState enemy = new EnemyState();
