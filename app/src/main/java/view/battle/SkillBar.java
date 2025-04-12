@@ -20,13 +20,16 @@ public class SkillBar extends BaseMenuBar {
     private final RadioBtnList radioBtnList;
     private final MenuText skillCooldowns;
     private String selectedSkill = "";
+    private int X_PADDING = 25;
 
     public SkillBar(int x, int y, int width, int height, ArrayList<String> skillArrayList, String skillCooldownsString, Context context) {
         super(x, y, width, context);
 
         title = createButton("Skills & Cooldowns", FONT_SIZE_SMALL, DEFAULT_TEXT_COLOR, true, context);
         addNavigationButtons(context);
-        radioBtnList = new RadioBtnList(x + 10, y + 155, context, skillArrayList, width, height);
+
+        int Y_PADDING = 155;
+        radioBtnList = new RadioBtnList(x + X_PADDING, y + Y_PADDING, context, skillArrayList, width, height);
         skillCooldowns = createButton(skillCooldownsString, FONT_SIZE_SMALL, DEFAULT_TEXT_COLOR, false, context);
         skillCooldowns.setLineSpacingMultiplier(1.35f);
 
@@ -44,12 +47,12 @@ public class SkillBar extends BaseMenuBar {
         int padding = 100;
         int y_pos = radioBtnList.getTopY() + padding;
         for (MenuText btn: textButtons) {
-            btn.setXAndY(x, y_pos);
+            btn.setXAndY(x + X_PADDING, y_pos);
             y_pos += padding;
         }
 
         //set positioning for skill cooldowns
-        int cooldownX = x + radioBtnList.getActualWidth() + 20;
+        int cooldownX = x + X_PADDING + radioBtnList.getActualWidth() + 25;
         int cooldownY= radioBtnList.getBottomY() - 10;
         skillCooldowns.setXAndY(cooldownX, cooldownY);
     }

@@ -32,7 +32,7 @@ public class BattleSideBar {
 
     private final int x;
     private final int y;
-    private final int WIDTH = 600;
+    private final int width;
     private final int HEIGHT = 950;
     private final ArrayList<String> skillArrayList;
     public enum DisplayOptions{
@@ -44,20 +44,21 @@ public class BattleSideBar {
     private boolean hasAttacked = false;
     private boolean hasMoved = false;
     private boolean isAnimationPlaying = false;
-    public BattleSideBar(int x, int y, Context context, GamePresenter presenter, BattleView battleView) {
+    public BattleSideBar(int x, int y, int width,Context context, GamePresenter presenter, BattleView battleView) {
         this.x = x;
         this.y = y;
+        this.width = width;
         this.presenter = presenter;
         this.battleView = battleView;
 
         @SuppressLint("UseCompatLoadingForDrawables") NinePatchDrawable playerInfoNinePatchDrawable = (NinePatchDrawable) context.getResources().getDrawable(R.drawable.border2, null);
-        menuNinePatch = new MenuNinePatch(playerInfoNinePatchDrawable, x, y, WIDTH, HEIGHT);
+        menuNinePatch = new MenuNinePatch(playerInfoNinePatchDrawable, x, y, this.width, HEIGHT);
 
-        actionBar = new ActionBar(x, y, WIDTH, context);
+        actionBar = new ActionBar(x, y, this.width, context);
         skillArrayList = presenter.getSkillNamesArray();
         String skillCooldowns = presenter.getSkillCooldownsString();
-        skillBar = new SkillBar(x, y, WIDTH, HEIGHT, skillArrayList, skillCooldowns, context);
-        moveBar = new MoveBar(x, y, WIDTH, context);
+        skillBar = new SkillBar(x, y, this.width, HEIGHT, skillArrayList, skillCooldowns, context);
+        moveBar = new MoveBar(x, y, this.width, context);
 
         currentDisplay = DisplayOptions.ACTION_BAR;
     }
@@ -80,7 +81,7 @@ public class BattleSideBar {
             return;
         }
 
-        boolean hasNotBeenPressed = !presenter.isInHitbox((int) eventX, (int) eventY, x, x + WIDTH, y + HEIGHT, y);
+        boolean hasNotBeenPressed = !presenter.isInHitbox((int) eventX, (int) eventY, x, x + width, y + HEIGHT, y);
         if (hasNotBeenPressed) {
             return;
         }

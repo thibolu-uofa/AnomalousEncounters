@@ -47,11 +47,7 @@ public class GameView  extends SurfaceView implements Runnable{
     private Canvas canvas;
     private final Paint paint;
     private HealthBar healthBar;
-    private Sprite inventory;
-    private Sprite homeIcon;
-    private Sprite saveIcon;
-    private Sprite shopIcon;
-    private Sprite indexIcon;
+    private Sprite inventory, homeIcon, saveIcon, shopIcon, indexIcon;
     private PlayerSprite playerSprite;
     private BackgroundImage backgroundImage;
     private PlayerMenu playerMenu;
