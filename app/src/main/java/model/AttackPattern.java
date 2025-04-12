@@ -8,7 +8,6 @@ public class AttackPattern {
         DIAGONAL,
         STRAIGHT,
         STAR,
-        CONE,
         HOURGLASS,
         BUTTERFLY,
     }
@@ -29,8 +28,6 @@ public class AttackPattern {
                 return getStraightPattern(origin_pos, distance);
             case STAR:
                 return getStarPattern(origin_pos, distance);
-            case CONE:
-                return getConePattern(origin_pos, distance);
             case HOURGLASS:
                 return getHourglassPattern(origin_pos, distance);
             case BUTTERFLY:
@@ -52,11 +49,6 @@ public class AttackPattern {
 
     private ArrayList<int[]> getStarPattern(int[] origin_pos, int distance) {
         int[][] positionVectors = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}, {-1, 0}, {1, 0}, {0, 1}, {0, -1}};
-        return getRepeatingPattern(origin_pos, distance, positionVectors, MAX_ROWS, MAX_COLS);
-    }
-
-    private ArrayList<int[]> getConePattern(int[] origin_pos, int distance) {
-        int[][] positionVectors = {{-1, 1}, {0, 1}, {1, 1}};
         return getRepeatingPattern(origin_pos, distance, positionVectors, MAX_ROWS, MAX_COLS);
     }
 
