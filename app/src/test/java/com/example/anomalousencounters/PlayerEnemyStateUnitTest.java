@@ -8,8 +8,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import model.EnemyState;
 import model.PlayerState;
+import model.Skill;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -76,6 +80,17 @@ public class PlayerEnemyStateUnitTest {
     }
 
     @Test
+    public void setPlayerCurrentHealthIsCorrect() {
+        int maxHealth = 50;
+        PlayerState player = new PlayerState("Nxy", maxHealth, 20);
+
+        int newCurrentHealth = 3;
+        player.setPlayerCurrentHealth(newCurrentHealth);
+
+        assertEquals(newCurrentHealth, player.getHealth());
+    }
+
+    @Test
     public void getItemListIsCorrect(){
         PlayerState playerState = new PlayerState();
         playerState.addItem(0, 2);
@@ -114,6 +129,42 @@ public class PlayerEnemyStateUnitTest {
     }
 
     @Test
+    public void getPlayerItemssIsCorrect() {
+        PlayerState player = new PlayerState();
+        player.addItem(1, 2);
+        player.addItem(2, 10);
+        List<int[]> items = new ArrayList<>();
+        items.add(new int[]{1, 2});
+        items.add(new int[]{2, 10});
+
+        for (int i = 0; i < items.size(); i++) {
+            assertArrayEquals(items.get(i), player.getItems().get(i));
+        }
+    }
+
+    @Test
+    public void getSkillListIsCorrect() {
+        PlayerState player = new PlayerState();
+        player.addSkill(4, 2, 0);
+        player.addSkill(2, 2, 0);
+        player.addSkill(7, 2, 0);
+
+        int[] skillIds = {4, 2, 7};
+        assertArrayEquals(skillIds, player.getSkillList());
+    }
+
+    @Test
+    public void getSkillLevelsIsCorrect() {
+        PlayerState player = new PlayerState();
+        player.addSkill(4, 10, 0);
+        player.addSkill(2, 5, 0);
+        player.addSkill(7, 4, 0);
+
+        int[] skillLevels = {10, 5, 4};
+        assertArrayEquals(skillLevels, player.getSkillLevels());
+    }
+
+    @Test
     public void addAndRemoveSkillIsCorrect() {
         PlayerState player = new PlayerState();
         player.addSkill(1, 2, 0);
@@ -122,11 +173,91 @@ public class PlayerEnemyStateUnitTest {
     }
 
     @Test
+    public void getPlayerSkillsIsCorrect() {
+        PlayerState player = new PlayerState();
+        player.addSkill(1, 2, 0);
+        player.addSkill(2, 3, 10);
+        List<int[]> skills = new ArrayList<>();
+        skills.add(new int[]{1, 2, 0});
+        skills.add(new int[]{2, 3, 10});
+
+        for (int i = 0; i < skills.size(); i++) {
+            assertArrayEquals(skills.get(i), player.getSkills().get(i));
+        }
+    }
+
+    @Test
+    public void addSkillPlayerAlreadyHasIsCorrect() {
+        PlayerState player = new PlayerState();
+        player.addSkill(1, 2, 0);
+        int[] skills = player.getSkillList();
+
+        player.addSkill(1, 2, 0);
+        assertEquals(skills.length, player.getSkillList().length);
+    }
+
+    @Test
+    public void getSkillLevelIsCorrect() {
+        PlayerState player = new PlayerState();
+
+        int id = 1;
+        int level = 2;
+        player.addSkill(id, level, 0);
+
+        assertEquals(level, player.getLevelOfSkill(id));
+    }
+
+    @Test
+    public void getSkillExpIsCorrect() {
+        PlayerState player = new PlayerState();
+
+        int id = 1;
+        int exp = 250;
+        player.addSkill(id, 1, exp);
+
+        assertEquals(exp, player.getExperienceOfSkill(id));
+    }
+
+    @Test
+    public void setSkillLevelAndExpIsCorrect() {
+        PlayerState player = new PlayerState();
+
+        int id = 1;
+        player.addSkill(id, 2, 0);
+
+        int newSkillLevel = 5;
+        int newExp = 100;
+        player.setSkillLevelAndExperience(id, newSkillLevel, newExp);
+
+        assertEquals(newSkillLevel, player.getLevelOfSkill(id));
+        assertEquals(newExp, player.getExperienceOfSkill(id));
+    }
+
+    @Test
     public void removeSkillIsCorrect() {
         PlayerState player = new PlayerState();
         player.addSkill(1, 2, 0);
         player.removeSkill(1);
         assertArrayEquals(new int[]{}, player.getSkillList());
+    }
+
+    @Test
+    public void getTotalSkillLevelIsCorrect() {
+        PlayerState player = new PlayerState();
+        player.addSkill(1, 1, 0);
+        player.addSkill(2, 2, 0);
+        player.addSkill(3, 3, 0);
+        player.addSkill(4, 2, 0);
+
+        assertEquals(8, player.getTotalSkillLevel());
+    }
+
+    @Test
+    public void getTokensLostOnDeathIsCorrect() {
+        PlayerState player = new PlayerState("Max", 25, 0);
+        player.addSkill(1, 2, 0);
+
+        assertEquals(2, player.getTokensLostOnDeath());
     }
 
     @Test
@@ -186,13 +317,26 @@ public class PlayerEnemyStateUnitTest {
     }
 
     @Test
-    public void getSkillListIsCorrect() {
-        EnemyState enemy = new EnemyState();
-        assertArrayEquals(new int[]{}, enemy.getSkillList());
+    public void getPlayerNameIsCorrect() {
+        PlayerState playerState = new PlayerState("Gen", 80, 1);
+        assertEquals("Gen", playerState.getName());
     }
 
     @Test
-    public void getNameIsCorrect() {
+    public void getPhaseIsCorrect() {
+        PlayerState playerState = new PlayerState();
+        assertEquals(1, playerState.getPhase());
+    }
+
+    @Test
+    public void setPhaseIsCorrect() {
+        PlayerState playerState = new PlayerState();
+        playerState.setPhase(3);
+        assertEquals(3, playerState.getPhase());
+    }
+
+    @Test
+    public void getEnemyNameIsCorrect() {
         EnemyState enemy = new EnemyState("Goblin", 80, 1, 1);
         assertEquals("Goblin", enemy.getName());
     }

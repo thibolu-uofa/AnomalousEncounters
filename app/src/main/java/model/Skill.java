@@ -48,8 +48,6 @@ public class Skill {
                 return AttackPattern.AttackType.STRAIGHT;
             case "STAR":
                 return AttackPattern.AttackType.STAR;
-            case "CONE":
-                return AttackPattern.AttackType.CONE;
             case "HOURGLASS":
                 return AttackPattern.AttackType.HOURGLASS;
             case "BUTTERFLY":
@@ -76,12 +74,7 @@ public class Skill {
     private int calculateSkillDistance(int level) {
         //maybe calculate distance based on level and type in a different way later?
         //currently the distance is only effective up to a certain level
-        switch (atkType) {
-            case CONE:
-                return Math.max(level, 2) + 1;
-            default:
-                return Math.max(level, 2);
-        }
+        return Math.max(level, 2);
     }
 
 

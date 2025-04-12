@@ -182,31 +182,6 @@ public class PlayerState {
     }
 
     // Utility method to remove an element from an array
-    /**
-     * Removes an element from an integer array.
-     *
-     * @param array   The original array.
-     * @param element The element to remove.
-     * @return A new array without the specified element. Returns the original array if the element is not found.
-     */
-    private int[] removeFromArray(int[] array, int element) {
-        int index = -1;
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] == element) {
-                index = i;
-                break;
-            }
-        }
-        if (index == -1) return array; // Element not found
-
-        int[] newArray = new int[array.length - 1];
-        for (int i = 0, j = 0; i < array.length; i++) {
-            if (i != index) {
-                newArray[j++] = array[i];
-            }
-        }
-        return newArray;
-    }
 
     public int getTotalSkillLevel() {
         int totalSkillLevel = 0;

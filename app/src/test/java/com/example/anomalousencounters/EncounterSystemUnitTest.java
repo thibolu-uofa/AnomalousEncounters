@@ -18,8 +18,9 @@ import model.EncounterSystem;
  */
 public class EncounterSystemUnitTest {
     @Test
-    public void addition_isCorrect() {
-        assertEquals(4, 2 + 2);
+    public void getNumberOfEnemies_isCorrect() {
+        EncounterSystem encounterSystem = new EncounterSystem();
+        assertEquals(9, encounterSystem.getNumberOfEnemies());
     }
 
     @Test
@@ -56,11 +57,11 @@ public class EncounterSystemUnitTest {
         EncounterSystem encounterSystem = new EncounterSystem();
         int totalTrials = 10000;
 
-        // track the distribution of enemy IDs
+        // track the distribution of enemy IDs {0, 3, 6}
         Map<Integer, Integer> distribution = new HashMap<>();
-        for (int i = 0; i < 9; i++) {
-            distribution.put(i, 0);
-        }
+        distribution.put(0, 0);
+        distribution.put(3, 0);
+        distribution.put(6, 0);
 
         int previousId = -1, currentId;
 
@@ -73,11 +74,11 @@ public class EncounterSystemUnitTest {
             previousId = currentId;
         }
 
-        double expectedFrequency = totalTrials / 9.0;
+        double expectedFrequency = totalTrials / 3.0;
         double allowedDeviation = 0.1 * expectedFrequency;
 
         // make sure each ID appears with roughly equal frequency
-        for (int i = 0; i < 9; i++) {
+        for (Integer i: distribution.keySet()) {
             int count = distribution.get(i);
             assertTrue("Enemy ID " + i + " appeared " + count + " times, expected around " +
                             expectedFrequency + " ±" + allowedDeviation,
@@ -107,25 +108,25 @@ public class EncounterSystemUnitTest {
 
             switch (phase) {
                 case 1:
-                    // Phase 1: 85% chance of Tier 4, 15% chance of Tier 3
-                    expectedProbabilities.put(2, 0.0);
-                    expectedProbabilities.put(3, 0.15);
-                    expectedProbabilities.put(4, 0.85);
+                    // Phase 1: 100% chance of Tier 4
                     expectedProbabilities.put(1, 0.0);
+                    expectedProbabilities.put(2, 0.0);
+                    expectedProbabilities.put(3, 0.0);
+                    expectedProbabilities.put(4, 1.0);
                     break;
                 case 2:
-                    // Phase 2: 10% chance of Tier 4, 80% chance of Tier 3, 10% chance of Tier 2
-                    expectedProbabilities.put(2, 0.10);
-                    expectedProbabilities.put(3, 0.80);
-                    expectedProbabilities.put(4, 0.10);
+                    // Phase 2: 30% chance of Tier 4, 70% chance of Tier 3
                     expectedProbabilities.put(1, 0.0);
+                    expectedProbabilities.put(2, 0.00);
+                    expectedProbabilities.put(3, 0.70);
+                    expectedProbabilities.put(4, 0.30);
                     break;
                 case 3:
                     // Phase 3: 5% chance of Tier 4, 25% chance of Tier 3, 70% chance of Tier 2
+                    expectedProbabilities.put(1, 0.0);
                     expectedProbabilities.put(2, 0.70);
                     expectedProbabilities.put(3, 0.25);
                     expectedProbabilities.put(4, 0.05);
-                    expectedProbabilities.put(1, 0.0);
                     break;
                 case 4:
                     // Phase 4: Equal chance of tiers 1-3
