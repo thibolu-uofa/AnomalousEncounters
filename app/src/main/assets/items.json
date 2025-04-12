@@ -50,13 +50,13 @@
   {
     "name": "Anomalous Essence",
     "id": 8,
-    "price": 3,
+    "price": 5,
     "description": "A concentrated mass of unstable energy extracted from an Anomalous Entity"
   },
   {
     "name": "Anomalous Shard",
     "id": 9,
-    "price": 13,
+    "price": 20,
     "description": "A fractured piece of crystallized energy source, when unobserved, the structure appears to shift."
   },
   {
