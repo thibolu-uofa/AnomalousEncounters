@@ -217,5 +217,54 @@ public class SkillEnemyItemUtilsUnitTest {
         // Check if tokens update is valid
         assertTrue("Player should be able to update tokens by -10", player.canUpdateTokens(-10));
         assertFalse("Player should not be able to update tokens by a huge negative number", player.canUpdateTokens(-99999));
+    }@Test
+    public void testUseHealthRune_rune1_increasesHealthBy20Percent() {
+        PlayerState player = new PlayerState("Test", 100, 0);
+        player.setPlayerCurrentHealth(50);
+        ItemUtils.useHealthRune(player, 1);
+        assertEquals(70, player.getHealth()); // 50 + 20% of 100 = 70
+    }
+
+    @Test
+    public void testUseHealthRune_rune2_increasesHealthBy50Percent() {
+        PlayerState player = new PlayerState("Test", 100, 0);
+        player.setPlayerCurrentHealth(40);
+        ItemUtils.useHealthRune(player, 2);
+        assertEquals(90, player.getHealth()); // 40 + 50% of 100 = 90
+    }
+
+    @Test
+    public void testUseExperienceBook_volume1() {
+        int[] result = ItemUtils.useExperienceBook(1, 1, 0);
+        assertEquals(1, result[0]); // Should still be level 1 (less than maxExp)
+    }
+
+    @Test
+    public void testUseExperienceBook_volume3_levelUp() {
+        int[] result = ItemUtils.useExperienceBook(3, 1, 0);
+        int expectedLevel = (SkillUtils.getSkillExpGainedForVolume(3) >= SkillUtils.getMaxExperience(1)) ? 2 : 1;
+        assertEquals(expectedLevel, result[0]); // Should level up if enough experience gained
+    }
+
+    @Test
+    public void testUseSkillStone_addsNewSkill() {
+        PlayerState player = new PlayerState("Test", 100, 0);
+        ItemUtils.useSkillStone(SkillUtils.AnomalyTypes.LIFE, player);
+
+        int totalSkills = player.getSkillList().length;
+        assertEquals(1, totalSkills); // Should have 1 skill after use
+    }
+
+    @Test
+    public void testUseSkillStone_whenPlayerHasAllSkills() {
+        PlayerState player = new PlayerState("Test", 100, 0);
+        int[] lifeSkills = SkillUtils.getSkillsByType(SkillUtils.AnomalyTypes.LIFE);
+        for (int skillId : lifeSkills) {
+            player.addSkill(skillId, 1, 0);
+        }
+
+        ItemUtils.useSkillStone(SkillUtils.AnomalyTypes.LIFE, player);
+        int totalSkills = player.getSkillList().length;
+        assertEquals(lifeSkills.length, totalSkills); // No new skill added
     }
 }
