@@ -89,20 +89,13 @@ public class EncounterSystem {
 
     private int getPhaseOneTier(float randomProportion) {
         return 4;
-
-        // Phase 1: 85% chance of Tier 4, 15% chance of Tier 3
-//        if (randomProportion < 0.85) {
-//            return 4;
-//        } else {
-//            return 3;
-//        }
     }
 
     private int getPhaseTwoTier(float randomProportion) {
-        // Phase 2: 10% chance of Tier 4, 80% chance of Tier 3, 10% chance of Tier 2
+        // Phase 2: 30% chance of Tier 4, 70% chance of Tier 3
         if (randomProportion < 0.30) {
             return 4;
-        } else  { // 0.10 + 0.80 = 0.90
+        } else  {
             return 3;
         }
     }

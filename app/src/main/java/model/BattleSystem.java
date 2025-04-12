@@ -1,6 +1,5 @@
 package model;
 
-import static model.EnemyUtils.getEnemyDropsFromTier;
 import static model.EnemyUtils.getEnemyMaxHealth;
 import static model.SkillUtils.calculateEnemySkillLevel;
 import static model.SkillUtils.getExperienceGained;
