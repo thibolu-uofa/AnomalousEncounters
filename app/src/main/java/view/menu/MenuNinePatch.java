@@ -23,9 +23,9 @@ public class MenuNinePatch {
     public MenuNinePatch(NinePatchDrawable ninePatchDrawable, int x, int y, String text,  int maxWidth, boolean isCentred, Context context){
         menuText = new MenuText(text, FONT_SIZE_SMALL, DEFAULT_TEXT_COLOR, maxWidth, isCentred, context, true);
 
-        int x_BORDER_WEIGHT = 30;
-        int y_BORDER_WEIGHT = 40;
-        menuText.setXAndY(x + x_BORDER_WEIGHT, y + y_BORDER_WEIGHT);
+        int X_BORDER_WEIGHT = 30;
+        int Y_BORDER_WEIGHT = 40;
+        menuText.setXAndY(x + X_BORDER_WEIGHT, y + Y_BORDER_WEIGHT);
 
         this.ninePatchDrawable = ninePatchDrawable;
         this.x = x;

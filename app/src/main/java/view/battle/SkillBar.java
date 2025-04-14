@@ -40,8 +40,8 @@ public class SkillBar extends BaseMenuBar {
     }
 
     private void setTextPositions() {
-        int titleTopPadding = 45;
-        title.setXAndY(x, y + titleTopPadding);
+        int TITLE_TOP_PADDING = 45;
+        title.setXAndY(x, y + TITLE_TOP_PADDING);
 
         // set positioning for the continue and go back buttons
         int padding = 100;

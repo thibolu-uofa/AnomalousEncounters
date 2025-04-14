@@ -1,8 +1,6 @@
 package model;
 import static java.lang.Math.abs;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -11,7 +9,7 @@ public class EncounterSystem {
     private final int[][] enemyTypeIds = {{0, 3, 6}, {1, 4, 8}, {2, 5, 7}};
     private int encounterType;
     private int previousEnemyId = -1;
-    int numberOfEnemies = 9;
+    int NUMBER_OF_ENEMIES = 9;
 
     public EncounterSystem() {
         int[][] coordsType0 = {{-927, -1172}, {-3095, -3369}, {-6060, -6308}};
@@ -120,6 +118,6 @@ public class EncounterSystem {
     }
 
     public int getNumberOfEnemies() {
-        return numberOfEnemies;
+        return NUMBER_OF_ENEMIES;
     }
 }
