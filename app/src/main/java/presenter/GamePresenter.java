@@ -16,6 +16,7 @@ import static model.Utils.getStringListOfDataProperty;
 import static model.Utils.loadJsonArrayFromFileOnDevice;
 import static model.Utils.saveJSONArrayOnUserDevice;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
@@ -23,6 +24,7 @@ import android.graphics.Bitmap;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -78,6 +80,7 @@ public class GamePresenter extends AppCompatActivity {
 
         View mainView = findViewById(android.R.id.content);
         setupStartButtonListeners(mainView);
+        setUpHowToPlayListeners();
 
         playMusic("menu_theme.wav", true);
     }
@@ -106,6 +109,7 @@ public class GamePresenter extends AppCompatActivity {
 
         setupStartButtonListeners(mainView);
         setupContinueGameListeners(mainView);
+        setUpHowToPlayListeners();
         view.resume();
     }
 
@@ -123,6 +127,19 @@ public class GamePresenter extends AppCompatActivity {
                 view.startFadeIn();
                 playMusic("fallen_down.wav", true);
             }));
+        });
+    }
+
+    private void setUpHowToPlayListeners() {
+        ImageView howToPlayButton = findViewById(R.id.howToPlayButton);
+        howToPlayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = "https://www.canva.com/design/DAGkWRTx7o0/3DdCiVSnFC10WRxepmU4sA/view";
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(url));
+                startActivity(intent);
+            }
         });
     }
 
