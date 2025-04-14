@@ -21,6 +21,7 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.media.AudioAttributes;
+import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.util.Log;
@@ -62,6 +63,8 @@ public class GamePresenter extends AppCompatActivity {
     private EncounterSystem encounterSystem;
     private BattleSystem battleSystem;
     private SoundPool soundPool;
+    private MediaPlayer mediaPlayer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +79,7 @@ public class GamePresenter extends AppCompatActivity {
         View mainView = findViewById(android.R.id.content);
         setupStartButtonListeners(mainView);
 
-        // FOR TESTING PURPOSES
-        // playSound("sample_sound.wav");
+        playMusic("menu_theme.wav", true);
     }
 
     private void initializeGameComponents() {
@@ -89,6 +91,7 @@ public class GamePresenter extends AppCompatActivity {
 
     public void changeViewBackToMainActivity() {
         view.pause();
+        mediaPlayer.stop();
         setContentView(R.layout.activity_main);
         applyWindowInsets();
 
@@ -97,9 +100,12 @@ public class GamePresenter extends AppCompatActivity {
         Animation fadeIn = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in_animation);
         mainView.startAnimation(fadeIn);
 
+        fadeIn.setAnimationListener(new TransitionListener(() -> {
+            playMusic("menu_theme.wav", true);
+        }));
+
         setupStartButtonListeners(mainView);
         setupContinueGameListeners(mainView);
-
         view.resume();
     }
 
@@ -108,12 +114,14 @@ public class GamePresenter extends AppCompatActivity {
         startNewGame.setOnClickListener(v -> {
             Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out_animation);
             mainView.startAnimation(fadeOut);
+            mediaPlayer.stop();
 
-            fadeOut.setAnimationListener(new FadeOutListener(() -> {
+            fadeOut.setAnimationListener(new TransitionListener(() -> {
                 makeNewPlayer();
                 setContentView(view);
                 view.startNewGame();
                 view.startFadeIn();
+                playMusic("fallen_down.wav", true);
             }));
         });
     }
@@ -123,10 +131,12 @@ public class GamePresenter extends AppCompatActivity {
         continueGame.setOnClickListener(v -> {
             Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out_animation);
             mainView.startAnimation(fadeOut);
+            mediaPlayer.stop();
 
-            fadeOut.setAnimationListener(new FadeOutListener(() -> {
+            fadeOut.setAnimationListener(new TransitionListener(() -> {
                 setContentView(view);
                 view.startFadeIn();
+                playMusic("fallen_down.wav", true);
             }));
         });
     }
@@ -141,7 +151,42 @@ public class GamePresenter extends AppCompatActivity {
 
     // https://gamecodeschool.com/android/playing-sound-fx-demo/
     //https://www.geeksforgeeks.org/soundpool-in-android-with-examples/
-    private void playSound(String filename) {
+    private void playMusic(String filename, boolean isLooping) {
+        // release any MediaPlayer, if one exists
+        releaseMediaPlayer();
+
+        try {
+            mediaPlayer = new MediaPlayer();
+            AssetFileDescriptor descriptor = getAssets().openFd(filename);
+            mediaPlayer.setDataSource(descriptor.getFileDescriptor(),
+                    descriptor.getStartOffset(),
+                    descriptor.getLength());
+            descriptor.close();
+
+            mediaPlayer.setLooping(isLooping);
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+
+        } catch (IOException e) {
+            Log.e("Error with sound", "Failed to load sound file", e);
+        }
+    }
+
+    private void releaseMediaPlayer() {
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+            }
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+    }
+
+    public void playOverworldMusic() {
+        playMusic("fallen_down.wav", true);
+    }
+
+    private void playSound(String filename, boolean isLooping) {
         AudioAttributes audioAttributes = new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_MEDIA)
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
@@ -157,13 +202,17 @@ public class GamePresenter extends AppCompatActivity {
             AssetFileDescriptor descriptor;
 
             // load sound in memory ready for use
-            descriptor = assetManager.openFd("sample_sound.wav");
+            descriptor = assetManager.openFd(filename);
             int soundID = soundPool.load(descriptor, 0);
 
             soundPool.setOnLoadCompleteListener((soundPool, sampleId, status) -> {
                 if (status == 0) {
                     // sound loaded successfully
-                    soundPool.play(soundID, 1, 1, 0, 0, 1);
+                    int loop = 0;
+                    if (isLooping) {
+                        loop = -1;
+                    }
+                    soundPool.play(soundID, 1, 1, 0, loop, 1);
                 } else {
                     Log.e("Error with sound", "Sound load failed");
                 }
@@ -305,6 +354,7 @@ public class GamePresenter extends AppCompatActivity {
 
         // tell view to fade out
         view.startBattleTransition();
+        mediaPlayer.stop();
     }
 
     public void finishedBattleFadeOutTransition() {
@@ -318,6 +368,7 @@ public class GamePresenter extends AppCompatActivity {
         updatePlayerAndEnemyPositions();
 
         view.startFadeIn();
+        playMusic("battle_theme.wav", true);
     }
 
     private void updatePlayerAndEnemyPositions() {
@@ -447,6 +498,7 @@ public class GamePresenter extends AppCompatActivity {
         if (isPlayerWinner) {
             battleSystem.playerSkillExperience();
             view.endBattle(true);
+            mediaPlayer.stop();
         }
     }
 
@@ -456,6 +508,7 @@ public class GamePresenter extends AppCompatActivity {
             battleSystem.playerSkillExperience();
             view.endBattle(false);
             playerLost();
+            mediaPlayer.stop();
         }
     }
 
@@ -962,10 +1015,10 @@ public class GamePresenter extends AppCompatActivity {
         view.pause();
     }
 
-    private class FadeOutListener implements Animation.AnimationListener {
+    private class TransitionListener implements Animation.AnimationListener {
         private final Runnable onAnimationEndAction;
 
-        public FadeOutListener(Runnable onAnimationEndAction) {
+        public TransitionListener(Runnable onAnimationEndAction) {
             this.onAnimationEndAction = onAnimationEndAction;
         }
 

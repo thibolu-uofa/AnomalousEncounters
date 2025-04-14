@@ -582,11 +582,15 @@ public class GameView  extends SurfaceView implements Runnable{
 
     private void handleEndBattle(){
         startFadeIn();
+
         //prevents player from immediately encountering another enemy
         int STOP_GAP = 5000;
         lastEnemyEncounterCheck = System.currentTimeMillis() + STOP_GAP;
         displayOverworld();
         battleView = null;
+
+        //start back up overworld music
+        presenter.playOverworldMusic();
     }
 
     public int getBoardWidth() {
