@@ -10,10 +10,9 @@
       {"id": 7, "amount": 1}
     ],
     "skills": [
-      {"id": 4, "level": 1, "experience": 0},
-      {"id": 5, "level": 1, "experience": 0},
-      {"id": 6, "level": 1, "experience": 0},
-      {"id": 7, "level": 1, "experience": 0}
+      {"id": 8, "level": 1, "experience": 0},
+      {"id": 10, "level": 1, "experience": 0},
+      {"id": 14, "level": 1, "experience": 0}
     ]
   }
 ]

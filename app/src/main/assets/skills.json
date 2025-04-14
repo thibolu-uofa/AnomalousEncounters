@@ -60,7 +60,7 @@
     "id": 8,
     "type": "Nothingness",
     "atkPattern": "Straight",
-    "description": "A strike that deletes a fragment of existence, leaving only a void where the target once stood."
+    "description": "A strike that deletes a fragment of existence, leaving only a void where the target once stood. \nAttack Pattern: Straight"
   },
   {
     "name": "Segmented Void",
