@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -78,11 +79,16 @@ public class GamePresenter extends AppCompatActivity {
 
         initializeGameComponents();
 
-        View mainView = findViewById(android.R.id.content);
-        setupStartButtonListeners(mainView);
-        setUpHowToPlayListeners();
+        setUpAllMainMenuListeners();
 
         playMusic("menu_theme.wav", true);
+    }
+
+    private void setUpAllMainMenuListeners() {
+        View mainView = findViewById(android.R.id.content);
+        setupStartButtonListeners(mainView);
+        setupContinueGameListeners(mainView);
+        setUpHowToPlayListeners();
     }
 
     private void initializeGameComponents() {
@@ -107,9 +113,7 @@ public class GamePresenter extends AppCompatActivity {
             playMusic("menu_theme.wav", true);
         }));
 
-        setupStartButtonListeners(mainView);
-        setupContinueGameListeners(mainView);
-        setUpHowToPlayListeners();
+        setUpAllMainMenuListeners();
         view.resume();
     }
 
@@ -146,11 +150,49 @@ public class GamePresenter extends AppCompatActivity {
     private void setupContinueGameListeners(View mainView) {
         ImageView continueGame = findViewById(R.id.continueButton);
         continueGame.setOnClickListener(v -> {
+            setContentView(R.layout.save_slots);
+            setupGoBackListeners();
+            initializeSaveSlots();
+        });
+    }
+
+    private void setupGoBackListeners() {
+        ImageView backButton = findViewById(R.id.back_icon);
+        backButton.setOnClickListener(v -> {
+            setContentView(R.layout.activity_main);
+            setUpAllMainMenuListeners();
+        });
+    }
+
+    private void initializeSaveSlots(){
+        JSONArray jsonArray = loadJsonArrayFromFileOnDevice("save_slots.json", this);
+        int numberOfSaveSlots = jsonArray.length();
+        if (numberOfSaveSlots == 0){
+            return;
+        }
+
+        View mainView = findViewById(android.R.id.content);
+        ImageView[] saveSlots = {findViewById(R.id.slot_image1), findViewById(R.id.slot_image2), findViewById(R.id.slot_image3)};
+        TextView[] saveSlotTexts = {findViewById(R.id.slot_text1), findViewById(R.id.slot_text2), findViewById(R.id.slot_text3)};
+
+        for (int i = 0; i < numberOfSaveSlots; i++){
+            String text = "Save\nSlot " + (i + 1);
+            saveSlotTexts[i].setText(text);
+
+            ImageView saveSlot = saveSlots[i];
+            setUpSaveSlotListener(saveSlot, mainView, i);
+        }
+    }
+
+    private void setUpSaveSlotListener(ImageView saveSlot, View mainView, int finalI) {
+        saveSlot.setOnClickListener(v -> {
             Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out_animation);
+
             mainView.startAnimation(fadeOut);
             mediaPlayer.stop();
 
             fadeOut.setAnimationListener(new TransitionListener(() -> {
+                loadSaveSlot(finalI);
                 setContentView(view);
                 view.startFadeIn();
                 playMusic("fallen_down.wav", true);
