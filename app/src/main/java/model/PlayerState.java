@@ -13,7 +13,7 @@ public class PlayerState {
     private int phase;
     private final List<int[]> items = Collections.synchronizedList(new ArrayList<>()); // Synchronized list for items [id, amount]
     private final List<int[]> skills = Collections.synchronizedList(new ArrayList<>()); // Synchronized list for skills [id, level, experience]
-
+    private SkillUtils.AnomalyTypes affinity;
 
 
     // Default Constructor
@@ -23,6 +23,7 @@ public class PlayerState {
         this.playerCurrentHealth = 100; // Start with full health
         this.tokens = 20;
         this.phase = 1;
+        this.affinity = SkillUtils.AnomalyTypes.DEATH;
     }
 
     // Constructor with parameters
@@ -39,6 +40,7 @@ public class PlayerState {
         this.playerCurrentHealth = maxHealth; // Start with full health
         this.tokens = tokens;
         this.phase = 1;
+        this.affinity = SkillUtils.AnomalyTypes.DEATH;
     }
 
     // Update health
@@ -286,5 +288,13 @@ public class PlayerState {
 
     public void setPlayerCurrentHealth(int playerCurrentHealth) {
         this.playerCurrentHealth = playerCurrentHealth;
+    }
+
+    public SkillUtils.AnomalyTypes getAffinity() {
+        return affinity;
+    }
+
+    public void setAffinity(SkillUtils.AnomalyTypes affinity) {
+        this.affinity = affinity;
     }
 }

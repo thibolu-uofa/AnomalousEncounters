@@ -86,8 +86,7 @@ public class GamePresenter extends AppCompatActivity {
     }
 
     private void setUpAllMainMenuListeners() {
-        View mainView = findViewById(android.R.id.content);
-        setupStartButtonListeners(mainView);
+        setupStartButtonListeners();
         setupContinueGameListeners();
         setUpSettingsListener();
         setUpHowToPlayListeners();
@@ -120,33 +119,23 @@ public class GamePresenter extends AppCompatActivity {
         view.resume();
     }
 
-    private void setupStartButtonListeners(View mainView) {
+    private void setupStartButtonListeners() {
         ImageView startNewGame = findViewById(R.id.startButton);
         startNewGame.setOnClickListener(v -> {
-            Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out_animation);
-            mainView.startAnimation(fadeOut);
-            soundUtils.stopMusic();
-
-            fadeOut.setAnimationListener(new TransitionListener(() -> {
-                makeNewPlayer();
-                setContentView(view);
-                view.startNewGame();
-                view.startFadeIn();
-                soundUtils.playMusic(this,"fallen_down.wav", true);
-            }));
+            setContentView(R.layout.choose_affinity);
+            setupGoBackListeners();
+            setUpContinueToNewGameListener();
+            setUpAffinityRuneListeners();
         });
     }
 
     private void setUpHowToPlayListeners() {
         ImageView howToPlayButton = findViewById(R.id.howToPlayButton);
-        howToPlayButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = "https://www.canva.com/design/DAGkWRTx7o0/3DdCiVSnFC10WRxepmU4sA/view";
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(url));
-                startActivity(intent);
-            }
+        howToPlayButton.setOnClickListener(v -> {
+            String url = "https://www.canva.com/design/DAGkWRTx7o0/3DdCiVSnFC10WRxepmU4sA/view";
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(url));
+            startActivity(intent);
         });
     }
 
@@ -215,12 +204,18 @@ public class GamePresenter extends AppCompatActivity {
 
     private void setUpMusicSliderListeners() {
         SeekBar volumeSlider = findViewById(R.id.musicSeekBar);
+        TextView volumeText = findViewById(R.id.musicText);
+
         volumeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 float volumeProgress = (float) progress;
                 float volume = volumeProgress/100;
                 soundUtils.setMusicVolume(volume);
+
+                //update text of music progress
+                String volumeString = "Music " + progress + "%";
+                volumeText.setText(volumeString);
             }
 
             @Override
@@ -237,12 +232,20 @@ public class GamePresenter extends AppCompatActivity {
 
     private void setUpSoundSliderListeners() {
         SeekBar volumeSlider = findViewById(R.id.sfxSeekBar);
+        TextView volumeText = findViewById(R.id.sfxText);
+
         volumeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 float volumeProgress = (float) progress;
+
+                //change sound volume
                 float volume = volumeProgress/100;
                 soundUtils.setSoundEffectsVolume(volume);
+
+                //update text of music progress
+                String volumeString = "Sound " + progress + "%";
+                volumeText.setText(volumeString);
             }
 
             @Override
@@ -254,6 +257,51 @@ public class GamePresenter extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
 
             }
+        });
+    }
+
+    private void setUpContinueToNewGameListener() {
+        TextView continueText = findViewById(R.id.confirm_new_game);
+        View mainView = findViewById(android.R.id.content);
+
+        continueText.setOnClickListener(v -> {
+            Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out_animation);
+            mainView.startAnimation(fadeOut);
+            soundUtils.stopMusic();
+
+            fadeOut.setAnimationListener(new TransitionListener(() -> {
+                makeNewPlayer();
+                setContentView(view);
+                view.startNewGame();
+                view.startFadeIn();
+                soundUtils.playMusic(this,"fallen_down.wav", true);
+            }));
+        });
+    }
+
+    private void setUpAffinityRuneListeners() {
+
+        ImageView[] affinityRuneImages = {findViewById(R.id.life_rune), findViewById(R.id.null_rune), findViewById(R.id.death_rune)};
+        SkillUtils.AnomalyTypes[] affinityTypes = {SkillUtils.AnomalyTypes.LIFE, SkillUtils.AnomalyTypes.NOTHINGNESS, SkillUtils.AnomalyTypes.DEATH};
+
+        for (int i = 0; i < affinityTypes.length; i++) {
+            ImageView affinityImage = affinityRuneImages[i];
+            SkillUtils.AnomalyTypes affinity = affinityTypes[i];
+            setUpRuneImageListeners(affinityImage, affinity);
+        }
+    }
+
+    private void setUpRuneImageListeners(ImageView runeImage, SkillUtils.AnomalyTypes affinity) {
+        TextView chosenAffinity = findViewById(R.id.chosen_affinity_text);
+
+        runeImage.setOnClickListener(v -> {
+            playerState.setAffinity(affinity);
+
+            String affinityName = affinity.toString().toLowerCase();
+            affinityName = affinityName.substring(0, 1).toUpperCase() + affinityName.substring(1);
+            String chosenAffinityText = "Affinity: " + affinityName;
+
+            chosenAffinity.setText(chosenAffinityText);
         });
     }
 
@@ -275,13 +323,20 @@ public class GamePresenter extends AppCompatActivity {
         int maxHealth = (int) getSingleDataProperty("player_config.json", "maxHealth", newPlayerIndex, this);
         int tokens = (int) getSingleDataProperty("player_config.json", "tokens", newPlayerIndex, this);
 
+        SkillUtils.AnomalyTypes affinity = playerState.getAffinity(); //get affinity from pre-loaded player
         playerState = new PlayerState(name, maxHealth, tokens);
 
         JSONArray items = (JSONArray) getSingleDataProperty("player_config.json", "items", newPlayerIndex, this);
         loadPlayerItems(items);
 
-        JSONArray skills = (JSONArray) getSingleDataProperty("player_config.json", "skills", newPlayerIndex, this);
-        loadPlayerSkills(skills);
+        getRandomStartingSkills(affinity);
+    }
+
+    private void getRandomStartingSkills(SkillUtils.AnomalyTypes type) {
+        // give player 3 starting skills
+        ItemUtils.useSkillStone(type, playerState);
+        ItemUtils.useSkillStone(type, playerState);
+        ItemUtils.useSkillStone(type, playerState);
     }
 
     private void loadPlayerItems(JSONArray items) {
