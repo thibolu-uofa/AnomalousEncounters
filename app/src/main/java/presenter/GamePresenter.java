@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -87,7 +88,8 @@ public class GamePresenter extends AppCompatActivity {
     private void setUpAllMainMenuListeners() {
         View mainView = findViewById(android.R.id.content);
         setupStartButtonListeners(mainView);
-        setupContinueGameListeners(mainView);
+        setupContinueGameListeners();
+        setUpSettingsListener();
         setUpHowToPlayListeners();
     }
 
@@ -148,12 +150,22 @@ public class GamePresenter extends AppCompatActivity {
         });
     }
 
-    private void setupContinueGameListeners(View mainView) {
+    private void setupContinueGameListeners() {
         ImageView continueGame = findViewById(R.id.continueButton);
         continueGame.setOnClickListener(v -> {
             setContentView(R.layout.save_slots);
             setupGoBackListeners();
             initializeSaveSlots();
+        });
+    }
+
+    private void setUpSettingsListener() {
+        ImageView settingsIcon = findViewById(R.id.settings_icon);
+        settingsIcon.setOnClickListener(v -> {
+            setContentView(R.layout.game_settings);
+            setupGoBackListeners();
+            setUpMusicSliderListeners();
+            setUpSoundSliderListeners();
         });
     }
 
@@ -198,6 +210,50 @@ public class GamePresenter extends AppCompatActivity {
                 view.startFadeIn();
                 soundUtils.playMusic(this,"fallen_down.wav", true);
             }));
+        });
+    }
+
+    private void setUpMusicSliderListeners() {
+        SeekBar volumeSlider = findViewById(R.id.musicSeekBar);
+        volumeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                float volumeProgress = (float) progress;
+                float volume = volumeProgress/100;
+                soundUtils.setMusicVolume(volume);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+    }
+
+    private void setUpSoundSliderListeners() {
+        SeekBar volumeSlider = findViewById(R.id.sfxSeekBar);
+        volumeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                float volumeProgress = (float) progress;
+                float volume = volumeProgress/100;
+                soundUtils.setSoundEffectsVolume(volume);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
         });
     }
 

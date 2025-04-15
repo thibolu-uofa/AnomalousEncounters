@@ -61,7 +61,7 @@ public class SoundUtils {
     /**
      * @param volume value from 0.0 to 1.0 to control volume of music
      */
-    public void setMusicVolume(long volume) {
+    public void setMusicVolume(float volume) {
         if (mediaPlayer == null) {
             return;
         }
@@ -116,7 +116,7 @@ public class SoundUtils {
         }
     }
 
-    public void setSoundEffectsVolume(long volume) {
+    public void setSoundEffectsVolume(float volume) {
         if (soundPool == null) {
             return;
         }
