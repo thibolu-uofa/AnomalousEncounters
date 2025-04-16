@@ -42,8 +42,10 @@ public class ConfirmPopUp extends BasePopUp {
             boolean hasUserTouchedButton = checkForUserTouchOnButton(button, eventX, eventY, presenter);
             if (hasUserTouchedButton) {
                 if (Objects.equals(button.getText(), confirmText)) {
+                    presenter.playConfirmSound();
                     hasConfirmed = true;
                 } else {
+                    presenter.playCancelSound();
                     hasConfirmed = false;
                 }
                 return true;

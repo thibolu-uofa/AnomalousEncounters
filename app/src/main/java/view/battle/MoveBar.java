@@ -11,6 +11,7 @@ import android.util.Log;
 import com.example.anomalousencounters.R;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import presenter.GamePresenter;
 import view.Sprite;
@@ -88,7 +89,16 @@ public class MoveBar extends BaseMenuBar {
             }
         }
 
-        return checkForUserTouchTextButtons(eventX, eventY, presenter);
+        String textBtnPressed = checkForUserTouchTextButtons(eventX, eventY, presenter);
+        if (!Objects.equals(textBtnPressed, "")) {
+            // prevents the user from confirming without selecting a move
+            if (Objects.equals(textBtnPressed, "[Confirm]") && selectedArrow == null) {
+                return "";
+            }
+            return textBtnPressed;
+        }
+
+        return "";
     }
 
     private void setSelectedArrow(ToggleSprite arrow) {

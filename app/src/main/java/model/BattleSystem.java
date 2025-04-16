@@ -143,6 +143,9 @@ public class BattleSystem {
             // Apply damage to enemyState using modifyHealth() (negative delta for damage)
             enemyState.modifyHealth(-damage);
             hasPlayerAttacked = true;
+
+            //play sound effect
+            presenter.playHitEnemySound();
         }
 
         skill.activateSkillCooldown();
@@ -170,6 +173,9 @@ public class BattleSystem {
 
             // Apply damage to enemyState using modifyHealth() (negative delta for damage)
             playerState.modifyHealth(-damage);
+
+            //play sound effect
+            presenter.playGetHitSound();
         }
 
         skill.activateSkillCooldown();

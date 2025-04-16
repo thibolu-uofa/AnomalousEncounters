@@ -26,6 +26,10 @@ public class AlertPopUp extends BasePopUp {
     }
 
     public boolean didUserClosePopUp(float eventX, float eventY, GamePresenter presenter) {
-        return checkForUserTouchOnButton(okayBtn, eventX, eventY, presenter);
+        boolean didUserClosePopUp = checkForUserTouchOnButton(okayBtn, eventX, eventY, presenter);
+        if (didUserClosePopUp) {
+            presenter.playConfirmSound();
+        }
+        return didUserClosePopUp;
     }
 }

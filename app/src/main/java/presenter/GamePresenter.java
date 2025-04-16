@@ -18,12 +18,7 @@ import static model.Utils.saveJSONArrayOnUserDevice;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
-import android.media.AudioAttributes;
-import android.media.MediaPlayer;
-import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,7 +41,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -122,6 +116,8 @@ public class GamePresenter extends AppCompatActivity {
     private void setupStartButtonListeners() {
         ImageView startNewGame = findViewById(R.id.startButton);
         startNewGame.setOnClickListener(v -> {
+            soundUtils.playSelectSound(this);
+
             setContentView(R.layout.choose_affinity);
             setupGoBackListeners();
             setUpContinueToNewGameListener();
@@ -142,6 +138,7 @@ public class GamePresenter extends AppCompatActivity {
     private void setupContinueGameListeners() {
         ImageView continueGame = findViewById(R.id.continueButton);
         continueGame.setOnClickListener(v -> {
+            soundUtils.playConfirmSound(this);
             setContentView(R.layout.save_slots);
             setupGoBackListeners();
             initializeSaveSlots();
@@ -151,7 +148,19 @@ public class GamePresenter extends AppCompatActivity {
     private void setUpSettingsListener() {
         ImageView settingsIcon = findViewById(R.id.settings_icon);
         settingsIcon.setOnClickListener(v -> {
+            soundUtils.playSelectSound(this);
             setContentView(R.layout.game_settings);
+
+            int musicVolume = soundUtils.getMusicVolume();
+            SeekBar musicSeekBar = findViewById(R.id.musicSeekBar);
+            musicSeekBar.setProgress(musicVolume);
+            updateMusicSliderAndText(musicVolume);
+
+            int soundVolume = soundUtils.getSoundVolume();
+            SeekBar soundSeekBar = findViewById(R.id.sfxSeekBar);
+            soundSeekBar.setProgress(soundVolume);
+            updateSoundText(soundVolume);
+
             setupGoBackListeners();
             setUpMusicSliderListeners();
             setUpSoundSliderListeners();
@@ -161,6 +170,7 @@ public class GamePresenter extends AppCompatActivity {
     private void setupGoBackListeners() {
         ImageView backButton = findViewById(R.id.back_icon);
         backButton.setOnClickListener(v -> {
+            soundUtils.playSelectSound(this);
             setContentView(R.layout.activity_main);
             setUpAllMainMenuListeners();
         });
@@ -188,6 +198,7 @@ public class GamePresenter extends AppCompatActivity {
 
     private void setUpSaveSlotListener(ImageView saveSlot, View mainView, int finalI) {
         saveSlot.setOnClickListener(v -> {
+            soundUtils.playSelectSound(this);
             Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out_animation);
 
             mainView.startAnimation(fadeOut);
@@ -204,18 +215,11 @@ public class GamePresenter extends AppCompatActivity {
 
     private void setUpMusicSliderListeners() {
         SeekBar volumeSlider = findViewById(R.id.musicSeekBar);
-        TextView volumeText = findViewById(R.id.musicText);
 
         volumeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                float volumeProgress = (float) progress;
-                float volume = volumeProgress/100;
-                soundUtils.setMusicVolume(volume);
-
-                //update text of music progress
-                String volumeString = "Music " + progress + "%";
-                volumeText.setText(volumeString);
+                updateMusicSliderAndText(progress);
             }
 
             @Override
@@ -230,22 +234,25 @@ public class GamePresenter extends AppCompatActivity {
         });
     }
 
+    private void updateMusicSliderAndText(int progress) {
+        float volumeProgress = (float) progress;
+        float volume = volumeProgress/100;
+        soundUtils.setMusicVolume(volume);
+
+        //update text of music progress
+        TextView volumeText = findViewById(R.id.musicText);
+        String volumeString = "Music " + progress + "%";
+        volumeText.setText(volumeString);
+    }
+
+
     private void setUpSoundSliderListeners() {
         SeekBar volumeSlider = findViewById(R.id.sfxSeekBar);
-        TextView volumeText = findViewById(R.id.sfxText);
 
         volumeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                float volumeProgress = (float) progress;
-
-                //change sound volume
-                float volume = volumeProgress/100;
-                soundUtils.setSoundEffectsVolume(volume);
-
-                //update text of music progress
-                String volumeString = "Sound " + progress + "%";
-                volumeText.setText(volumeString);
+                updateSoundText(progress);
             }
 
             @Override
@@ -258,6 +265,17 @@ public class GamePresenter extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void updateSoundText(int progress) {
+        float volumeProgress = (float) progress;
+        float volume = volumeProgress/100;
+        soundUtils.setSoundEffectsVolume(volume);
+
+        //update text of music progress
+        TextView volumeText = findViewById(R.id.sfxText);
+        String volumeString = "Sound " + progress + "%";
+        volumeText.setText(volumeString);
     }
 
     private void setUpContinueToNewGameListener() {
@@ -265,6 +283,8 @@ public class GamePresenter extends AppCompatActivity {
         View mainView = findViewById(android.R.id.content);
 
         continueText.setOnClickListener(v -> {
+            soundUtils.playSelectSound(this);
+
             Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out_animation);
             mainView.startAnimation(fadeOut);
             soundUtils.stopMusic();
@@ -295,6 +315,8 @@ public class GamePresenter extends AppCompatActivity {
         TextView chosenAffinity = findViewById(R.id.chosen_affinity_text);
 
         runeImage.setOnClickListener(v -> {
+            soundUtils.playSelectSound(this);
+
             playerState.setAffinity(affinity);
 
             String affinityName = affinity.toString().toLowerCase();
@@ -1094,11 +1116,32 @@ public class GamePresenter extends AppCompatActivity {
         return skillsSb.toString();
     }
 
+    public void playSelectSound() {
+        soundUtils.playSelectSound(this);
+    }
+
+    public void playConfirmSound() {
+        soundUtils.playConfirmSound(this);
+    }
+
+    public void playCancelSound() {
+        soundUtils.playCancelSound(this);
+    }
+
+    public void playGetHitSound() {
+        soundUtils.playGetHitSound(this);
+    }
+
+    public void playHitEnemySound() {
+        soundUtils.playHitEnemySound(this);
+    }
+
     // This method executes when the user continues the game
     @Override
     protected void onResume() {
         super.onResume();
         view.resume();
+        soundUtils.resumeMusic();
     }
 
     // This method executes when the user quits the game
@@ -1106,6 +1149,7 @@ public class GamePresenter extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         view.pause();
+        soundUtils.pauseMusic();
     }
 
     private class TransitionListener implements Animation.AnimationListener {
