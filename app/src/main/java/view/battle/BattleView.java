@@ -1,6 +1,7 @@
 package view.battle;
 
 import static view.ViewConstants.BATTLE_BACKGROUND_COLOR;
+import static view.ViewConstants.CANVAS_WIDTH;
 import static view.ViewConstants.PLAYER_TILE_HIGHLIGHT_COLOR;
 import static view.ViewConstants.SCREEN_WIDTH;
 import static view.ViewConstants.TRANSPARENT_COLOR;
@@ -35,7 +36,7 @@ public class BattleView {
     private final MenuNinePatch enemyInfo;
     private final BattleSideBar sideBar;
     private final List<MenuEmpty> tileHighlights = Collections.synchronizedList(new ArrayList<>());
-    private final int MAX_CARD_WIDTH = 650;
+    private final int MAX_CARD_WIDTH = 600;
     private int GRID_BORDER_WEIGHT = 5;
     boolean isFlashingTiles = false;
     private int timeInterval = 250; // animation speed in frames per milliseconds
@@ -60,8 +61,8 @@ public class BattleView {
         @SuppressLint("UseCompatLoadingForDrawables") NinePatchDrawable enemyInfoNinePatchDrawable = (NinePatchDrawable) context.getResources().getDrawable(R.drawable.border1, null);
         enemyInfo = new MenuNinePatch(enemyInfoNinePatchDrawable, INFO_CARD_X, ENEMY_INFO_Y, enemyInfoText, MAX_CARD_WIDTH, false, context);
 
-        int sidebarX = (int) (SCREEN_WIDTH * 0.73) - 20;
-        int sidebarWidth = (int) (SCREEN_WIDTH * 0.27);
+        int sidebarX = (int) (CANVAS_WIDTH * 0.73) - 20;
+        int sidebarWidth = (int) (CANVAS_WIDTH * 0.27);
         sideBar = new BattleSideBar(sidebarX, PLAYER_INFO_Y, sidebarWidth, context, presenter, this);
 
 

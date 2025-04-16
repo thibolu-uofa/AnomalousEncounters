@@ -40,4 +40,5 @@
     <string name="deleteAlert">You have successfully deleted a save slot.</string>
     <string name="loadConfirmation">Are you sure you want to load the save slot [%d]?</string>
     <string name="loadAlert">You have successfully loaded a Save Slot [%d].</string>
+    <string name="phaseProgressConfirmation">Would you like to progress to the next phase?\nPhase progression will grant you increase your strength but Entities will also become stronger.</string>
 </resources>

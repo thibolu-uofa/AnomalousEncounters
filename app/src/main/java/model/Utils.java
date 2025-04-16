@@ -15,7 +15,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public final class Utils {
@@ -203,5 +202,18 @@ public final class Utils {
             }
         }
         return attackPattern;
+    }
+
+    public static boolean hasPlayerProgressedPhase(PlayerState playerState) {
+        // phase progresses from phase 1 to phase 2 when the avg skill level is >= 2.7
+        int phase = playerState.getPhase();
+        int totalSkillLevel = playerState.getTotalSkillLevel();
+        int numberOfSkills = playerState.getSkills().size();
+        int avgSkillLevel = totalSkillLevel/numberOfSkills;
+        if (phase == 1 && avgSkillLevel > 2.7) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

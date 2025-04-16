@@ -1,5 +1,6 @@
 package view.menu;
 
+import static view.ViewConstants.CANVAS_HEIGHT;
 import static view.ViewConstants.CANVAS_WIDTH;
 import static view.ViewConstants.OVERLAY_DARK_COLOR;
 import static view.ViewConstants.SCREEN_HEIGHT;
@@ -35,8 +36,8 @@ public abstract class BaseMenu {
     }
 
     private void createCloseBtn(Context context) {
-        int x = (int) (SCREEN_WIDTH * 0.95);
-        int y = (int) (SCREEN_HEIGHT * 0.1);
+        int x = (int) (CANVAS_WIDTH * 0.95);
+        int y = (int) (CANVAS_HEIGHT * 0.1);
         int SIZE = 70;
         String text = "X";
         MenuItem closeButton = new MenuItem(x, y, SIZE, SIZE, text, true, context);

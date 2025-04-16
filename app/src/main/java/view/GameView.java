@@ -15,17 +15,20 @@ import static view.ViewConstants.CANVAS_WIDTH;
 import static view.ViewConstants.CANVAS_HEIGHT;
 import static view.ViewConstants.ENEMY_TILE_HIGHLIGHT_COLOR;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.WindowManager;
 
 import com.example.anomalousencounters.R;
 
@@ -47,7 +50,7 @@ public class GameView  extends SurfaceView implements Runnable{
     private Canvas canvas;
     private final Paint paint;
     private HealthBar healthBar;
-    private Sprite inventory, homeIcon, saveIcon, shopIcon, indexIcon;
+    private Sprite inventory, homeIcon, saveIcon, shopIcon, indexIcon, alertIcon;
     private PlayerSprite playerSprite;
     private BackgroundImage backgroundImage;
     private PlayerMenu playerMenu;
@@ -68,8 +71,7 @@ public class GameView  extends SurfaceView implements Runnable{
     private boolean isCanvasFadingOut = false;
     private final int fadeSpeed = 10;
     private ConfirmPopUp confirmPopUp;
-    private String saveMsg;
-    private String homeMsg;
+    private String saveMsg, homeMsg, phaseMsg;
 
 
     public GameView(Context context, GamePresenter presenter) {
@@ -84,6 +86,57 @@ public class GameView  extends SurfaceView implements Runnable{
         SCREEN_HEIGHT = displayMetrics.heightPixels;
 
         initializeVisualComponents();
+    }
+
+    public void getVisibleScreenWidth() {
+        WindowManager windowManager = (WindowManager) presenter.getSystemService(Context.WINDOW_SERVICE);
+        if (windowManager == null) {
+            return;
+        }
+
+        DisplayMetrics outMetrics = new DisplayMetrics();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            //for android 11+
+            Objects.requireNonNull(presenter.getDisplay()).getRealMetrics(outMetrics);
+        } else {
+            //for older versions
+            windowManager.getDefaultDisplay().getRealMetrics(outMetrics);
+        }
+
+        SCREEN_WIDTH = outMetrics.widthPixels;
+        SCREEN_HEIGHT = outMetrics.heightPixels;
+    }
+
+    public void initializeScreenDimensions() {
+        DisplayMetrics displayMetrics = presenter.getResources().getDisplayMetrics();
+
+        int rawWidth = displayMetrics.widthPixels;
+        int rawHeight = displayMetrics.heightPixels;
+
+        int statusBarHeight = 0;
+        @SuppressLint("InternalInsetResource") int statusBarId = presenter.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (statusBarId > 0) {
+            statusBarHeight = presenter.getResources().getDimensionPixelSize(statusBarId);
+        }
+
+        int navigationBarWidth = 0;
+        boolean hasNavigationBar = false; // check if device has navigation bar
+        int resourceId = presenter.getResources().getIdentifier("config_showNavigationBar", "bool", "android");
+        if (resourceId > 0) {
+            hasNavigationBar = presenter.getResources().getBoolean(resourceId);
+        }
+
+        if (hasNavigationBar) {
+            @SuppressLint("InternalInsetResource") int navBarWidthId = presenter.getResources().getIdentifier("navigation_bar_width", "dimen", "android");
+            if (navBarWidthId > 0) {
+                navigationBarWidth = presenter.getResources().getDimensionPixelSize(navBarWidthId);
+                Log.d("Width", "Width " + navigationBarWidth);
+            }
+        }
+
+        SCREEN_WIDTH = rawWidth + navigationBarWidth;
+        SCREEN_HEIGHT = rawHeight + statusBarHeight;
     }
 
     private void initializeVisualComponents() {
@@ -110,6 +163,14 @@ public class GameView  extends SurfaceView implements Runnable{
         shopIcon = new Sprite(shopIconBitmap, iconsX, indexIcon.getY() + indexIconBitmap.getHeight() + 20);
     }
 
+    private void updateIconPositioningToCanvas() {
+        int iconsX = CANVAS_WIDTH - homeIcon.getWidth() - 25;
+        homeIcon.setX(iconsX);
+        saveIcon.setX(iconsX);
+        indexIcon.setX(iconsX);
+        shopIcon.setX(iconsX);
+    }
+
     private void initializeInventory() {
         Bitmap inventoryBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.quick_inventory);
         int inventoryX = SCREEN_WIDTH/2 - inventoryBitmap.getWidth()/2;
@@ -127,7 +188,7 @@ public class GameView  extends SurfaceView implements Runnable{
     private void initializeBackground() {
         Bitmap skyBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.game_sky);
         Bitmap groundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.game_map);
-        int backgroundY = -(SCREEN_HEIGHT/5);
+        int backgroundY = -(SCREEN_HEIGHT/9);
 
         int singlePlayerSpriteWidth = BitmapFactory.decodeResource(getResources(), R.drawable.player_sprite_sheet_v2).getWidth()/12;
         int playerX = SCREEN_WIDTH/2 - (singlePlayerSpriteWidth/2);
@@ -141,8 +202,8 @@ public class GameView  extends SurfaceView implements Runnable{
         int playerX = SCREEN_WIDTH/2 - playerBitmap.getWidth()/12;
 
         Bitmap groundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.game_map);
-        int backgroundY = -(SCREEN_HEIGHT/5);
-        int playerY = (int) (backgroundY + (groundBitmap.getHeight() * 0.65) - ((double) playerBitmap.getHeight()/4)) + 5;
+        int backgroundY = -(SCREEN_HEIGHT/9);
+        int playerY = (int) (backgroundY + (groundBitmap.getHeight() * 0.6) - ((double) playerBitmap.getHeight()/4)) + 5;
 
         playerSprite = new PlayerSprite(playerBitmap, playerX, playerY);
         playerSprite.setAnimation("idle");
@@ -183,6 +244,7 @@ public class GameView  extends SurfaceView implements Runnable{
         }
 
         setUpCanvas();
+        updateIconPositioningToCanvas();
         drawBackground();
 
         if (isOnOverworld) {
@@ -192,6 +254,7 @@ public class GameView  extends SurfaceView implements Runnable{
         drawBattleView();
         drawEndBattleScreen();
         drawConfirmPopUp();
+        drawAlertIcon();
         handleCanvasTransitions();
 
         // finish drawing
@@ -289,6 +352,12 @@ public class GameView  extends SurfaceView implements Runnable{
         }
     }
 
+    private void drawAlertIcon() {
+        if (alertIcon != null) {
+            alertIcon.draw(canvas, paint);
+        }
+    }
+
     private void handleCanvasTransitions() {
         if (isCanvasFadingOut || isCanvasFadingIn) {
             Paint fadePaint = new Paint();
@@ -379,6 +448,10 @@ public class GameView  extends SurfaceView implements Runnable{
         if (confirmPopUp != null) {
             handleConfirmPopUp(eventX, eventY, presenter);
             return;
+        }
+
+        if (alertIcon != null) {
+            handlePhaseAlertIcon(eventX, eventY, presenter);
         }
 
         if (!isMenuOpen) {
@@ -475,6 +548,7 @@ public class GameView  extends SurfaceView implements Runnable{
             if (!menu.isMenuClosed() && menu.hasClosedMenu(eventX, eventY, presenter)) {
                 menu.closeMenu();
                 closedAnyMenu = true;
+                checkIfPlayerProgressedPhase();
             }
         }
 
@@ -511,6 +585,16 @@ public class GameView  extends SurfaceView implements Runnable{
             confirmPopUp = null;
             isMenuOpen = false;
             canPlayerMove = true;
+        }
+    }
+
+    private void handlePhaseAlertIcon(float eventX, float eventY, GamePresenter presenter) {
+        boolean userTouchedIcon = homeIcon.hasBeenTouched(eventX, eventY, presenter, 1);
+        if (userTouchedIcon) {
+            phaseMsg = presenter.getString(R.string.phaseProgressConfirmation);
+            confirmPopUp = new ConfirmPopUp(phaseMsg, presenter, true);
+            isMenuOpen = true;
+            canPlayerMove = false;
         }
     }
 
@@ -592,6 +676,19 @@ public class GameView  extends SurfaceView implements Runnable{
 
         //start back up overworld music
         presenter.playOverworldMusic();
+
+        //check if player has progressed phase
+        checkIfPlayerProgressedPhase();
+    }
+
+    private void checkIfPlayerProgressedPhase() {
+        boolean progressedPhase = presenter.hasPlayerProgressedPhase();
+        if (progressedPhase) {
+            Bitmap alertIconBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.alert_icon);
+            int iconX = 25;
+            int iconY = 70;
+            alertIcon = new Sprite(alertIconBitmap, iconX, iconY);
+        }
     }
 
     public int getBoardWidth() {

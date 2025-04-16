@@ -16,13 +16,16 @@ import static model.Utils.getStringListOfDataProperty;
 import static model.Utils.loadJsonArrayFromFileOnDevice;
 import static model.Utils.saveJSONArrayOnUserDevice;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -53,6 +56,7 @@ import model.PlayerState;
 import model.Skill;
 import model.SkillUtils;
 import model.SoundUtils;
+import model.Utils;
 import view.GameView;
 
 public class GamePresenter extends AppCompatActivity {
@@ -67,6 +71,8 @@ public class GamePresenter extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        hideNavAndStatusBar();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         setContentView(R.layout.activity_main);
@@ -77,6 +83,14 @@ public class GamePresenter extends AppCompatActivity {
         setUpAllMainMenuListeners();
         
         soundUtils.playMusic(this,"menu_theme.wav", true);
+    }
+
+    private void hideNavAndStatusBar() {
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
     }
 
     private void setUpAllMainMenuListeners() {
@@ -630,6 +644,10 @@ public class GamePresenter extends AppCompatActivity {
     public void chargeBattleFleeFee(){
         int fee = 5;
         playerState.updateTokens(-fee);
+    }
+
+    public boolean hasPlayerProgressedPhase() {
+        return Utils.hasPlayerProgressedPhase(playerState);
     }
 
     private String formatPlayerInfo(boolean includeTokens) {
