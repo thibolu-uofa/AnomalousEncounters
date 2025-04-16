@@ -130,7 +130,7 @@ public class GameView  extends SurfaceView implements Runnable{
         int backgroundY = -(SCREEN_HEIGHT/5);
 
         int singlePlayerSpriteWidth = BitmapFactory.decodeResource(getResources(), R.drawable.player_sprite_sheet_v2).getWidth()/12;
-        int playerX = SCREEN_WIDTH/2 - singlePlayerSpriteWidth;
+        int playerX = SCREEN_WIDTH/2 - (singlePlayerSpriteWidth/2);
 
         backgroundImage = new BackgroundImage(skyBitmap, groundBitmap, backgroundY, playerX);
         backgroundImage.setDirection(0);
@@ -341,6 +341,7 @@ public class GameView  extends SurfaceView implements Runnable{
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
             // user has touched the screen
             case MotionEvent.ACTION_DOWN:
+                Log.d("X Position", "Current X Position is " + backgroundImage.getX());
                 processActionDownEvent(motionEvent);
                 break;
 

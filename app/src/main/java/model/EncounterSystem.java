@@ -15,13 +15,13 @@ public class EncounterSystem {
     public EncounterSystem() {
         // Each sub-array holds coordinate ranges for a type of encounter
         // Each pair is {startX, endX}
-        int[][] coordsType0 = {{-927, -1172}, {-3095, -3369}, {-6060, -6308}};
+        int[][] coordsType0 = {{36, 38}, {51, 54}, {85, 88}};
         startAndEndPointsForTypes.add(coordsType0);
 
-        int[][] coordsType1 = {{-1826, -2003}, {-7003, -7107}, {530, 339}};
+        int[][] coordsType1 = {{7, 9}, {25, 28}, {66, 68}};
         startAndEndPointsForTypes.add(coordsType1);
 
-        int[][] coordsType2 = {{-2610, -2810}};
+        int[][] coordsType2 = {{15, 17}, {45, 47}};
         startAndEndPointsForTypes.add(coordsType2);
     }
 
@@ -41,7 +41,7 @@ public class EncounterSystem {
             int[][] encounterTypeCoords = startAndEndPointsForTypes.get(i);
             for (int[] startAndEndPoint : encounterTypeCoords) {
                 // Check if x is within the inclusive range between start and end point
-                if (x <= startAndEndPoint[0] && x >= startAndEndPoint[1]) {
+                if (x >= startAndEndPoint[0] && x <= startAndEndPoint[1]) {
                     encounterType = i; // Save the type for later use
                     return true;
                 }

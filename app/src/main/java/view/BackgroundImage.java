@@ -1,5 +1,8 @@
 package view;
 
+import static java.lang.Math.abs;
+import static view.ViewConstants.SCREEN_WIDTH;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -156,14 +159,20 @@ public class BackgroundImage {
     }
 
     public int getX() {
+        int cols = 90;
         int groundWidth = groundBitmap.getWidth();
+        int tileWidth = groundWidth/cols;
 
-        if (playerX >= groundX1 && playerX < groundX1 + groundWidth) {
-            return groundX1;
-        } else if (playerX >= groundX2 && playerX < groundX2 + groundWidth) {
-            return groundX2;
+        int playerPositionGround1 = (groundX1 - playerX)/tileWidth;
+        int playerPositionGround2 = (groundX2 - playerX)/tileWidth;
+        int convertedX;
+
+        if (playerPositionGround1 < 0 && playerPositionGround1 > -cols) {
+            convertedX = abs(playerPositionGround1);
+        } else {
+            convertedX = abs(playerPositionGround2);
         }
 
-        return groundX1;
+        return convertedX;
     }
 }
