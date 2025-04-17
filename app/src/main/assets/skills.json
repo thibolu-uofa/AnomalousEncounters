@@ -4,104 +4,104 @@
     "id": 0,
     "type": "Life",
     "atkPattern": "Straight",
-    "description": "A beam that siphons vitality from the target.\nAttack Pattern: Straight"
+    "description": "A beam that siphons vitality from the target.\nAttack Pattern: Straight\nType: Life"
   },
   {
     "name": "Blood Bending",
     "id": 1,
     "type": "Life",
     "atkPattern": "Diagonal",
-    "description": "Drawing from the power of blood of one's own blood to strike the enemy.\nAttack Pattern: Diagonal"
+    "description": "Drawing from the power of blood of one's own blood to strike the enemy.\nAttack Pattern: Diagonal\nType: Life"
   },
   {
     "name": "Nature's Madness",
     "id": 2,
     "type": "Life",
     "atkPattern": "Star",
-    "description": "Unleash the unbounded fury of Mother Nature.\nAttack Pattern: Star"
+    "description": "Unleash the unbounded fury of Mother Nature.\nAttack Pattern: Star\nType: Life"
   },
   {
     "name": "Roar of Gaia",
     "id": 3,
     "type": "Life",
     "atkPattern": "Butterfly",
-    "description": "A primal bellow from the earth's core.\nAttack Pattern: Butterfly"
+    "description": "A primal bellow from the earth's core.\nAttack Pattern: Butterfly\nType: Life"
   },
   {
     "name": "Dying Light",
     "id": 4,
     "type": "Death",
     "atkPattern": "Straight",
-    "description": "A fading beam of eerie light that drains am enemy's life force.\nAttack Pattern: Straight"
+    "description": "A fading beam of eerie light that drains am enemy's life force.\nAttack Pattern: Straight\nType: Death"
   },
   {
     "name": "Reaper's Scythe",
     "id": 5,
     "type": "Death",
     "atkPattern": "Diagonal",
-    "description": "Call upon death's right hand man to slash a spectral scythe through the battlefield.\nAttack Pattern: Diagonal"
+    "description": "Call upon death's right hand man to slash a spectral scythe through the battlefield.\nAttack Pattern: Diagonal\nType: Death"
   },
   {
     "name": "Death Personified",
     "id": 6,
     "type": "Death",
     "atkPattern": "Star",
-    "description": "Manifest ______'s power.\nAttack Pattern: Star"
+    "description": "Manifest ______'s power.\nAttack Pattern: Star\nType: Death"
   },
   {
     "name": "Cerberus' Bite",
     "id": 7,
     "type": "Death",
     "atkPattern": "Butterfly",
-    "description": "A ferocious bite from the guardian of the underworld.\nAttack Pattern: Butterfly"
+    "description": "A ferocious bite from the guardian of the underworld.\nAttack Pattern: Butterfly\nType: Death"
   },
   {
     "name": "Erasure",
     "id": 8,
     "type": "Nothingness",
     "atkPattern": "Straight",
-    "description": "A strike that deletes a fragment of existence, leaving only a void where the target once stood. \nAttack Pattern: Straight"
+    "description": "A strike that deletes a fragment of existence, leaving only a void where the target once stood. \nAttack Pattern: Straight\nType: Nothingness"
   },
   {
     "name": "Segmented Void",
     "id": 9,
     "type": "Nothingness",
     "atkPattern": "Diagonal",
-    "description": "Reality fractures. Slashed by nothingness.\nAttack Pattern: Diagonal"
+    "description": "Reality fractures. Slashed by nothingness.\nAttack Pattern: Diagonal\nType: Nothingness"
   },
   {
     "name": "The Singularity",
     "id": 10,
     "type": "Nothingness",
     "atkPattern": "Star",
-    "description": "A collapsing point of infinite density, bring upon oblivion.\nAttack Pattern: Star"
+    "description": "A collapsing point of infinite density, bring upon oblivion.\nAttack Pattern: Star\nType: Nothingness"
   },
   {
     "name": "Nihil River",
     "id": 11,
     "type": "Nothingness",
     "atkPattern": "Hourglass",
-    "description": "A tide of empty darkness washing over the battlefield.\nAttack Pattern: Hourglass"
+    "description": "A tide of empty darkness washing over the battlefield.\nAttack Pattern: Hourglass\nType: Nothingness"
   },
   {
     "name": "Gravebloom",
     "id": 12,
     "type": "Life",
     "atkPattern": "Hourglass",
-    "description": "A cursed flower blooms on the battlefield.\nAttack Pattern: Hourglass"
+    "description": "A cursed flower blooms on the battlefield.\nAttack Pattern: Hourglass\nType: Life"
   },
   {
     "name": "Hour of Passing",
     "id": 13,
     "type": "Death",
     "atkPattern": "Hourglass",
-    "description": "The natural conclusion of time—the quiet, inevitable end of the life.\nAttack Pattern: Hourglass"
+    "description": "The natural conclusion of time—the quiet, inevitable end of the life.\nAttack Pattern: Hourglass\nType: Death"
   },
   {
     "name": "Void Moth",
     "id": 14,
     "type": "Nothingness",
     "atkPattern": "Butterfly",
-    "description": "A spectral moth born of nothingness.\nAttack Pattern: Hourglass"
+    "description": "A spectral moth born of nothingness.\nAttack Pattern: Hourglass\nType: Nothingness"
   }
 ]

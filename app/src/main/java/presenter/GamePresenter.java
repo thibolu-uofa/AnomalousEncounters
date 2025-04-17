@@ -16,16 +16,13 @@ import static model.Utils.getStringListOfDataProperty;
 import static model.Utils.loadJsonArrayFromFileOnDevice;
 import static model.Utils.saveJSONArrayOnUserDevice;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -650,20 +647,37 @@ public class GamePresenter extends AppCompatActivity {
         return Utils.hasPlayerProgressedPhase(playerState);
     }
 
-    private String formatPlayerInfo(boolean includeTokens) {
+    public void increasePlayerPhase() {
+        int phase = playerState.getPhase();
+        if (phase == 1) {
+            playerState.setMaxHealth(75);
+        } else if (phase == 2) {
+            playerState.setMaxHealth(150);
+        }
+
+        int fullHealthDelta = playerState.getPlayerMaxHealth() - playerState.getHealth();
+        playerState.modifyHealth(fullHealthDelta);
+
+        int newPhase = playerState.getPhase() + 1;
+        playerState.setPhase(newPhase);
+    }
+
+    private String formatPlayerInfo(boolean includeTokensAndPhase) {
         StringBuilder sb = new StringBuilder();
         String name = playerState.getName();
         int currentHealth = playerState.getHealth(), maxHealth = playerState.getPlayerMaxHealth();
 
         sb.append(name).append("\nHP: ").append(currentHealth).append("/").append(maxHealth);
 
-        if (includeTokens) {
+        if (includeTokensAndPhase) {
             sb.append("\nTokens: ").append(playerState.getTokens());
+            sb.append("\nPhase: ").append(playerState.getPhase());
         }
+
         return sb.toString();
     }
 
-    public String getPlayerNameHealthAndTokens() {
+    public String getPlayerNameHealtsTokensAndPhase() {
         return formatPlayerInfo(true);
     }
 

@@ -159,7 +159,7 @@ public class PlayerMenu extends BaseMenu {
     }
 
     public void updateMenuTexts(GamePresenter presenter) {
-        Objects.requireNonNull(menuItemsList.get("playerCard")).updateText(presenter.getPlayerNameHealthAndTokens());
+        Objects.requireNonNull(menuItemsList.get("playerCard")).updateText(presenter.getPlayerNameHealtsTokensAndPhase());
         Objects.requireNonNull(menuItemsList.get("skill_levels")).updateText("LV\n" + presenter.getSkillLevelsString());
         Objects.requireNonNull(menuItemsList.get("item_amounts")).updateText("#\n" + presenter.getItemAmounts());
     }

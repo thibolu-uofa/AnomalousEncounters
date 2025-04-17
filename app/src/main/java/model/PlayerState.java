@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class PlayerState {
-    private final int MAX_HEALTH;
+    private int maxHealth;
     private int playerCurrentHealth;
     private final double DAMAGE_REDUCTION_PERCENTAGE = 0.2;
     private final String name;
@@ -19,7 +19,7 @@ public class PlayerState {
     // Default Constructor
     public PlayerState() {
         this.name = "Unknown";
-        this.MAX_HEALTH = 100;
+        this.maxHealth = 100;
         this.playerCurrentHealth = 100; // Start with full health
         this.tokens = 20;
         this.phase = 1;
@@ -36,7 +36,7 @@ public class PlayerState {
      */
     public PlayerState(String name, int maxHealth, int tokens) {
         this.name = name;
-        this.MAX_HEALTH = maxHealth;
+        this.maxHealth = maxHealth;
         this.playerCurrentHealth = maxHealth; // Start with full health
         this.tokens = tokens;
         this.phase = 1;
@@ -52,8 +52,8 @@ public class PlayerState {
      */
     private void updateHealth(int delta) {
         playerCurrentHealth += delta;
-        if (playerCurrentHealth > MAX_HEALTH) {
-            playerCurrentHealth = MAX_HEALTH;
+        if (playerCurrentHealth > maxHealth) {
+            playerCurrentHealth = maxHealth;
         } else if (playerCurrentHealth < 0) {
             playerCurrentHealth = 0;
         }
@@ -197,7 +197,7 @@ public class PlayerState {
 
     // tokens you lose on death (maxHealth/25) * totalSkillLevel
     public int getTokensLostOnDeath() {
-        return (MAX_HEALTH/25) * getTotalSkillLevel();
+        return (maxHealth /25) * getTotalSkillLevel();
     }
 
     public int getLevelOfSkill(int id) {
@@ -227,7 +227,7 @@ public class PlayerState {
     }
 
     public int getPlayerMaxHealth() {
-        return MAX_HEALTH;
+        return maxHealth;
     }
 
     public int[] getSkillList() {
@@ -296,5 +296,9 @@ public class PlayerState {
 
     public void setAffinity(SkillUtils.AnomalyTypes affinity) {
         this.affinity = affinity;
+    }
+
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
     }
 }

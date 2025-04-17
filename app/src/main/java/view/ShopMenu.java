@@ -84,7 +84,7 @@ public class ShopMenu extends BaseMenu {
     }
 
     public void updateMenuTexts(GamePresenter presenter) {
-        Objects.requireNonNull(menuItemsList.get("playerCard")).updateText(presenter.getPlayerNameHealthAndTokens());
+        Objects.requireNonNull(menuItemsList.get("playerCard")).updateText(presenter.getPlayerNameHealtsTokensAndPhase());
     }
 
     private void updateItemInfo(GamePresenter presenter){

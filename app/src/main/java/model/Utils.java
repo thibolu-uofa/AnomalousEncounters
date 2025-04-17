@@ -209,11 +209,16 @@ public final class Utils {
         int phase = playerState.getPhase();
         int totalSkillLevel = playerState.getTotalSkillLevel();
         int numberOfSkills = playerState.getSkills().size();
-        int avgSkillLevel = totalSkillLevel/numberOfSkills;
-        if (phase == 1 && avgSkillLevel > 2.7) {
+        float avgSkillLevel = (float)totalSkillLevel/(float) numberOfSkills;
+
+        if (phase == 1 && avgSkillLevel >= 2.6) {
             return true;
-        } else {
-            return false;
         }
+
+        if (phase == 2 && avgSkillLevel >= 5) {
+            return true;
+        }
+
+        return false;
     }
 }

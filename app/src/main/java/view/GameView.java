@@ -254,7 +254,6 @@ public class GameView  extends SurfaceView implements Runnable{
         drawBattleView();
         drawEndBattleScreen();
         drawConfirmPopUp();
-        drawAlertIcon();
         handleCanvasTransitions();
 
         // finish drawing
@@ -278,6 +277,7 @@ public class GameView  extends SurfaceView implements Runnable{
         long currentTime = System.currentTimeMillis();
 
         updateAndDrawBackground();
+        drawAlertIcon();
         checkForEnemyEncounter(currentTime);
         drawOverworldSprites();
         drawHealthBar();
@@ -388,6 +388,7 @@ public class GameView  extends SurfaceView implements Runnable{
         fadeAlpha = 255;
         isCanvasFadingIn = true;
         isCanvasFadingOut = false;
+        checkIfPlayerProgressedPhase();
     }
 
     public void startFadeOut() {
@@ -573,6 +574,7 @@ public class GameView  extends SurfaceView implements Runnable{
             String confirmText = confirmPopUp.getMessage();
             boolean isHomePopUp = Objects.equals(confirmText, homeMsg);
             boolean isSavePopUp = Objects.equals(confirmText, saveMsg);
+            boolean isPhasePopUp = Objects.equals(confirmText, phaseMsg);
 
             if (isHomePopUp && didUserConfirm) {
                 presenter.changeViewBackToMainActivity();
@@ -582,6 +584,11 @@ public class GameView  extends SurfaceView implements Runnable{
                 presenter.makeFirstSaveSlot();
             }
 
+            if (isPhasePopUp && didUserConfirm) {
+                presenter.increasePlayerPhase();
+                alertIcon = null;
+            }
+
             confirmPopUp = null;
             isMenuOpen = false;
             canPlayerMove = true;
@@ -589,8 +596,8 @@ public class GameView  extends SurfaceView implements Runnable{
     }
 
     private void handlePhaseAlertIcon(float eventX, float eventY, GamePresenter presenter) {
-        boolean userTouchedIcon = homeIcon.hasBeenTouched(eventX, eventY, presenter, 1);
-        if (userTouchedIcon) {
+        boolean userTouchedIcon = alertIcon.hasBeenTouched(eventX, eventY, presenter, 1);
+        if (userTouchedIcon && !isMenuOpen) {
             phaseMsg = presenter.getString(R.string.phaseProgressConfirmation);
             confirmPopUp = new ConfirmPopUp(phaseMsg, presenter, true);
             isMenuOpen = true;
@@ -685,7 +692,7 @@ public class GameView  extends SurfaceView implements Runnable{
         boolean progressedPhase = presenter.hasPlayerProgressedPhase();
         if (progressedPhase) {
             Bitmap alertIconBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.alert_icon);
-            int iconX = 25;
+            int iconX = 50;
             int iconY = 70;
             alertIcon = new Sprite(alertIconBitmap, iconX, iconY);
         }
