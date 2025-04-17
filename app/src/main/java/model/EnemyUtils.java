@@ -1,5 +1,9 @@
 package model;
 
+import static model.Utils.getSingleDataProperty;
+
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -58,5 +62,19 @@ public class EnemyUtils {
                 break;
         }
         return amountOfEssenceAndShards;
+    }
+
+    public static SkillUtils.AnomalyTypes getEnemyTypeFromId(int id, Context context) {
+        String typeString = (String) getSingleDataProperty("enemies.json", "type", id, context);
+        SkillUtils.AnomalyTypes type = SkillUtils.AnomalyTypes.DEATH;
+        switch (typeString) {
+            case "Life":
+                type = SkillUtils.AnomalyTypes.LIFE;
+                break;
+            case "Nothingness":
+                type = SkillUtils.AnomalyTypes.NOTHINGNESS;
+                break;
+        }
+        return type;
     }
 }

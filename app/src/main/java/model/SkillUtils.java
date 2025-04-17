@@ -73,10 +73,10 @@ public class SkillUtils {
         Forget Level 4 Skill, get 3 Book of Skill I
         Forget Level 5 Skill, get 1 Book of Skill II
         Forget Level 6 Skill, get 1 Book of Skill II and 1 Book of Skill I
-        LV 7, get 2 Book of Skill II
-        LV8, get 3 Book of Skill II
-        LV9, get 1 Book of Skill II and get 1 Book of Skill III
-        LV10, get 2 Book of Skill III
+        Forget LV 7, get 2 Book of Skill II
+        Forget LV8, get 3 Book of Skill II
+        Forget LV9, get 1 Book of Skill II and get 1 Book of Skill III
+        Forget LV10, get 2 Book of Skill III
      */
     public static void getSkillCompensation(int level, PlayerState playerState) {
         ArrayList<int[]> compensationItemIds = new ArrayList<>();

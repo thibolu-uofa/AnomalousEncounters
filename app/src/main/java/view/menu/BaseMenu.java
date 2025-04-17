@@ -24,7 +24,7 @@ public abstract class BaseMenu {
     protected GamePresenter presenter;
     protected Map<String, MenuItem> menuItemsList = new LinkedHashMap<>();
     protected int PLAYER_CARD_WIDTH = 400;
-    protected int PLAYER_CARD_HEIGHT = 250;
+    protected int PLAYER_CARD_HEIGHT = 400;
     protected ConfirmPopUp confirmPopUp;
     protected AlertPopUp alertPopUp;
     protected boolean isClosed = true;

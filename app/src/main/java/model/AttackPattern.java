@@ -17,7 +17,7 @@ public class AttackPattern {
     private final int MAX_ROWS = 6;
     private final int MAX_COLS = 8;
 
-    AttackPattern(AttackType attackType) {
+    public AttackPattern(AttackType attackType) {
         this.attackType = attackType;
     }
 

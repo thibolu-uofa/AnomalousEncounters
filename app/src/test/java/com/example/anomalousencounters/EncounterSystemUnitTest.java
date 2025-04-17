@@ -36,7 +36,7 @@ public class EncounterSystemUnitTest {
 
     private static double getActualProbability() {
         EncounterSystem encounterSystem = new EncounterSystem();
-        int validPosition = -950;
+        int validPosition = 37;
 
         int totalTrials = 10000;
         int encounters = 0;
@@ -115,11 +115,11 @@ public class EncounterSystemUnitTest {
                     expectedProbabilities.put(4, 1.0);
                     break;
                 case 2:
-                    // Phase 2: 30% chance of Tier 4, 70% chance of Tier 3
+                    // Phase 2: 10% chance Tier 4, 80% chance Tier 3, 10% chance of Tier 2
                     expectedProbabilities.put(1, 0.0);
-                    expectedProbabilities.put(2, 0.00);
-                    expectedProbabilities.put(3, 0.70);
-                    expectedProbabilities.put(4, 0.30);
+                    expectedProbabilities.put(2, 0.10);
+                    expectedProbabilities.put(3, 0.80);
+                    expectedProbabilities.put(4, 0.10);
                     break;
                 case 3:
                     // Phase 3: 5% chance of Tier 4, 25% chance of Tier 3, 70% chance of Tier 2

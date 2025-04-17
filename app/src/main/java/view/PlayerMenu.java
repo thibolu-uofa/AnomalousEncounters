@@ -169,7 +169,7 @@ public class PlayerMenu extends BaseMenu {
             return;
         }
 
-        if (handlePopUps(eventX, eventY, presenter)) {
+        if (hasHandledPopUp(eventX, eventY, presenter)) {
             return;
         }
 
@@ -177,7 +177,7 @@ public class PlayerMenu extends BaseMenu {
         handleButtonPresses(eventX, eventY, presenter);
     }
 
-    private boolean handlePopUps(float eventX, float eventY, GamePresenter presenter) {
+    private boolean hasHandledPopUp(float eventX, float eventY, GamePresenter presenter) {
         if (confirmPopUp != null) {
             handleConfirmPopUp(eventX, eventY, presenter);
             return true;

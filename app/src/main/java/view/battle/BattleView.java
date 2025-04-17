@@ -3,7 +3,6 @@ package view.battle;
 import static view.ViewConstants.BATTLE_BACKGROUND_COLOR;
 import static view.ViewConstants.CANVAS_WIDTH;
 import static view.ViewConstants.PLAYER_TILE_HIGHLIGHT_COLOR;
-import static view.ViewConstants.SCREEN_WIDTH;
 import static view.ViewConstants.TRANSPARENT_COLOR;
 
 import android.annotation.SuppressLint;
@@ -51,8 +50,8 @@ public class BattleView {
         int INFO_MARGIN = 30;
         int INFO_CARD_X = 30;
         int PLAYER_INFO_Y = 75;
-        String playerInfoNameAndHealth = presenter.getPlayerNameAndHealth();
-        String enemyInfoText = presenter.getEnemyNameHealthAndTier();
+        String playerInfoNameAndHealth = presenter.getPlayerNameHealthAndType();
+        String enemyInfoText = presenter.getEnemyNameHealthTierAndType();
 
         @SuppressLint("UseCompatLoadingForDrawables") NinePatchDrawable playerInfoNinePatchDrawable = (NinePatchDrawable) context.getResources().getDrawable(R.drawable.border1, null);
         playerInfo = new MenuNinePatch(playerInfoNinePatchDrawable, INFO_CARD_X, PLAYER_INFO_Y, playerInfoNameAndHealth, MAX_CARD_WIDTH, false, context);
@@ -78,12 +77,11 @@ public class BattleView {
 
         Bitmap enemyIconBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.depressed_mustache);
         enemyIcon = new Sprite(enemyIconBitmap, gridX, gridY);
-
     }
 
     public void updateMenuTexts() {
-        playerInfo.updateText(presenter.getPlayerNameAndHealth());
-        enemyInfo.updateText(presenter.getEnemyNameHealthAndTier());
+        playerInfo.updateText(presenter.getPlayerNameHealthAndType());
+        enemyInfo.updateText(presenter.getEnemyNameHealthTierAndType());
     }
 
     public void checkForUserTouch(float eventX, float eventY, GamePresenter presenter) {

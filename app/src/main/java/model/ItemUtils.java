@@ -23,8 +23,6 @@ public class ItemUtils {
         return SkillUtils.getUpdatedLevelAndExperience(level, currentExperience, expGained);
     }
 
-    //TODO: What to do when the player already has all skills of that type, maybe send message that
-    // You already have all the skills of that type
     public static void useSkillStone(SkillUtils.AnomalyTypes tomeType, PlayerState playerState) {
         int[] skillIds = SkillUtils.getSkillsByType(tomeType);
         ArrayList<Integer> newSkillIds = new ArrayList<>();

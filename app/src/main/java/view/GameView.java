@@ -88,57 +88,6 @@ public class GameView  extends SurfaceView implements Runnable{
         initializeVisualComponents();
     }
 
-    public void getVisibleScreenWidth() {
-        WindowManager windowManager = (WindowManager) presenter.getSystemService(Context.WINDOW_SERVICE);
-        if (windowManager == null) {
-            return;
-        }
-
-        DisplayMetrics outMetrics = new DisplayMetrics();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            //for android 11+
-            Objects.requireNonNull(presenter.getDisplay()).getRealMetrics(outMetrics);
-        } else {
-            //for older versions
-            windowManager.getDefaultDisplay().getRealMetrics(outMetrics);
-        }
-
-        SCREEN_WIDTH = outMetrics.widthPixels;
-        SCREEN_HEIGHT = outMetrics.heightPixels;
-    }
-
-    public void initializeScreenDimensions() {
-        DisplayMetrics displayMetrics = presenter.getResources().getDisplayMetrics();
-
-        int rawWidth = displayMetrics.widthPixels;
-        int rawHeight = displayMetrics.heightPixels;
-
-        int statusBarHeight = 0;
-        @SuppressLint("InternalInsetResource") int statusBarId = presenter.getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (statusBarId > 0) {
-            statusBarHeight = presenter.getResources().getDimensionPixelSize(statusBarId);
-        }
-
-        int navigationBarWidth = 0;
-        boolean hasNavigationBar = false; // check if device has navigation bar
-        int resourceId = presenter.getResources().getIdentifier("config_showNavigationBar", "bool", "android");
-        if (resourceId > 0) {
-            hasNavigationBar = presenter.getResources().getBoolean(resourceId);
-        }
-
-        if (hasNavigationBar) {
-            @SuppressLint("InternalInsetResource") int navBarWidthId = presenter.getResources().getIdentifier("navigation_bar_width", "dimen", "android");
-            if (navBarWidthId > 0) {
-                navigationBarWidth = presenter.getResources().getDimensionPixelSize(navBarWidthId);
-                Log.d("Width", "Width " + navigationBarWidth);
-            }
-        }
-
-        SCREEN_WIDTH = rawWidth + navigationBarWidth;
-        SCREEN_HEIGHT = rawHeight + statusBarHeight;
-    }
-
     private void initializeVisualComponents() {
         initializeOverworldMenuIcons();
         initializeInventory();
@@ -203,7 +152,7 @@ public class GameView  extends SurfaceView implements Runnable{
 
         Bitmap groundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.game_map);
         int backgroundY = -(SCREEN_HEIGHT/9);
-        int playerY = (int) (backgroundY + (groundBitmap.getHeight() * 0.6) - ((double) playerBitmap.getHeight()/4)) + 5;
+        int playerY = (int) (backgroundY + (groundBitmap.getHeight() * 0.529) - ((double) playerBitmap.getHeight()/4)) + 5;
 
         playerSprite = new PlayerSprite(playerBitmap, playerX, playerY);
         playerSprite.setAnimation("idle");
@@ -411,7 +360,7 @@ public class GameView  extends SurfaceView implements Runnable{
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
             // user has touched the screen
             case MotionEvent.ACTION_DOWN:
-                Log.d("X Position", "Current X Position is " + backgroundImage.getX());
+//                Log.d("X Position", "Current X Position is " + backgroundImage.getX());
                 processActionDownEvent(motionEvent);
                 break;
 

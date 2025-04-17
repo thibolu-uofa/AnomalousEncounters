@@ -154,19 +154,21 @@ public class BattleSideBar {
 
 
     private void handleAttackAction() {
-        if (!hasAttacked) {
-            skillBar.resetCheckedBtn();
-            String skillCooldowns = presenter.getSkillCooldownsString();
-            skillBar.updateSkillCooldowns(skillCooldowns);
-            changeDisplay(DisplayOptions.SKILL_BAR);
+        if (hasAttacked) {
+            return;
         }
+        skillBar.resetCheckedBtn();
+        String skillCooldowns = presenter.getSkillCooldownsString();
+        skillBar.updateSkillCooldowns(skillCooldowns);
+        changeDisplay(DisplayOptions.SKILL_BAR);
     }
 
     private void handleMoveAction() {
-        if (!hasMoved) {
-            moveBar.resetSelectedArrow();
-            changeDisplay(DisplayOptions.MOVE_BAR);
+        if (hasMoved) {
+            return;
         }
+        moveBar.resetSelectedArrow();
+        changeDisplay(DisplayOptions.MOVE_BAR);
     }
 
     private void handleEndTurnAction() {

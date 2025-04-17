@@ -1,5 +1,6 @@
 package model;
 
+import static model.SkillUtils.getResistanceFactor;
 import static model.SkillUtils.getSkillBaseDamage;
 
 import java.util.ArrayList;
@@ -11,9 +12,9 @@ public class Skill {
     private final int MAX_COOLDOWN;
     private int currentCooldown;
     private final int distance;
-    private final int damage;
+    private int damage;
     private final AttackPattern atkPattern;
-
+    private double resistanceFactor;
     private final AttackPattern.AttackType atkType;
     private int timesUsed = 0;
     private int id;
@@ -72,19 +73,29 @@ public class Skill {
     }
 
     private int calculateSkillDistance(int level) {
-        //maybe calculate distance based on level and type in a different way later?
-        //currently the distance is only effective up to a certain level
-        return Math.max(level, 2);
+        //calculating skill distance based on level of skill
+        int calcDistance;
+        if (level <= 3) {
+            calcDistance = 2;
+        } else if (level <= 7) {
+            calcDistance = 3;
+        } else {
+            calcDistance = 4;
+        }
+        return calcDistance;
     }
 
-
-    // NOTE: resistance should be multiplied in the getBaseDamage because player doesn't have type,
-    // so would be dependent on skill beings used
     private int calculateSkillDamage(int level, int tier, int baseDamage) {
         Random random = new Random();
         int randomFactor = random.nextInt(2) + 4;
         int extraFactor = level > 1 ? level : 0;
         return ((baseDamage * level)/(tier * 2)) + randomFactor + extraFactor;
+    }
+
+    public void applySkillResistance(SkillUtils.AnomalyTypes activeType, SkillUtils.AnomalyTypes receivingType) {
+        double damageModifier = SkillUtils.getResistanceFactor(activeType, receivingType);
+        resistanceFactor = damageModifier;
+        damage = (int) (damage * damageModifier) + 1;
     }
 
     public boolean canUseSkill() {
@@ -139,5 +150,9 @@ public class Skill {
 
     public int getId() {
         return id;
+    }
+
+    public double getResistanceFactor() {
+        return resistanceFactor;
     }
 }

@@ -158,9 +158,6 @@ public class EnemyAI {
             }
         }
 
-        //TODO: What if they are same distance from enemy
-        //TODO: What if no valid tile is found, currently assigning 0,0, maybe just move towards player??
-
         // Find the closest target tile to the current enemy position
         int[] enemyPosition = battleSystem.getEnemyPosition();
         double minDistance = Double.MAX_VALUE;

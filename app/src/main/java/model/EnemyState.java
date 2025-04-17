@@ -3,6 +3,7 @@ package model;
 public class EnemyState {
     private int id;
     private int tier;
+    private String type;
     private final int enemyMaxHealth;
     private int enemyCurrentHealth;
     private final String name;
@@ -44,10 +45,6 @@ public class EnemyState {
         return enemyCurrentHealth;
     }
 
-    public int[] getSkillList() {
-        return skills;
-    }
-
     public String getName() {
         return name;
     }
@@ -66,5 +63,13 @@ public class EnemyState {
 
     public int getTier() {
         return tier;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
     }
 }//

@@ -358,6 +358,7 @@ public class GamePresenter extends AppCompatActivity {
 
         SkillUtils.AnomalyTypes affinity = playerState.getAffinity(); //get affinity from pre-loaded player
         playerState = new PlayerState(name, maxHealth, tokens);
+        playerState.setAffinity(affinity);
 
         JSONArray items = (JSONArray) getSingleDataProperty("player_config.json", "items", newPlayerIndex, this);
         loadPlayerItems(items);
@@ -406,17 +407,34 @@ public class GamePresenter extends AppCompatActivity {
         JSONArray jsonArray = loadJsonArrayFromFileOnDevice("save_slots.json", this);
 
         String name = (String) getSingleDataPropertyFromJSONArray(jsonArray, "name", index, this);
+        String type = (String) getSingleDataPropertyFromJSONArray(jsonArray, "type", index, this);
         int maxHealth = (int) getSingleDataPropertyFromJSONArray(jsonArray, "maxHealth", index, this);
         int health = (int) getSingleDataPropertyFromJSONArray(jsonArray, "health", index, this);
         int tokens = (int) getSingleDataPropertyFromJSONArray(jsonArray, "tokens", index, this);
+        int phase = (int) getSingleDataPropertyFromJSONArray(jsonArray, "phase", index, this);
         playerState = new PlayerState(name, maxHealth, tokens);
         playerState.setPlayerCurrentHealth(health);
+        playerState.setPhase(phase);
+        setPlayerTypeFromString(type);
 
         JSONArray items = (JSONArray) getSingleDataPropertyFromJSONArray(jsonArray, "items", index, this);
         loadPlayerItems(items);
 
         JSONArray skills = (JSONArray) getSingleDataPropertyFromJSONArray(jsonArray, "skills", index, this);
         loadPlayerSkills(skills);
+    }
+
+    private void setPlayerTypeFromString(String typeString) {
+        SkillUtils.AnomalyTypes type = SkillUtils.AnomalyTypes.DEATH;
+        switch (typeString) {
+            case "Life":
+                type = SkillUtils.AnomalyTypes.LIFE;
+                break;
+            case "Nothingness":
+                type = SkillUtils.AnomalyTypes.NOTHINGNESS;
+                break;
+        }
+        playerState.setAffinity(type);
     }
 
     public boolean isInHitbox(int eventX, int eventY, int leftX, int rightX, int topY, int bottomY) {
@@ -466,13 +484,14 @@ public class GamePresenter extends AppCompatActivity {
         }
     }
 
-    public String getEnemyNameHealthAndTier() {
+    public String getEnemyNameHealthTierAndType() {
         EnemyState enemyState = battleSystem.getEnemyState();
         String name = enemyState.getName();
         int tier = enemyState.getTier();
         String maxHealth = String.valueOf(enemyState.getEnemyMaxHealth());
         String currentHealth = String.valueOf(enemyState.getEnemyCurrentHealth());
-        return name + "\nTier: " + tier + "\nHP: " + currentHealth + "/" + maxHealth;
+        String type = enemyState.getType();
+        return name + "\nTier: " + tier + "\nHP: " + currentHealth + "/" + maxHealth + "\nType: " + type;
     }
 
     public void setUpBattle(int enemyId, int enemyTier) {
@@ -665,9 +684,13 @@ public class GamePresenter extends AppCompatActivity {
     private String formatPlayerInfo(boolean includeTokensAndPhase) {
         StringBuilder sb = new StringBuilder();
         String name = playerState.getName();
+        String affinity = String.valueOf(playerState.getAffinity()).toLowerCase();
+        affinity = affinity.substring(0, 1).toUpperCase() + affinity.substring(1);
+
         int currentHealth = playerState.getHealth(), maxHealth = playerState.getPlayerMaxHealth();
 
         sb.append(name).append("\nHP: ").append(currentHealth).append("/").append(maxHealth);
+        sb.append("\nAffinity: ").append(affinity);
 
         if (includeTokensAndPhase) {
             sb.append("\nTokens: ").append(playerState.getTokens());
@@ -681,7 +704,7 @@ public class GamePresenter extends AppCompatActivity {
         return formatPlayerInfo(true);
     }
 
-    public String getPlayerNameAndHealth() {
+    public String getPlayerNameHealthAndType() {
         return formatPlayerInfo(false);
     }
 
@@ -722,9 +745,24 @@ public class GamePresenter extends AppCompatActivity {
         int maxExp = getMaxExperience(level);
         int damage = battleSystem.getSkillDamage(name);
         String atkPattern = (String) getPropertyByName("skills.json", name, "atkPattern", this);
+        double resistanceFactor = battleSystem.getPlayerSkillResistanceFactorByName(name);
 
-        skillInfo = skillInfo + "   LV " + level + "\nDamage: " + damage + "\nAttack Pattern: " + atkPattern + "\nExperience Progress: " + currentExp + "/" + maxExp;
+        skillInfo = skillInfo + "   LV " + level + "\nDamage: " + damage + "\nAttack Pattern: "
+                + atkPattern + "\nExperience Progress: " + currentExp + "/" + maxExp +
+                getPlayerSkillTypeAdvantage(resistanceFactor);
         return skillInfo;
+    }
+
+    private String getPlayerSkillTypeAdvantage(double resistanceFactor) {
+        String typeAdvantage;
+        if (resistanceFactor == 1.25) {
+            typeAdvantage = "\nYour Affinity is strong against Entity type";
+        } else if (resistanceFactor == 0.75) {
+            typeAdvantage = "\nYour Affinity is weak against Entity type";
+        } else {
+            typeAdvantage = "\nYour Affinity is neutral against Entity type";
+        }
+        return typeAdvantage;
     }
 
 
@@ -759,7 +797,7 @@ public class GamePresenter extends AppCompatActivity {
         if (amount > 0) {
             addItemToPlayerInventory(itemName, amount);
             dropNames.append(itemName).append('\n');
-            dropAmounts.append(amount);
+            dropAmounts.append(amount).append('\n');
         }
     }
 
@@ -1026,6 +1064,9 @@ public class GamePresenter extends AppCompatActivity {
         newPlayer.put("name", playerState.getName());
         newPlayer.put("health", playerState.getHealth());
         newPlayer.put("maxHealth", playerState.getPlayerMaxHealth());
+        String type = playerState.getAffinity().toString().toLowerCase();
+        type = type.substring(0, 1).toUpperCase() + type.substring(1);
+        newPlayer.put("type", type);
         newPlayer.put("tokens", playerState.getTokens());
         newPlayer.put("phase", playerState.getPhase());
 
@@ -1077,14 +1118,15 @@ public class GamePresenter extends AppCompatActivity {
         String name = (String) getSingleDataPropertyFromJSONArray(jsonArray, "name", index, this);
         int health = (int) getSingleDataPropertyFromJSONArray(jsonArray, "health", index, this);
         int maxHealth = (int) getSingleDataPropertyFromJSONArray(jsonArray, "maxHealth", index, this);
+        String type = (String) getSingleDataPropertyFromJSONArray(jsonArray, "type", index, this);
         int tokens = (int) getSingleDataPropertyFromJSONArray(jsonArray, "tokens", index, this);
         int phase = (int) getSingleDataPropertyFromJSONArray(jsonArray, "phase", index, this);
 
         JSONArray items = (JSONArray) getSingleDataPropertyFromJSONArray(jsonArray, "items", index, this);
         JSONArray skills = (JSONArray) getSingleDataPropertyFromJSONArray(jsonArray, "skills", index, this);
 
-        String info = String.format(Locale.ENGLISH, "%s \nHP: %d/%d | Tokens: %d | Phase: %d",
-                name, health, maxHealth, tokens, phase);
+        String info = String.format(Locale.ENGLISH, "%s \nHP: %d/%d | Affinity: %s \n Tokens: %d | Phase: %d",
+                name, health, maxHealth, type, tokens, phase);
 
         String skillsInfo = getSkillsListForSaveFileInfo(skills);
         String itemsInfo = getItemsListForSaveFile(items);

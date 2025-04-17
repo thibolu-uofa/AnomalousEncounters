@@ -1,6 +1,7 @@
 package model;
 
 import static model.EnemyUtils.getEnemyMaxHealth;
+import static model.EnemyUtils.getEnemyTypeFromId;
 import static model.SkillUtils.calculateEnemySkillLevel;
 import static model.SkillUtils.getExperienceGained;
 import static model.SkillUtils.getUpdatedLevelAndExperience;
@@ -44,10 +45,10 @@ public class BattleSystem {
         this.presenter = presenter;
         this.playerState = playerState;
         this.context = context;
-        populatePlayerSkills();
-        populateEnemySkills(enemyId, enemyTier);
 
+        populatePlayerSkills(enemyId);
         createEnemy(enemyId, enemyTier);
+        populateEnemySkills(enemyId, enemyTier);
 
         GridModel gridModel = new GridModel();
         maxRows = gridModel.getRowCount();
@@ -186,6 +187,11 @@ public class BattleSystem {
             skill.updateSkillCooldown();
         }
     }
+
+    public double getPlayerSkillResistanceFactorByName(String name) {
+        Skill skill = getSkillByName(name, playerSkills);
+        return skill.getResistanceFactor();
+    }
     
     public Skill getSkillByName(String name, ArrayList<Skill> skillList) {
         // this function goes and finds the correct skill by matching the name to the name on
@@ -279,11 +285,11 @@ public class BattleSystem {
     }
 
 
-    private void populatePlayerSkills() {
+    private void populatePlayerSkills(int enemyId) {
         int[] skillIds = playerState.getSkillList();
         int phase = playerState.getPhase();
         int tier = 5 - phase;
-        populateSkills(skillIds, "playerSkills", tier);
+        populateSkills(skillIds, "playerSkills", tier, enemyId);
     }
 
     private void populateEnemySkills(int enemyId, int tier) {
@@ -294,28 +300,31 @@ public class BattleSystem {
             for (int i = 0; i < length; i++) {
                 skillArray[i] = skillIds.getInt(i);
             }
-            populateSkills(skillArray, "enemySkills", tier);
+            populateSkills(skillArray, "enemySkills", tier, enemyId);
         } catch (JSONException e) {
             Log.e("Error with JSON file", "failed to load JSON files", e);
             throw new RuntimeException(e);
         }
     }
 
-    //TO DO: add maxCooldown as an attribute in skills.json and retrieve all skills maxCooldown and pass that instead of 1
-    private void populateSkills(int[] ids, String skillList, int tier) {
+    private void populateSkills(int[] ids, String skillList, int tier, int enemyId) {
         ArrayList<String> skillNames = getStringListOfDataProperty("skills.json", "name", ids, context);
         ArrayList<String> skillAtkTypes = getStringListOfDataProperty("skills.json", "atkPattern", ids, context);
+        SkillUtils.AnomalyTypes playerType = playerState.getAffinity();
+        SkillUtils.AnomalyTypes enemyType = getEnemyTypeFromId(enemyId, context);
         int[] playerSkillLevels = playerState.getSkillLevels();
         for(int i = 0; i < ids.length; i++) {
             Skill skill;
             switch (skillList) {
                 case "playerSkills":
                     skill = new Skill(skillNames.get(i), skillAtkTypes.get(i), playerSkillLevels[i], tier, ids[i], false);
+                    skill.applySkillResistance(playerType, enemyType);
                     playerSkills.add(skill);
                     break;
                 case "enemySkills":
                     int skillLevel = calculateEnemySkillLevel(tier);
                     skill = new Skill(skillNames.get(i), skillAtkTypes.get(i), skillLevel, tier, ids[i], true);
+                    skill.applySkillResistance(enemyType, playerType);
                     enemySkills.add(skill);
                     break;
             }
@@ -325,8 +334,10 @@ public class BattleSystem {
 
     private void createEnemy(int enemyId, int tier) {
         String name = (String) getSingleDataProperty("enemies.json", "name", enemyId, context);
+        String type = (String) getSingleDataProperty("enemies.json", "type", enemyId, context);
         int maxHealth = getEnemyMaxHealth(tier);
         enemyState = new EnemyState(name, maxHealth, enemyId, tier);
+        enemyState.setType(type);
     }
 
     public ArrayList<Integer> getPlayerSkillCooldowns() {

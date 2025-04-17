@@ -205,16 +205,17 @@ public final class Utils {
     }
 
     public static boolean hasPlayerProgressedPhase(PlayerState playerState) {
-        // phase progresses from phase 1 to phase 2 when the avg skill level is >= 2.7
         int phase = playerState.getPhase();
         int totalSkillLevel = playerState.getTotalSkillLevel();
         int numberOfSkills = playerState.getSkills().size();
         float avgSkillLevel = (float)totalSkillLevel/(float) numberOfSkills;
 
+        // phase progresses from phase 1 to phase 2 when the avg skill level is >= 2.6
         if (phase == 1 && avgSkillLevel >= 2.6) {
             return true;
         }
 
+        // phase progresses from phase 2 to phase 3 when the avg skill level is >= 5
         if (phase == 2 && avgSkillLevel >= 5) {
             return true;
         }
